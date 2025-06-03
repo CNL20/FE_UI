@@ -1,0 +1,4 @@
+const express = require("express");
+const router = express.Router();
+// TODO: Thêm các route cho users ở đây
+module.exports = router;
