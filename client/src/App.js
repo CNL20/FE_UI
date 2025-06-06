@@ -24,6 +24,38 @@ import ManagerDashboard from "./pages/ManagerDashboard";
 const GOOGLE_CLIENT_ID =
   "1022260188227-3gnpj7tg2jii28e93np6c3hhvbjpbs29.apps.googleusercontent.com"; // Thay thế bằng Client ID thực của bạn
 
+const apiUrl = process.env.REACT_APP_API_URL || "https://localhost:5001";
+
+// Thêm cấu hình fetch để bỏ qua lỗi SSL trong môi trường development
+const fetchConfig = {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  // Bỏ qua lỗi SSL trong môi trường development
+  ...(process.env.NODE_ENV === "development" && {
+    // Chỉ sử dụng trong môi trường development
+    // KHÔNG sử dụng trong production
+    rejectUnauthorized: false,
+  }),
+};
+
+fetch(`${apiUrl}/api/ten-controller`, fetchConfig)
+  .then((res) => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
+  .then((data) => {
+    console.log(data);
+    // xử lý data ở đây
+  })
+  .catch((error) => {
+    console.error("Error fetching data:", error);
+    // Xử lý lỗi ở đây, ví dụ: hiển thị thông báo lỗi cho người dùng
+  });
+
 const theme = createTheme({
   palette: {
     primary: {

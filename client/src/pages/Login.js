@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff, School } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { mockLogin, roles } from "../mockData";
+import { login, getDashboardUrl, roles } from "../mockData";
 import { GoogleLogin } from "@react-oauth/google";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -128,39 +128,18 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const data = await mockLogin(
+      const response = await login(
         formData.username,
         formData.password,
         formData.role
       );
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("user", JSON.stringify(response.user));
 
-      // Chuyển hướng dựa trên role
-      switch (data.user.role) {
-        case "manager":
-          navigate("/manager-dashboard");
-          break;
-        case "admin":
-          navigate("/admin-dashboard");
-          break;
-        case "teacher":
-          navigate("/teacher-dashboard");
-          break;
-        case "student":
-          navigate("/student-dashboard");
-          break;
-        case "parent":
-          navigate("/parent-dashboard");
-          break;
-        case "nurse":
-          navigate("/nurse-dashboard");
-          break;
-        default:
-          navigate("/");
-      }
-    } catch (err) {
-      setError(err.message || "Đăng nhập thất bại");
+      const dashboardUrl = getDashboardUrl(response.user.role);
+      navigate(dashboardUrl);
+    } catch (error) {
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -282,13 +261,18 @@ const Login = () => {
               select
               fullWidth
               name="role"
-              label="Vai trò"
               id="role"
               value={formData.role}
               onChange={handleChange}
               sx={{ mb: 2 }}
               SelectProps={{
                 displayEmpty: true,
+                renderValue: (selected) =>
+                  selected ? (
+                    roles.find((role) => role.id === selected)?.name
+                  ) : (
+                    <span style={{ color: "#aaa" }}>-- Chọn vai trò --</span>
+                  ),
               }}
             >
               <MenuItem value="" disabled>

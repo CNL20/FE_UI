@@ -4,78 +4,102 @@ export const roles = [
     id: "manager",
     name: "Quản lý",
     description: "Quản lý hệ thống",
+    permissions: ["manage_users", "view_reports", "manage_settings"],
+    dashboard: "/manager-dashboard",
   },
   {
     id: "admin",
     name: "Quản trị viên",
     description: "Quản trị viên hệ thống",
+    permissions: ["manage_all", "view_all", "manage_settings"],
+    dashboard: "/admin-dashboard",
   },
   {
     id: "nurse",
     name: "Y tá",
     description: "Y tá trường học",
+    permissions: [
+      "manage_health_records",
+      "view_students",
+      "manage_appointments",
+    ],
+    dashboard: "/nurse-dashboard",
   },
   {
     id: "parent",
     name: "Phụ huynh",
     description: "Phụ huynh học sinh",
+    permissions: [
+      "view_own_children",
+      "view_health_records",
+      "make_appointments",
+    ],
+    dashboard: "/parent-dashboard",
   },
 ];
 
-export const mockUsers = [
-  {
-    id: "1",
-    name: "Manager User",
-    email: "manager@school.com",
-    password: "manager123",
-    role: "manager",
-  },
-  {
-    id: "2",
-    name: "Admin User",
-    email: "admin@school.com",
-    password: "admin123",
-    role: "admin",
-  },
-  {
-    id: "3",
-    name: "Nurse User",
-    email: "nurse@school.com",
-    password: "nurse123",
-    role: "nurse",
-  },
-  {
-    id: "4",
-    name: "Parent User",
-    email: "parent@school.com",
-    password: "parent123",
-    role: "parent",
-  },
-];
+// Hàm đăng nhập thực tế
+export const login = async (username, password, role) => {
+  try {
+    // Validate input
+    if (!username || !password || !role) {
+      throw new Error("Vui lòng điền đầy đủ thông tin đăng nhập");
+    }
 
-// Mock login function
-export const mockLogin = async (username, password, role) => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Validate role
+    const validRole = roles.find((r) => r.id === role);
+    if (!validRole) {
+      throw new Error("Vai trò không hợp lệ");
+    }
 
-  const user = mockUsers.find(
-    (u) => u.email === username && u.password === password && u.role === role
-  );
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/auth/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: username,
+          password: password,
+          role: role,
+        }),
+        credentials: "include", // Cho phép gửi cookies
+      }
+    );
 
-  if (!user) {
-    throw new Error("Email, mật khẩu hoặc vai trò không đúng");
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Đăng nhập thất bại");
+    }
+
+    const data = await response.json();
+
+    // Validate response data
+    if (!data.token || !data.user) {
+      throw new Error("Dữ liệu phản hồi không hợp lệ");
+    }
+
+    return data;
+  } catch (error) {
+    if (error.name === "TypeError" && error.message === "Failed to fetch") {
+      throw new Error(
+        "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng của bạn."
+      );
+    }
+    throw new Error(error.message || "Có lỗi xảy ra khi đăng nhập");
   }
+};
 
-  // Create a mock token
-  const token = "mock-jwt-token-" + Math.random();
+// Hàm kiểm tra quyền
+export const hasPermission = (userRole, requiredPermission) => {
+  const role = roles.find((r) => r.id === userRole);
+  return role?.permissions.includes(requiredPermission) || false;
+};
 
-  return {
-    token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-  };
+// Hàm lấy dashboard URL theo role
+export const getDashboardUrl = (role) => {
+  const roleData = roles.find((r) => r.id === role);
+  return roleData?.dashboard || "/";
 };
