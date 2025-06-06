@@ -15,8 +15,9 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff, School } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import { mockLogin } from "../mockData";
+import { mockLogin, roles } from "../mockData";
 import { GoogleLogin } from "@react-oauth/google";
+import MenuItem from "@mui/material/MenuItem";
 
 const LoginContainer = styled(Box)(({ theme }) => ({
   minHeight: "100vh",
@@ -107,6 +108,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    role: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -126,7 +128,11 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const data = await mockLogin(formData.username, formData.password);
+      const data = await mockLogin(
+        formData.username,
+        formData.password,
+        formData.role
+      );
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -265,6 +271,35 @@ const Login = () => {
                 ),
               }}
             />
+            <Typography
+              variant="subtitle1"
+              sx={{ mt: 2, mb: 1, fontWeight: 500 }}
+            >
+              Chọn vai trò
+            </Typography>
+            <StyledTextField
+              required
+              select
+              fullWidth
+              name="role"
+              label="Vai trò"
+              id="role"
+              value={formData.role}
+              onChange={handleChange}
+              sx={{ mb: 2 }}
+              SelectProps={{
+                displayEmpty: true,
+              }}
+            >
+              <MenuItem value="" disabled>
+                -- Chọn vai trò --
+              </MenuItem>
+              {roles.map((role) => (
+                <MenuItem key={role.id} value={role.id}>
+                  {role.name}
+                </MenuItem>
+              ))}
+            </StyledTextField>
             <LoginButton
               type="submit"
               fullWidth

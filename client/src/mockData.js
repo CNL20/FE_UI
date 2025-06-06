@@ -1,4 +1,27 @@
 // Mock user data
+export const roles = [
+  {
+    id: "manager",
+    name: "Quản lý",
+    description: "Quản lý hệ thống",
+  },
+  {
+    id: "admin",
+    name: "Quản trị viên",
+    description: "Quản trị viên hệ thống",
+  },
+  {
+    id: "nurse",
+    name: "Y tá",
+    description: "Y tá trường học",
+  },
+  {
+    id: "parent",
+    name: "Phụ huynh",
+    description: "Phụ huynh học sinh",
+  },
+];
+
 export const mockUsers = [
   {
     id: "1",
@@ -31,16 +54,16 @@ export const mockUsers = [
 ];
 
 // Mock login function
-export const mockLogin = async (username, password) => {
+export const mockLogin = async (username, password, role) => {
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const user = mockUsers.find(
-    (u) => u.email === username && u.password === password
+    (u) => u.email === username && u.password === password && u.role === role
   );
 
   if (!user) {
-    throw new Error("Email hoặc mật khẩu không đúng");
+    throw new Error("Email, mật khẩu hoặc vai trò không đúng");
   }
 
   // Create a mock token

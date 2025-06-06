@@ -17,8 +17,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
-import TeacherDashboard from "./pages/TeacherDashboard";
-import StudentDashboard from "./pages/StudentDashboard";
 import ParentDashboard from "./pages/ParentDashboard";
 import NurseDashboard from "./pages/NurseDashboard";
 import ManagerDashboard from "./pages/ManagerDashboard";
@@ -69,28 +67,6 @@ const App = () => {
                 <PrivateRoute>
                   <RoleBasedRoute allowedRoles={["admin"]}>
                     <AdminDashboard />
-                  </RoleBasedRoute>
-                </PrivateRoute>
-              }
-            />
-
-            <Route
-              path="/teacher-dashboard"
-              element={
-                <PrivateRoute>
-                  <RoleBasedRoute allowedRoles={["teacher"]}>
-                    <TeacherDashboard />
-                  </RoleBasedRoute>
-                </PrivateRoute>
-              }
-            />
-
-            <Route
-              path="/student-dashboard"
-              element={
-                <PrivateRoute>
-                  <RoleBasedRoute allowedRoles={["student"]}>
-                    <StudentDashboard />
                   </RoleBasedRoute>
                 </PrivateRoute>
               }
