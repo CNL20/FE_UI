@@ -31,19 +31,77 @@ const App: React.FC = () => {
       nurse: "/nurse",
     };
 
+    console.log("Debugging Navigation:", {
+      isAuthenticated,
+      userRole,
+      currentPath: window.location.pathname,
+      rolePaths,
+    });
+
     if (isAuthenticated && userRole && window.location.pathname !== "/") {
       const path = rolePaths[userRole];
-      if (path && window.location.pathname !== path) {
+      if (path && !window.location.pathname.startsWith(path)) {
         console.log("Navigating to:", path);
         navigate(path);
-      } else if (!path) {
-        console.error("Invalid role detected:", userRole);
-        navigate("/");
       }
     } else if (!isAuthenticated && window.location.pathname === "/login") {
       console.log("User is accessing login page.");
     } else {
       console.log("Conditions not met for navigation.");
+    }
+
+    if (
+      isAuthenticated &&
+      userRole &&
+      window.location.pathname.startsWith("/admin")
+    ) {
+      console.log("Admin-specific navigation detected.");
+      return;
+    }
+
+    if (
+      isAuthenticated &&
+      userRole &&
+      window.location.pathname.startsWith(rolePaths[userRole])
+    ) {
+      console.log("User is already in the correct role path.");
+      return;
+    }
+
+    if (
+      isAuthenticated &&
+      userRole &&
+      window.location.pathname.startsWith(`/admin/`) &&
+      window.location.pathname !== `/admin`
+    ) {
+      console.log("User is already in an admin subpage.");
+      return;
+    }
+
+    if (isAuthenticated && userRole && window.location.pathname === `/admin`) {
+      console.log("User is in the admin dashboard.");
+      return;
+    }
+
+    if (
+      isAuthenticated &&
+      userRole &&
+      window.location.pathname === "/admin-dashboard"
+    ) {
+      console.log("Navigating to admin dashboard subpage.");
+      return;
+    }
+
+    if (
+      isAuthenticated &&
+      userRole === "admin" &&
+      (window.location.pathname === "/admin-dashboard" ||
+        window.location.pathname.startsWith("/admin"))
+    ) {
+      console.log(
+        "Admin-specific navigation detected, allowing access to admin routes."
+      );
+      return;
     }
   }, [isAuthenticated, userRole, navigate]);
 
@@ -101,9 +159,36 @@ const App: React.FC = () => {
           </PrivateRoute>
         }
       />
-      <Route path="/admin/manage-accounts" element={<ManageAccounts />} />
-      <Route path="/admin/activity-logs" element={<ActivityLogs />} />
-      <Route path="/admin/help" element={<Help />} />
+      <Route
+        path="/admin/manage-accounts"
+        element={
+          <PrivateRoute isAuthenticated={isAuthenticated}>
+            <RoleBasedRoute role="admin" userRole={userRole}>
+              <ManageAccounts />
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/activity-logs"
+        element={
+          <PrivateRoute isAuthenticated={isAuthenticated}>
+            <RoleBasedRoute role="admin" userRole={userRole}>
+              <ActivityLogs />
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/help"
+        element={
+          <PrivateRoute isAuthenticated={isAuthenticated}>
+            <RoleBasedRoute role="admin" userRole={userRole}>
+              <Help />
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

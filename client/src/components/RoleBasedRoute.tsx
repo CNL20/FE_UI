@@ -12,6 +12,8 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   role,
   userRole,
 }) => {
+  console.log("RoleBasedRoute: userRole =", userRole, "role =", role);
+
   if (userRole === undefined) {
     return <Navigate to="/" replace />;
   }
@@ -22,6 +24,11 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
 
   if (userRole !== role) {
     return <Navigate to="/" replace />;
+  }
+
+  if (userRole === "admin" && role === "admin") {
+    console.log("Admin-specific route detected, allowing access.");
+    return <>{children}</>;
   }
 
   return <>{children}</>;

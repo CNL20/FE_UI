@@ -11,7 +11,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { People, History, HelpOutline, Search } from "@mui/icons-material";
-import Navbar from "../../components/Navbar";
+import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
 interface AdminDashboardProps {
@@ -128,7 +128,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </Typography>
                 <Button
                   size="small"
-                  onClick={() => navigate("/admin/activity-logs")}
+                  onClick={() => navigate("/notifications")}
                   sx={{
                     mt: 2,
                     backgroundColor: "#ff4081",
@@ -185,12 +185,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     variant="contained"
                     color="primary"
                     startIcon={<People />}
-                    onClick={() => {
-                      console.log(
-                        "AdminDashboard: Navigating to /admin/manage-accounts"
-                      );
-                      navigate("/admin/manage-accounts");
-                    }}
+                    onClick={() => navigate("/admin/manage-accounts")}
                     sx={{
                       backgroundColor: "#3f51b5",
                       "&:hover": {
