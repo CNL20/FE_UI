@@ -3,12 +3,15 @@ import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import AdminDashboard from "./pages/AdminDashboard";
-import ParentDashboard from "./pages/ParentDashboard";
-import ManagerDashboard from "./pages/ManagerDashboard";
-import NurseDashboard from "./pages/NurseDashboard";
+import AdminDashboard from "./pages/AdminPages/AdminDashboard";
+import ManagerDashboard from "./pages/ManagerPages/ManagerDashboard";
+import ParentDashboard from "./pages/ParentPages/ParentDashboard";
+import NurseDashboard from "./pages/NursePages/NurseDashboard";
 import PrivateRoute from "./components/PrivateRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
+import ManageAccounts from "./pages/AdminPages/ManageAccounts";
+import ActivityLogs from "./pages/AdminPages/ActivityLogs";
+import Help from "./pages/AdminPages/Help";
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -69,17 +72,7 @@ const App: React.FC = () => {
         }
       />
       <Route
-        path="/parent/*"
-        element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="parent" userRole={userRole}>
-              <ParentDashboard />
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/manager/*"
+        path="/manager"
         element={
           <PrivateRoute isAuthenticated={isAuthenticated}>
             <RoleBasedRoute role="manager" userRole={userRole}>
@@ -89,7 +82,17 @@ const App: React.FC = () => {
         }
       />
       <Route
-        path="/nurse/*"
+        path="/parent"
+        element={
+          <PrivateRoute isAuthenticated={isAuthenticated}>
+            <RoleBasedRoute role="parent" userRole={userRole}>
+              <ParentDashboard />
+            </RoleBasedRoute>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/nurse"
         element={
           <PrivateRoute isAuthenticated={isAuthenticated}>
             <RoleBasedRoute role="nurse" userRole={userRole}>
@@ -98,6 +101,9 @@ const App: React.FC = () => {
           </PrivateRoute>
         }
       />
+      <Route path="/admin/manage-accounts" element={<ManageAccounts />} />
+      <Route path="/admin/activity-logs" element={<ActivityLogs />} />
+      <Route path="/admin/help" element={<Help />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
