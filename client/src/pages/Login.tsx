@@ -59,14 +59,13 @@ const Login: React.FC<{ onLogin: (role: string) => void }> = ({ onLogin }) => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form state before login:", form); // Debugging form state
+
+    console.log("Form Role:", form.role);
 
     if (!form.role) {
       alert("Vui lòng chọn vai trò trước khi đăng nhập.");
       return;
     }
-
-    console.log("Selected role:", form.role); // Debugging role value
 
     onLogin(form.role);
   };
