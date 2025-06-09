@@ -10,7 +10,7 @@ import {
   Switch,
   FormControlLabel,
 } from "@mui/material";
-import { People, History, HelpOutline, Search } from "@mui/icons-material";
+import { People, History, Search } from "@mui/icons-material";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
@@ -208,20 +208,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     }}
                   >
                     Xem nhật ký
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="info"
-                    startIcon={<HelpOutline />}
-                    onClick={() => navigate("/admin/help")}
-                    sx={{
-                      backgroundColor: "#00bcd4",
-                      "&:hover": {
-                        backgroundColor: "#0097a7",
-                      },
-                    }}
-                  >
-                    Hướng dẫn
                   </Button>
                 </Box>
               </CardContent>

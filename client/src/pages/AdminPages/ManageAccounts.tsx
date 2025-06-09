@@ -116,13 +116,7 @@ const ManageAccounts: React.FC = () => {
   };
 
   const handleBackClick = () => {
-    const targetPath = "/admin-dashboard";
-    if (window.location.pathname !== targetPath) {
-      console.log(`Navigating to ${targetPath}`);
-      navigate(targetPath);
-    } else {
-      console.log(`Already on the correct path: ${targetPath}`);
-    }
+    navigate("/admin"); // Chuyển về trang AdminDashboard khi nhấn nút Quay lại
   };
 
   return (

@@ -11,7 +11,6 @@ import PrivateRoute from "./components/PrivateRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import ManageAccounts from "./pages/AdminPages/ManageAccounts";
 import ActivityLogs from "./pages/AdminPages/ActivityLogs";
-import Help from "./pages/AdminPages/Help";
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -108,6 +107,10 @@ const App: React.FC = () => {
   const handleLogin = (role: string) => {
     setIsAuthenticated(true);
     setUserRole(role);
+
+    if (role === "admin") {
+      navigate("/admin"); // Chuyển sang AdminDashboard khi admin đăng nhập
+    }
   };
 
   return (
@@ -175,16 +178,6 @@ const App: React.FC = () => {
           <PrivateRoute isAuthenticated={isAuthenticated}>
             <RoleBasedRoute role="admin" userRole={userRole}>
               <ActivityLogs />
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/admin/help"
-        element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="admin" userRole={userRole}>
-              <Help />
             </RoleBasedRoute>
           </PrivateRoute>
         }
