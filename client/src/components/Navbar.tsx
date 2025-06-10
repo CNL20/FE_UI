@@ -47,32 +47,171 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <AppBar position="static" color="primary">
-      <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
+    <AppBar
+      position="static"
+      color="primary"
+      sx={{
+        boxShadow: "0 2px 12px 0 rgba(25, 118, 210, 0.10)",
+        borderBottomLeftRadius: 18,
+        borderBottomRightRadius: 18,
+        background: "linear-gradient(90deg, #1976d2 60%, #64b5f6 100%)",
+        minHeight: 68,
+      }}
+    >
+      <Toolbar sx={{ minHeight: 68, px: 4 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            flexGrow: 1,
+            fontWeight: 800,
+            fontSize: 26,
+            letterSpacing: 2,
+            color: "#fff",
+            textShadow: "0 2px 8px rgba(25,118,210,0.10)",
+          }}
+        >
           Hệ Thống Y Tế Học Đường
         </Typography>
         <Box>
-          <Button color="inherit" onClick={() => navigate("/")}>
-            Trang chủ
-          </Button>
-          <Button color="inherit" onClick={() => navigate("/news")}>
-            Tin tức
-          </Button>
-          <Button color="inherit" onClick={() => navigate("/schedule")}>
-            Lịch khám
-          </Button>
-          <Button color="inherit" onClick={() => navigate("/health-records")}>
-            Hồ sơ sức khỏe
-          </Button>
-          <Button color="inherit" onClick={() => navigate("/guides")}>
-            Hướng dẫn
-          </Button>
-          <Button color="inherit" onClick={() => navigate("/contact")}>
-            Liên hệ
-          </Button>
+          {isHomePage ? (
+            <>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/")}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1.5,
+                  mx: 1,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  transition: "background 0.2s, color 0.2s",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.12)",
+                    color: "#1976d2",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Trang chủ
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => {
+                  const el = document.getElementById("school-health-news");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1.5,
+                  mx: 1,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  transition: "background 0.2s, color 0.2s",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.12)",
+                    color: "#1976d2",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Tin tức
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => {
+                  const el = document.getElementById("contact");
+                  if (el) el.scrollIntoView({ behavior: "smooth" });
+                }}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1.5,
+                  mx: 1,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  transition: "background 0.2s, color 0.2s",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.12)",
+                    color: "#1976d2",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Liên hệ
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/news")}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1.5,
+                  mx: 1,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  transition: "background 0.2s, color 0.2s",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.12)",
+                    color: "#1976d2",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Tin tức
+              </Button>
+              <Button
+                color="inherit"
+                onClick={() => navigate("/contact")}
+                sx={{
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: 1.5,
+                  mx: 1,
+                  borderRadius: 2,
+                  px: 2,
+                  py: 1,
+                  transition: "background 0.2s, color 0.2s",
+                  "&:hover": {
+                    background: "rgba(255,255,255,0.12)",
+                    color: "#1976d2",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Liên hệ
+              </Button>
+            </>
+          )}
+
           {isHomePage && (
-            <Button color="inherit" onClick={() => navigate("/login")}>
+            <Button
+              color="inherit"
+              onClick={() => navigate("/login")}
+              sx={{
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                mx: 1,
+                borderRadius: 2,
+                px: 2,
+                py: 1,
+                transition: "background 0.2s, color 0.2s",
+                "&:hover": {
+                  background: "rgba(255,255,255,0.12)",
+                  color: "#1976d2",
+                  textDecoration: "underline",
+                },
+              }}
+            >
               Đăng nhập
             </Button>
           )}

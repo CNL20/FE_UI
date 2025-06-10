@@ -52,15 +52,6 @@ const App: React.FC = () => {
     if (
       isAuthenticated &&
       userRole &&
-      window.location.pathname.startsWith("/admin")
-    ) {
-      console.log("Admin-specific navigation detected.");
-      return;
-    }
-
-    if (
-      isAuthenticated &&
-      userRole &&
       window.location.pathname.startsWith(rolePaths[userRole])
     ) {
       console.log("User is already in the correct role path.");
@@ -69,36 +60,12 @@ const App: React.FC = () => {
 
     if (
       isAuthenticated &&
-      userRole &&
-      window.location.pathname.startsWith(`/admin/`) &&
-      window.location.pathname !== `/admin`
-    ) {
-      console.log("User is already in an admin subpage.");
-      return;
-    }
-
-    if (isAuthenticated && userRole && window.location.pathname === `/admin`) {
-      console.log("User is in the admin dashboard.");
-      return;
-    }
-
-    if (
-      isAuthenticated &&
-      userRole &&
-      window.location.pathname === "/admin-dashboard"
-    ) {
-      console.log("Navigating to admin dashboard subpage.");
-      return;
-    }
-
-    if (
-      isAuthenticated &&
-      userRole === "admin" &&
-      (window.location.pathname === "/admin-dashboard" ||
-        window.location.pathname.startsWith("/admin"))
+      userRole === "nurse" &&
+      (window.location.pathname === "/nurse-dashboard" ||
+        window.location.pathname.startsWith("/nurse"))
     ) {
       console.log(
-        "Admin-specific navigation detected, allowing access to admin routes."
+        "Nurse-specific navigation detected, allowing access to nurse routes."
       );
       return;
     }
@@ -109,7 +76,9 @@ const App: React.FC = () => {
     setUserRole(role);
 
     if (role === "admin") {
-      navigate("/admin"); // Chuyển sang AdminDashboard khi admin đăng nhập
+      navigate("/admin");
+    } else if (role === "nurse") {
+      navigate("/nurse");
     }
   };
 
