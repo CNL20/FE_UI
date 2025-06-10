@@ -27,9 +27,22 @@ import {
   Add as AddIcon,
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const NurseDashboard: React.FC = () => {
+interface NurseDashboardProps {
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  setUserRole: (userRole: string) => void;
+  onLogout: () => void;
+}
+
+const NurseDashboard: React.FC<NurseDashboardProps> = ({
+  setIsAuthenticated,
+  setUserRole,
+  onLogout,
+}) => {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [tabValue, setTabValue] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [newSupply, setNewSupply] = useState({
@@ -38,6 +51,26 @@ const NurseDashboard: React.FC = () => {
     expiryDate: "",
     location: "",
   });
+
+  const handleNavigateToHome = () => {
+    navigate("/");
+  };
+
+  const handleNavigateToNews = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("school-health-news");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  const handleNavigateToContact = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -63,7 +96,14 @@ const NurseDashboard: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        setIsAuthenticated={setIsAuthenticated}
+        setUserRole={setUserRole}
+        onLogout={onLogout}
+        onNavigateToHome={handleNavigateToHome}
+        onNavigateToNews={handleNavigateToNews}
+        onNavigateToContact={handleNavigateToContact}
+      />
       <Box
         sx={{
           width: "100%",

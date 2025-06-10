@@ -1,160 +1,224 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminPages/AdminDashboard";
 import ManagerDashboard from "./pages/ManagerPages/ManagerDashboard";
-import ParentDashboard from "./pages/ParentPages/ParentDashboard";
 import NurseDashboard from "./pages/NursePages/NurseDashboard";
-import PrivateRoute from "./components/PrivateRoute";
-import RoleBasedRoute from "./components/RoleBasedRoute";
+import HealthRecords from "./pages/ManagerPages/HealthRecords";
+import MedicalStaffManagement from "./pages/ManagerPages/MedicalStaffManagement";
+import AlertsAndNotifications from "./pages/ManagerPages/AlertsAndNotifications";
+import EventAndAppointmentManagement from "./pages/ManagerPages/EventAndAppointmentManagement";
+import ParentDashboard from "./pages/ParentPages/ParentDashboard";
 import ManageAccounts from "./pages/AdminPages/ManageAccounts";
 import ActivityLogs from "./pages/AdminPages/ActivityLogs";
+import HealthProfileForm from "./pages/ParentPages/HealthProfileForm";
+import MedicationForm from "./pages/ParentPages/MedicationForm";
+import HealthCheckDashboard from "./pages/ParentPages/HealthCheckDashboard";
+import VaccinationEventDashboard from "./pages/ParentPages/VaccinationEventDashboard";
 
-const App: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState("");
-
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const savedAuth = localStorage.getItem("isAuthenticated");
+    return savedAuth === "true";
+  });
+  const [userRole, setUserRole] = useState(() => {
+    return localStorage.getItem("userRole") || "";
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Authentication State:", isAuthenticated);
-    console.log("User Role:", userRole);
-    console.log("Current Path:", window.location.pathname);
+    localStorage.setItem("isAuthenticated", isAuthenticated.toString());
+    localStorage.setItem("userRole", userRole);
+  }, [isAuthenticated, userRole]);
 
-    const rolePaths: Record<string, string> = {
-      admin: "/admin",
-      parent: "/parent",
-      manager: "/manager",
-      nurse: "/nurse",
-    };
-
-    console.log("Debugging Navigation:", {
-      isAuthenticated,
-      userRole,
-      currentPath: window.location.pathname,
-      rolePaths,
-    });
-
-    if (isAuthenticated && userRole && window.location.pathname !== "/") {
-      const path = rolePaths[userRole];
-      if (path && !window.location.pathname.startsWith(path)) {
-        console.log("Navigating to:", path);
-        navigate(path);
-      }
-    } else if (!isAuthenticated && window.location.pathname === "/login") {
-      console.log("User is accessing login page.");
-    } else {
-      console.log("Conditions not met for navigation.");
-    }
-
-    if (
-      isAuthenticated &&
-      userRole &&
-      window.location.pathname.startsWith(rolePaths[userRole])
-    ) {
-      console.log("User is already in the correct role path.");
-      return;
-    }
-
-    if (
-      isAuthenticated &&
-      userRole === "nurse" &&
-      (window.location.pathname === "/nurse-dashboard" ||
-        window.location.pathname.startsWith("/nurse"))
-    ) {
-      console.log(
-        "Nurse-specific navigation detected, allowing access to nurse routes."
-      );
-      return;
-    }
-  }, [isAuthenticated, userRole, navigate]);
-
-  const handleLogin = (role: string) => {
-    setIsAuthenticated(true);
-    setUserRole(role);
-
-    if (role === "admin") {
-      navigate("/admin");
-    } else if (role === "nurse") {
-      navigate("/nurse");
-    }
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUserRole("");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("userRole");
+    navigate("/");
   };
 
   return (
     <Routes>
-      <Route path="/" element={<Home onLogin={handleLogin} />} />
-      <Route path="/login" element={<Login onLogin={handleLogin} />} />
+      <Route path="/" element={<Home />} />
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? (
+            <Navigate to={`/${userRole}`} />
+          ) : (
+            <Login
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+            />
+          )
+        }
+      />
       <Route path="/register" element={<Register />} />
 
       <Route
         path="/admin/*"
         element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="admin" userRole={userRole}>
-              <AdminDashboard
-                setIsAuthenticated={setIsAuthenticated}
-                setUserRole={setUserRole}
-              />
-            </RoleBasedRoute>
-          </PrivateRoute>
+          isAuthenticated && userRole === "admin" ? (
+            <AdminDashboard
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <Navigate to="/login" />
+          )
         }
       />
       <Route
-        path="/manager"
+        path="/manager/*"
         element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="manager" userRole={userRole}>
-              <ManagerDashboard />
-            </RoleBasedRoute>
-          </PrivateRoute>
+          isAuthenticated && userRole === "manager" ? (
+            <ManagerDashboard
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/nurse/*"
+        element={
+          isAuthenticated && userRole === "nurse" ? (
+            <NurseDashboard
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/manager/health-records"
+        element={
+          isAuthenticated && userRole === "manager" ? (
+            <HealthRecords />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/manager/medical-staff-management"
+        element={
+          isAuthenticated && userRole === "manager" ? (
+            <MedicalStaffManagement />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/manager/alerts-and-notifications"
+        element={
+          isAuthenticated && userRole === "manager" ? (
+            <AlertsAndNotifications />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/manager/event-and-appointment-management"
+        element={
+          isAuthenticated && userRole === "manager" ? (
+            <EventAndAppointmentManagement />
+          ) : (
+            <Navigate to="/login" />
+          )
         }
       />
       <Route
         path="/parent"
         element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="parent" userRole={userRole}>
-              <ParentDashboard />
-            </RoleBasedRoute>
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/nurse"
-        element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="nurse" userRole={userRole}>
-              <NurseDashboard />
-            </RoleBasedRoute>
-          </PrivateRoute>
+          isAuthenticated && userRole === "parent" ? (
+            <ParentDashboard
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <Navigate to="/login" />
+          )
         }
       />
       <Route
         path="/admin/manage-accounts"
         element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="admin" userRole={userRole}>
-              <ManageAccounts />
-            </RoleBasedRoute>
-          </PrivateRoute>
+          isAuthenticated && userRole === "admin" ? (
+            <ManageAccounts />
+          ) : (
+            <Navigate to="/login" />
+          )
         }
       />
       <Route
         path="/admin/activity-logs"
         element={
-          <PrivateRoute isAuthenticated={isAuthenticated}>
-            <RoleBasedRoute role="admin" userRole={userRole}>
-              <ActivityLogs />
-            </RoleBasedRoute>
-          </PrivateRoute>
+          isAuthenticated && userRole === "admin" ? (
+            <ActivityLogs />
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+      <Route
+        path="/parent-pages/health-profile-form"
+        element={
+          <HealthProfileForm
+            setIsAuthenticated={setIsAuthenticated}
+            setUserRole={setUserRole}
+            onLogout={handleLogout}
+          />
+        }
+      />
+      <Route
+        path="/parent-pages/medication-form"
+        element={
+          <MedicationForm
+            setIsAuthenticated={setIsAuthenticated}
+            setUserRole={setUserRole}
+            onLogout={handleLogout}
+          />
+        }
+      />
+      <Route
+        path="/parent-pages/health-check-dashboard"
+        element={
+          <HealthCheckDashboard
+            setIsAuthenticated={setIsAuthenticated}
+            setUserRole={setUserRole}
+            onLogout={handleLogout}
+          />
+        }
+      />
+      <Route
+        path="/parent-pages/vaccination-event-dashboard"
+        element={
+          <VaccinationEventDashboard
+            setIsAuthenticated={setIsAuthenticated}
+            setUserRole={setUserRole}
+            onLogout={handleLogout}
+          />
         }
       />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
-};
+}
 
 export default App;

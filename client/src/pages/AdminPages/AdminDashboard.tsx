@@ -15,19 +15,45 @@ import { useNavigate } from "react-router-dom";
 interface AdminDashboardProps {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   setUserRole: (userRole: string) => void;
+  onLogout: () => void;
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({
   setIsAuthenticated,
   setUserRole,
+  onLogout,
 }) => {
   const navigate = useNavigate();
+
+  const handleNavigateToHome = () => {
+    navigate("/");
+  };
+
+  const handleNavigateToNews = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("school-health-news");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  const handleNavigateToContact = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
 
   return (
     <>
       <Navbar
         setIsAuthenticated={setIsAuthenticated}
         setUserRole={setUserRole}
+        onLogout={onLogout}
+        onNavigateToHome={handleNavigateToHome}
+        onNavigateToNews={handleNavigateToNews}
+        onNavigateToContact={handleNavigateToContact}
       />
       <Box
         sx={{
