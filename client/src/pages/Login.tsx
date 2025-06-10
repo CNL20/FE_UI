@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
+import GoogleIcon from "@mui/icons-material/Google";
 
 const roles = [
   { value: "admin", label: "Quản trị viên" },
@@ -151,6 +152,25 @@ const Login: React.FC<{ onLogin: (role: string) => void }> = ({ onLogin }) => {
               sx={{ mt: 2 }}
             >
               Đăng nhập
+            </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              sx={{
+                mt: 2,
+                borderColor: "#4285F4",
+                color: "#4285F4",
+                textTransform: "none",
+                fontWeight: "bold",
+                fontSize: "16px",
+                "&:hover": {
+                  backgroundColor: "#f1f1f1",
+                },
+              }}
+              startIcon={<GoogleIcon sx={{ color: "#4285F4" }} />}
+              onClick={() => console.log("Login with Google")}
+            >
+              Google
             </Button>
             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
               Chưa có tài khoản? <Link href="/register">Đăng ký</Link>

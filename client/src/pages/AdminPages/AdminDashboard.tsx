@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Grid,
@@ -7,10 +7,8 @@ import {
   Typography,
   Button,
   TextField,
-  Switch,
-  FormControlLabel,
 } from "@mui/material";
-import { People, History, HelpOutline, Search } from "@mui/icons-material";
+import { People, History, Search } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
@@ -24,11 +22,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   setUserRole,
 }) => {
   const navigate = useNavigate();
-  const [theme, setTheme] = useState("light");
-
-  const handleThemeChange = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
 
   return (
     <>
@@ -39,11 +32,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <Box
         sx={{
           p: 3,
-          background:
-            theme === "light"
-              ? "linear-gradient(to right, #f5f5f5, #e0e0e0)"
-              : "linear-gradient(to right, #333, #444)",
-          color: theme === "light" ? "#000" : "#fff",
+          background: "linear-gradient(to right, #f5f5f5, #e0e0e0)",
+          color: "#000",
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
@@ -60,13 +50,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <Search
                   sx={{
                     mr: 1,
-                    color: theme === "light" ? "#000" : "#fff",
+                    color: "#000",
                   }}
                 />
               ),
             }}
             sx={{
-              backgroundColor: theme === "light" ? "#fff" : "#555",
+              backgroundColor: "#fff",
               borderRadius: "8px",
               boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             }}
@@ -86,8 +76,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 borderRadius: "12px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                 transition: "transform 0.2s",
+                background: "linear-gradient(to right, #e3f2fd, #bbdefb)",
                 "&:hover": {
                   transform: "scale(1.05)",
+                  background: "linear-gradient(to right, #bbdefb, #90caf9)",
                 },
               }}
             >
@@ -115,8 +107,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 borderRadius: "12px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                 transition: "transform 0.2s",
+                background: "linear-gradient(to right, #e3f2fd, #bbdefb)",
                 "&:hover": {
                   transform: "scale(1.05)",
+                  background: "linear-gradient(to right, #bbdefb, #90caf9)",
                 },
                 padding: "16px",
               }}
@@ -154,8 +148,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 borderRadius: "12px",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
                 transition: "transform 0.2s",
+                background: "linear-gradient(to right, #e3f2fd, #bbdefb)",
                 "&:hover": {
                   transform: "scale(1.05)",
+                  background: "linear-gradient(to right, #bbdefb, #90caf9)",
                 },
               }}
             >
@@ -187,9 +183,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     startIcon={<People />}
                     onClick={() => navigate("/admin/manage-accounts")}
                     sx={{
-                      backgroundColor: "#3f51b5",
+                      background: "linear-gradient(to right, #3f51b5, #5c6bc0)",
+                      color: "#fff",
+                      fontWeight: "bold",
+                      borderRadius: "8px",
+                      padding: "10px 20px",
+                      transition: "transform 0.2s, background 0.3s",
                       "&:hover": {
-                        backgroundColor: "#303f9f",
+                        background:
+                          "linear-gradient(to right, #303f9f, #3949ab)",
+                        transform: "scale(1.05)",
                       },
                     }}
                   >
@@ -201,27 +204,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     startIcon={<History />}
                     onClick={() => navigate("/admin/activity-logs")}
                     sx={{
-                      backgroundColor: "#ff9800",
+                      background: "linear-gradient(to right, #ff9800, #ffc107)",
+                      color: "#fff",
+                      fontWeight: "bold",
+                      borderRadius: "8px",
+                      padding: "10px 20px",
+                      transition: "transform 0.2s, background 0.3s",
                       "&:hover": {
-                        backgroundColor: "#f57c00",
+                        background:
+                          "linear-gradient(to right, #f57c00, #ffa000)",
+                        transform: "scale(1.05)",
                       },
                     }}
                   >
                     Xem nhật ký
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="info"
-                    startIcon={<HelpOutline />}
-                    onClick={() => navigate("/admin/help")}
-                    sx={{
-                      backgroundColor: "#00bcd4",
-                      "&:hover": {
-                        backgroundColor: "#0097a7",
-                      },
-                    }}
-                  >
-                    Hướng dẫn
                   </Button>
                 </Box>
               </CardContent>
@@ -232,36 +228,40 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <Grid item xs={12}>
             <Card>
               <CardContent>
-                <Typography variant="h6">Lịch sử đăng nhập</Typography>
-                <Box mt={2}>
-                  <Typography variant="body2">
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: "bold", color: "#3f51b5" }}
+                >
+                  Lịch sử đăng nhập
+                </Typography>
+                <Box
+                  mt={2}
+                  sx={{
+                    background: "linear-gradient(to right, #e3f2fd, #bbdefb)",
+                    borderRadius: "8px",
+                    padding: "16px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#333", fontWeight: "bold" }}
+                  >
                     - 10:00 AM: Đăng nhập thành công
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#333", fontWeight: "bold" }}
+                  >
                     - 9:45 AM: Đăng nhập thất bại
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#333", fontWeight: "bold" }}
+                  >
                     - 9:30 AM: Đăng nhập thành công
                   </Typography>
                 </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Tùy chỉnh giao diện */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">Tùy chỉnh giao diện</Typography>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={theme === "dark"}
-                      onChange={handleThemeChange}
-                    />
-                  }
-                  label="Chế độ tối"
-                />
               </CardContent>
             </Card>
           </Grid>

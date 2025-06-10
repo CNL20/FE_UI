@@ -10,6 +10,8 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
   children,
   isAuthenticated,
 }) => {
+  console.log("PrivateRoute: isAuthenticated =", isAuthenticated);
+
   if (typeof isAuthenticated !== "boolean") {
     console.error(
       "PrivateRoute: isAuthenticated is not a boolean, redirecting to login."
