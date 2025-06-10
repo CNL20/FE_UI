@@ -183,14 +183,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     startIcon={<People />}
                     onClick={() => navigate("/admin/manage-accounts")}
                     sx={{
-                      background:
-                        "linear-gradient(to right, #3f51b5, #5c6bc0)",
+                      background: "linear-gradient(to right, #3f51b5, #5c6bc0)",
                       color: "#fff",
                       fontWeight: "bold",
                       borderRadius: "8px",
                       padding: "10px 20px",
-                      transition:
-                        "transform 0.2s, background 0.3s",
+                      transition: "transform 0.2s, background 0.3s",
                       "&:hover": {
                         background:
                           "linear-gradient(to right, #303f9f, #3949ab)",
@@ -206,14 +204,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     startIcon={<History />}
                     onClick={() => navigate("/admin/activity-logs")}
                     sx={{
-                      background:
-                        "linear-gradient(to right, #ff9800, #ffc107)",
+                      background: "linear-gradient(to right, #ff9800, #ffc107)",
                       color: "#fff",
                       fontWeight: "bold",
                       borderRadius: "8px",
                       padding: "10px 20px",
-                      transition:
-                        "transform 0.2s, background 0.3s",
+                      transition: "transform 0.2s, background 0.3s",
                       "&:hover": {
                         background:
                           "linear-gradient(to right, #f57c00, #ffa000)",
@@ -241,8 +237,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <Box
                   mt={2}
                   sx={{
-                    background:
-                      "linear-gradient(to right, #e3f2fd, #bbdefb)",
+                    background: "linear-gradient(to right, #e3f2fd, #bbdefb)",
                     borderRadius: "8px",
                     padding: "16px",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
