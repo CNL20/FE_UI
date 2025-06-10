@@ -14,10 +14,13 @@ import {
   FormControlLabel,
   IconButton,
   Link,
+  Container,
+  Paper,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import GoogleIcon from "@mui/icons-material/Google";
+import { useNavigate } from "react-router-dom";
 
 const roles = [
   { value: "admin", label: "Quản trị viên" },
@@ -26,7 +29,13 @@ const roles = [
   { value: "nurse", label: "Y tá trường học" },
 ];
 
-const Login: React.FC<{ onLogin: (role: string) => void }> = ({ onLogin }) => {
+interface LoginProps {
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  setUserRole: (userRole: string) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     role: "",
@@ -68,45 +77,58 @@ const Login: React.FC<{ onLogin: (role: string) => void }> = ({ onLogin }) => {
       return;
     }
 
-    onLogin(form.role);
+    setIsAuthenticated(true);
+    setUserRole(form.role);
+    navigate(`/${form.role}`);
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      minHeight="100vh"
-      bgcolor="background.default"
-      p={2}
-    >
-      <Card sx={{ maxWidth: 400 }}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            padding: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Typography component="h1" variant="h5">
             Đăng nhập
           </Typography>
-          <form onSubmit={handleLogin}>
+          <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
             <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
               label="Tên đăng nhập"
               name="username"
+              autoComplete="username"
+              autoFocus
               value={form.username}
               onChange={handleInputChange}
-              autoComplete="new-password"
-              fullWidth
-              margin="normal"
-              required
             />
             <TextField
-              label="Mật khẩu"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={form.password}
-              onChange={handleInputChange}
-              autoComplete="new-password"
-              fullWidth
               margin="normal"
               required
+              fullWidth
+              name="password"
+              label="Mật khẩu"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              value={form.password}
+              onChange={handleInputChange}
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => setShowPassword((prev) => !prev)}>
@@ -143,13 +165,11 @@ const Login: React.FC<{ onLogin: (role: string) => void }> = ({ onLogin }) => {
               }
               label="Ghi nhớ mật khẩu"
             />
-
             <Button
               type="submit"
-              variant="contained"
-              color="primary"
               fullWidth
-              sx={{ mt: 2 }}
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
             >
               Đăng nhập
             </Button>
@@ -175,10 +195,10 @@ const Login: React.FC<{ onLogin: (role: string) => void }> = ({ onLogin }) => {
             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
               Chưa có tài khoản? <Link href="/register">Đăng ký</Link>
             </Typography>
-          </form>
-        </CardContent>
-      </Card>
-    </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
