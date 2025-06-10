@@ -1,0 +1,71 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+
+# Misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Uploads
+/uploads
+/public/uploads
+
+# Cache
+.cache/
+.npm/
+.eslintcache
+.stylelintcache
+
+# Misc
+Thumbs.db
+*.pem
+*.key
+*.cert
+
+# Debug
+.debug/
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+tmp/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# System Files
+Thumbs.db
