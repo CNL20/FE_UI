@@ -68,10 +68,34 @@ const Register: React.FC = () => {
         borderRadius: 2,
         overflow: "hidden"
       }}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom>
-            Đăng ký
-          </Typography>
+        <CardContent>          <Box textAlign="center" mb={3}>
+            <Typography 
+              variant="h4" 
+              gutterBottom 
+              sx={{
+                fontWeight: "bold",
+                color: "#1976d2",
+                position: "relative",
+                pb: 1.5,
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "80px",
+                  height: "4px",
+                  background: "linear-gradient(90deg, #1976d2 0%, #64b5f6 100%)",
+                  borderRadius: "2px"
+                }
+              }}
+            >
+              Đăng ký tài khoản
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Điền thông tin cá nhân để tạo tài khoản
+            </Typography>
+          </Box>
           <form onSubmit={handleRegister}>
             <Box display="flex" gap={2}>
               <TextField
