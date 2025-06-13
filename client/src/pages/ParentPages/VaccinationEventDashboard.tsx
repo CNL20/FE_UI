@@ -31,6 +31,15 @@ const VaccinationEventDashboard: React.FC<VaccinationEventDashboardProps> = ({
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
+  const handleNavigateToVaccinationRegistration = () => {
+    navigate("/parent/vaccination-registration");
+  };
+  const handleNavigateToVaccinationSchedule = () => {
+    navigate("/parent/vaccination-schedule");
+  };
+  const handleNavigateToVaccinationNews = () => {
+    navigate("/parent/vaccination-news");
+  };
 
   return (
     <>
@@ -92,16 +101,17 @@ const VaccinationEventDashboard: React.FC<VaccinationEventDashboardProps> = ({
         >
           <div
             style={{
-              backgroundColor: "#9b59b6",
+              backgroundColor: "#2ecc71",
               color: "white",
               padding: "20px",
               borderRadius: "10px",
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToVaccinationRegistration}
           >
             <h3>Đăng kí tiêm chủng</h3>
-            <p>Đăng kí lịch tiêm chủng cho học sinh.</p>
+            <p>Đăng kí tiêm chủng vaccin cho học sinh.</p>
           </div>
           <div
             style={{
@@ -112,22 +122,24 @@ const VaccinationEventDashboard: React.FC<VaccinationEventDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToVaccinationSchedule}
           >
             <h3>Lịch Tiêm chủng</h3>
-            <p>Xem lịch tiêm chủng của học sinh.</p>
+            <p>Xem lịch tiêm chủng vaccin của học sinh.</p>
           </div>
           <div
             style={{
-              backgroundColor: "#e67e22",
+              backgroundColor: "#9b59b6",
               color: "white",
               padding: "20px",
               borderRadius: "10px",
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToVaccinationNews}
           >
-            <h3>Tin tức vaccin</h3>
-            <p>Cập nhật tin tức về các loại vaccin.</p>
+            <h3>Tin tức về vaccin</h3>
+            <p>Xem thông tin và lợi ích của các loại vaccin hiện có.</p>
           </div>
         </div>
         <div style={{ marginTop: 32, textAlign: "center" }}>

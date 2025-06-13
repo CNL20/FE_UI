@@ -17,6 +17,12 @@ import HealthProfileForm from "./pages/ParentPages/HealthProfileForm";
 import MedicationForm from "./pages/ParentPages/MedicationForm";
 import HealthCheckDashboard from "./pages/ParentPages/HealthCheckDashboard";
 import VaccinationEventDashboard from "./pages/ParentPages/VaccinationEventDashboard";
+import HealthCheckSchedule from "./pages/ParentPages/HealthCheckSchedule";
+import HealthCheckRegistrationForm from "./pages/ParentPages/HealthCheckRegistrationForm";
+import HealthCheckResults from "./pages/ParentPages/HealthCheckResults";
+import VaccinationRegistrationForm from "./pages/ParentPages/VaccinationRegistrationForm";
+import VaccinationSchedule from "./pages/ParentPages/VaccinationSchedule";
+import VaccinationNews from "./pages/ParentPages/VaccinationNews";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -214,6 +220,30 @@ function App() {
             onLogout={handleLogout}
           />
         }
+      />
+      <Route
+        path="/parent/health-check-schedule"
+        element={<HealthCheckSchedule />}
+      />
+      <Route
+        path="/parent/health-check-registration"
+        element={<HealthCheckRegistrationForm />}
+      />
+      <Route
+        path="/parent/health-check-results"
+        element={<HealthCheckResults />}
+      />
+      <Route
+        path="/parent/vaccination-registration"
+        element={<VaccinationRegistrationForm />}
+      />
+      <Route
+        path="/parent/vaccination-schedule"
+        element={<VaccinationSchedule />}
+      />
+      <Route
+        path="/parent/vaccination-news"
+        element={<VaccinationNews />}
       />
 
       <Route path="*" element={<Navigate to="/" replace />} />

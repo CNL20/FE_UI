@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
+import HealthCheckSchedule from "./HealthCheckSchedule";
 
 interface HealthCheckDashboardProps {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
@@ -30,6 +31,15 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
+  };
+  const handleNavigateToSchedule = () => {
+    navigate("/parent/health-check-schedule");
+  };
+  const handleNavigateToRegistration = () => {
+    navigate("/parent/health-check-registration");
+  };
+  const handleNavigateToResults = () => {
+    navigate("/parent/health-check-results");
   };
 
   return (
@@ -98,6 +108,7 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToSchedule}
           >
             <h3>Lịch Khám sức khỏe</h3>
             <p>Xem lịch khám sức khỏe của học sinh.</p>
@@ -111,6 +122,7 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToRegistration}
           >
             <h3>Đăng kí khám sức khỏe</h3>
             <p>Đăng kí lịch khám sức khỏe cho học sinh.</p>
@@ -124,6 +136,7 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToResults}
           >
             <h3>Kết quả khám sức khỏe</h3>
             <p>Xem kết quả khám sức khỏe của học sinh.</p>

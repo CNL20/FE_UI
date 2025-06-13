@@ -25,6 +25,7 @@ import {
   LocalHospital as HospitalIcon,
   Vaccines as VaccineIcon,
   Add as AddIcon,
+  Warning as IncidentIcon,
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -160,6 +161,11 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({
             label="Đơn Yêu Cầu Thuốc"
             iconPosition="start"
           />
+          <Tab
+            icon={<IncidentIcon />}
+            label="Sự Cố Y Tế"
+            iconPosition="start"
+          />
         </Tabs>
 
         {tabValue === 0 && (
@@ -201,11 +207,41 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({
                   <TableCell>Tên Vật Tư</TableCell>
                   <TableCell>Số Lượng</TableCell>
                   <TableCell>Hạn Sử Dụng</TableCell>
-                  <TableCell>Vị Trí</TableCell>
                   <TableCell>Thao Tác</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>{/* Mock data rows can be added here */}</TableBody>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Băng Gạc</TableCell>
+                  <TableCell>50</TableCell>
+                  <TableCell>2025-12-31</TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary">
+                      Sửa
+                    </Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Thuốc Sát Trùng</TableCell>
+                  <TableCell>30</TableCell>
+                  <TableCell>2025-11-15</TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary">
+                      Sửa
+                    </Button>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Khẩu Trang</TableCell>
+                  <TableCell>100</TableCell>
+                  <TableCell>2026-01-01</TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary">
+                      Sửa
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
             </Table>
           </TableContainer>
         )}
@@ -300,6 +336,54 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({
                     <TableCell>Viêm họng</TableCell>
                     <TableCell sx={{ color: "green" }}>Đã Duyệt</TableCell>
                     <TableCell>Uống trước bữa ăn 30 phút</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        )}
+
+        {tabValue === 3 && (
+          <Box>
+            <Typography variant="h5" sx={{ mb: 3 }}>
+              Sự Cố Y Tế
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Tên Học Sinh</TableCell>
+                    <TableCell>Sự Kiện</TableCell>
+                    <TableCell>Thuốc Đã Sử Dụng</TableCell>
+                    <TableCell>Thông Tin Phụ Huynh</TableCell>
+                    <TableCell>Số Điện Thoại</TableCell>
+                    <TableCell>Thao Tác</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Nguyễn Văn Trọng</TableCell>
+                    <TableCell>Sốt cao</TableCell>
+                    <TableCell>Paracetamol</TableCell>
+                    <TableCell>Nguyễn Văn B</TableCell>
+                    <TableCell>0123456789</TableCell>
+                    <TableCell>
+                      <Button variant="contained" color="primary">
+                        Thông Báo Phụ Huynh
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Chu Nhật Lâm</TableCell>
+                    <TableCell>Viêm họng</TableCell>
+                    <TableCell>Amoxicillin</TableCell>
+                    <TableCell>Trần Thị C</TableCell>
+                    <TableCell>0987654321</TableCell>
+                    <TableCell>
+                      <Button variant="contained" color="primary">
+                        Thông Báo Phụ Huynh
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

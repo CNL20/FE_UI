@@ -25,6 +25,8 @@ const Register: React.FC = () => {
     password: "",
     confirmPassword: "",
     agreeTerms: false,
+    phoneNumber: "",
+    idCard: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,6 +130,24 @@ const Register: React.FC = () => {
               name="confirmPassword"
               type={showPassword ? "text" : "password"}
               value={form.confirmPassword}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              label="Số điện thoại"
+              name="phoneNumber"
+              value={form.phoneNumber}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
+            <TextField
+              label="Căn cước công dân"
+              name="idCard"
+              value={form.idCard}
               onChange={handleChange}
               fullWidth
               margin="normal"
