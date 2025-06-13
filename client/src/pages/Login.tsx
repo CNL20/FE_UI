@@ -14,8 +14,6 @@ import {
   FormControlLabel,
   IconButton,
   Link,
-  Container,
-  Paper,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -81,30 +79,51 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
     setUserRole(form.role);
     navigate(`/${form.role}`);
   };
-
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            Đăng nhập
-          </Typography>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      bgcolor="#e3f2fd" // Màu xanh nhạt
+      p={2}
+    >        <Card sx={{ 
+          maxWidth: 500, 
+          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+          borderRadius: 2,
+          overflow: "hidden",
+          width: "100%"
+        }}>
+        <CardContent>
+          <Box textAlign="center" mb={3}>
+            <Typography 
+              variant="h4" 
+              gutterBottom 
+              sx={{
+                fontWeight: "bold",
+                color: "#1976d2",
+                position: "relative",
+                pb: 1.5,
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "80px",
+                  height: "4px",
+                  background: "linear-gradient(90deg, #1976d2 0%, #64b5f6 100%)",
+                  borderRadius: "2px"
+                }
+              }}
+            >
+              Đăng nhập hệ thống
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Vui lòng nhập thông tin đăng nhập của bạn
+            </Typography>
+          </Box>
           <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -164,41 +183,56 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
                 />
               }
               label="Ghi nhớ mật khẩu"
-            />
-            <Button
+            />            <Button
               type="submit"
-              fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              color="primary"
+              fullWidth
+              sx={{ 
+                mt: 2, 
+                py: 1.2, 
+                fontSize: "1rem", 
+                fontWeight: "bold",
+                background: "linear-gradient(90deg, #1976d2 30%, #64b5f6 100%)",
+                transition: "all 0.3s",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 15px rgba(25, 118, 210, 0.3)",
+                  background: "linear-gradient(90deg, #1565c0 30%, #42a5f5 100%)"
+                }
+              }}
             >
               Đăng nhập
-            </Button>
-            <Button
+            </Button>            <Button
               variant="outlined"
               fullWidth
               sx={{
                 mt: 2,
                 borderColor: "#4285F4",
-                color: "#4285F4",
+                color: "#4285F4", 
                 textTransform: "none",
                 fontWeight: "bold",
                 fontSize: "16px",
+                py: 1,
+                borderRadius: 2,
+                transition: "all 0.3s",
                 "&:hover": {
-                  backgroundColor: "#f1f1f1",
+                  borderColor: "#4285F4",
+                  backgroundColor: "rgba(66, 133, 244, 0.1)",
+                  transform: "translateY(-2px)",
                 },
               }}
               startIcon={<GoogleIcon sx={{ color: "#4285F4" }} />}
               onClick={() => console.log("Login with Google")}
             >
-              Google
-            </Button>
-            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-              Chưa có tài khoản? <Link href="/register">Đăng ký</Link>
+              Đăng nhập với Google
+            </Button>            <Typography variant="body2" align="center" sx={{ mt: 3, mb: 1 }}>
+              Chưa có tài khoản? <Link href="/register" sx={{ color: "#1976d2", fontWeight: "medium" }}>Đăng ký</Link>
             </Typography>
           </Box>
-        </Paper>
+        </CardContent>
+        </Card>
       </Box>
-    </Container>
   );
 };
 
