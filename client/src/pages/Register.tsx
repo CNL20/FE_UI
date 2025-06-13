@@ -54,17 +54,20 @@ const Register: React.FC = () => {
     navigate("/login");
   };
 
-  return (
-    <Box
+  return (    <Box
       display="flex"
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
       minHeight="100vh"
-      bgcolor="background.default"
+      bgcolor="#e3f2fd" // Màu xanh nhạt
       p={2}
-    >
-      <Card sx={{ maxWidth: 500 }}>
+    >      <Card sx={{ 
+        maxWidth: 500, 
+        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+        borderRadius: 2,
+        overflow: "hidden"
+      }}>
         <CardContent>
           <Typography variant="h4" gutterBottom>
             Đăng ký
@@ -163,13 +166,24 @@ const Register: React.FC = () => {
                 />
               }
               label="Tôi đồng ý với các điều khoản và điều kiện"
-            />
-            <Button
+            />            <Button
               type="submit"
               variant="contained"
               color="primary"
               fullWidth
-              sx={{ mt: 2 }}
+              sx={{ 
+                mt: 2, 
+                py: 1.2, 
+                fontSize: "1rem", 
+                fontWeight: "bold",
+                background: "linear-gradient(90deg, #1976d2 30%, #64b5f6 100%)",
+                transition: "all 0.3s",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 15px rgba(25, 118, 210, 0.3)",
+                  background: "linear-gradient(90deg, #1565c0 30%, #42a5f5 100%)"
+                }
+              }}
             >
               Đăng ký
             </Button>

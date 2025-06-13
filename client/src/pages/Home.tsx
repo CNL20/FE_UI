@@ -18,8 +18,14 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
         minHeight="100vh"
         bgcolor="background.default"
         p={4}
+        sx={{
+          backgroundImage: "url('https://i.pinimg.com/736x/10/c3/85/10c385aa71ae13c44beb7d59137811b2.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <Box textAlign="center" mb={6} maxWidth="800px">
+        <Box textAlign="center" mb={6} maxWidth="850px" sx={{ color: "rgb(0, 0, 0)" }}>
           <Typography variant="h4" gutterBottom>
             Về Chúng Tôi
           </Typography>
