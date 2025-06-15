@@ -23,6 +23,9 @@ import HealthCheckResults from "./pages/ParentPages/HealthCheckResults";
 import VaccinationRegistrationForm from "./pages/ParentPages/VaccinationRegistrationForm";
 import VaccinationSchedule from "./pages/ParentPages/VaccinationSchedule";
 import VaccinationNews from "./pages/ParentPages/VaccinationNews";
+import DiseasePrevention from "./pages/DiseasePrevention";
+import NutritionGuide from "./pages/NutritionGuide";
+import MentalHealthCare from "./pages/MentalHealthCare";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -245,6 +248,9 @@ function App() {
         path="/parent/vaccination-news"
         element={<VaccinationNews />}
       />
+      <Route path="/disease-prevention" element={<DiseasePrevention />} />
+      <Route path="/nutrition-guide" element={<NutritionGuide />} />
+      <Route path="/mental-health-care" element={<MentalHealthCare />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
