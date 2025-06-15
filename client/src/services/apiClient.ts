@@ -1,5 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import { UserRole } from '../types';
+import { UserRole, RegisterPayload } from '../types';
 import { STORAGE_KEYS, API_ENDPOINTS } from '../constants';
 
 const JWT_ISSUER = process.env['REACT_APP_JWT_ISSUER'] || 'school-heath-api';
@@ -125,15 +125,7 @@ export const logout = async () => {
   }
 };
 
-export const register = async (data: {
-  username: string;
-  password: string;
-  email: string;
-  fullName: string;
-  role: UserRole;
-  phone?: string; // Thêm trường `phone`
-  cccd?: string;  // Thêm trường `cccd`
-}) => {
+export const register = async (data: RegisterPayload) => {
   try {
     const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, data);
     return response.data;

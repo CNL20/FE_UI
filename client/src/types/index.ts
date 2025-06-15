@@ -115,10 +115,14 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterData extends LoginCredentials {
+export interface RegisterPayload {
+  firstName: string;
+  lastName: string;
   email: string;
-  fullName: string;
-  role: UserRole;
+  username: string;
+  password: string;
+  phone: string;
+  cccd: string;
 }
 
 export interface AuthState {

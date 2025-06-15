@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   FormControl,
   InputLabel,
   MenuItem,
@@ -236,16 +238,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               startIcon={<GoogleIcon sx={{ color: "#4285F4" }} />}
               onClick={handleGoogleLogin}
             >
-<<<<<<< HEAD
-              Đăng nhập bằng Google
-            </Button>
-            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-              Chưa có tài khoản? <Link href="/register">Đăng ký</Link>
-=======
               Đăng nhập với Google
-            </Button>            <Typography variant="body2" align="center" sx={{ mt: 3, mb: 1 }}>
+            </Button>
+            <Typography variant="body2" align="center" sx={{ mt: 3, mb: 1 }}>
               Chưa có tài khoản? <Link href="/register" sx={{ color: "#1976d2", fontWeight: "medium" }}>Đăng ký</Link>
->>>>>>> 1ae402fa813c8c13324944e0cf7cf445148a5ae3
             </Typography>
           </Box>
         </CardContent>

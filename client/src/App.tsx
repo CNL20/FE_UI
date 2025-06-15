@@ -25,6 +25,9 @@ import HealthCheckResults from "./pages/ParentPages/HealthCheckResults";
 import VaccinationRegistrationForm from "./pages/ParentPages/VaccinationRegistrationForm";
 import VaccinationSchedule from "./pages/ParentPages/VaccinationSchedule";
 import VaccinationNews from "./pages/ParentPages/VaccinationNews";
+import DiseasePrevention from "./pages/DiseasePrevention";
+import NutritionGuide from "./pages/NutritionGuide";
+import MentalHealthCare from "./pages/MentalHealthCare";
 
 function App() {
   const [authState, setAuthState] = useState(() => {
@@ -81,189 +84,42 @@ function App() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route 
-        path={ROUTES.HOME} 
-        element={<Home isAuthenticated={authState.isAuthenticated} />} 
-      />
-      <Route
-        path={ROUTES.LOGIN}
-        element={
-          authState.isAuthenticated ? (
-            <Navigate to={`/${authState.userRole}`} replace />
-          ) : (
-            <Login onLogin={handleLogin} />
-          )
-        }
-      />
+      <Route path={ROUTES.HOME} element={<Home isAuthenticated={authState.isAuthenticated} />} />
+      <Route path={ROUTES.LOGIN} element={authState.isAuthenticated ? <Navigate to={`/${authState.userRole}`} replace /> : <Login onLogin={handleLogin} />} />
       <Route path={ROUTES.REGISTER} element={<Register />} />
 
       {/* Admin Routes */}
-      <Route
-        path={`${ROUTES.ADMIN.DASHBOARD}/*`}
-        element={
-          <ProtectedRoute requiredRole="admin">
-            <AdminDashboard onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.ADMIN.MANAGE_ACCOUNTS}
-        element={
-          <ProtectedRoute requiredRole="admin">
-            <ManageAccounts />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.ADMIN.ACTIVITY_LOGS}
-        element={
-          <ProtectedRoute requiredRole="admin">
-            <ActivityLogs />
-          </ProtectedRoute>
-        }
-      />
+      <Route path={`${ROUTES.ADMIN.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="admin"><AdminDashboard onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.ADMIN.MANAGE_ACCOUNTS} element={<ProtectedRoute requiredRole="admin"><ManageAccounts /></ProtectedRoute>} />
+      <Route path={ROUTES.ADMIN.ACTIVITY_LOGS} element={<ProtectedRoute requiredRole="admin"><ActivityLogs /></ProtectedRoute>} />
+
+      {/* Public Routes for Health Information */}
+      <Route path="/disease-prevention" element={<DiseasePrevention />} />
+      <Route path="/nutrition-guide" element={<NutritionGuide />} />
+      <Route path="/mental-health-care" element={<MentalHealthCare />} />
 
       {/* Manager Routes */}
-      <Route
-        path={`${ROUTES.MANAGER.DASHBOARD}/*`}
-        element={
-          <ProtectedRoute requiredRole="manager">
-            <ManagerDashboard onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.MANAGER.HEALTH_RECORDS}
-        element={
-          <ProtectedRoute requiredRole="manager">
-            <HealthRecords />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.MANAGER.MEDICAL_STAFF}
-        element={
-          <ProtectedRoute requiredRole="manager">
-            <MedicalStaffManagement />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.MANAGER.ALERTS}
-        element={
-          <ProtectedRoute requiredRole="manager">
-            <AlertsAndNotifications />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.MANAGER.EVENTS}
-        element={
-          <ProtectedRoute requiredRole="manager">
-            <EventAndAppointmentManagement />
-          </ProtectedRoute>
-        }
-      />
+      <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="manager"><ManagerDashboard onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.MANAGER.HEALTH_RECORDS} element={<ProtectedRoute requiredRole="manager"><HealthRecords /></ProtectedRoute>} />
+      <Route path={ROUTES.MANAGER.MEDICAL_STAFF} element={<ProtectedRoute requiredRole="manager"><MedicalStaffManagement /></ProtectedRoute>} />
+      <Route path={ROUTES.MANAGER.ALERTS} element={<ProtectedRoute requiredRole="manager"><AlertsAndNotifications /></ProtectedRoute>} />
+      <Route path={ROUTES.MANAGER.EVENTS} element={<ProtectedRoute requiredRole="manager"><EventAndAppointmentManagement /></ProtectedRoute>} />
 
       {/* Nurse Routes */}
-      <Route
-        path={`${ROUTES.NURSE.DASHBOARD}/*`}
-        element={
-          <ProtectedRoute requiredRole="nurse">
-            <NurseDashboard onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
+      <Route path={`${ROUTES.NURSE.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="nurse"><NurseDashboard onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Parent Routes */}
-      <Route
-        path={`${ROUTES.PARENT.DASHBOARD}/*`}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <ParentDashboard onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.HEALTH_PROFILE}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <HealthProfileForm onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.MEDICATION}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <MedicationForm onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.HEALTH_CHECK.DASHBOARD}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <HealthCheckDashboard onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.HEALTH_CHECK.SCHEDULE}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <HealthCheckSchedule />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.HEALTH_CHECK.REGISTRATION}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <HealthCheckRegistrationForm />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.HEALTH_CHECK.RESULTS}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <HealthCheckResults />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.VACCINATION.DASHBOARD}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <VaccinationEventDashboard onLogout={handleLogout} />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.VACCINATION.SCHEDULE}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <VaccinationSchedule />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.VACCINATION.REGISTRATION}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <VaccinationRegistrationForm />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={ROUTES.PARENT.VACCINATION.NEWS}
-        element={
-          <ProtectedRoute requiredRole="parent">
-            <VaccinationNews />
-          </ProtectedRoute>
-        }
-      />
+      <Route path={`${ROUTES.PARENT.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="parent"><ParentDashboard onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.HEALTH_PROFILE} element={<ProtectedRoute requiredRole="parent"><HealthProfileForm onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.MEDICATION} element={<ProtectedRoute requiredRole="parent"><MedicationForm onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.HEALTH_CHECK.DASHBOARD} element={<ProtectedRoute requiredRole="parent"><HealthCheckDashboard onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.HEALTH_CHECK.SCHEDULE} element={<ProtectedRoute requiredRole="parent"><HealthCheckSchedule /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.HEALTH_CHECK.REGISTRATION} element={<ProtectedRoute requiredRole="parent"><HealthCheckRegistrationForm /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.HEALTH_CHECK.RESULTS} element={<ProtectedRoute requiredRole="parent"><HealthCheckResults /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.VACCINATION.DASHBOARD} element={<ProtectedRoute requiredRole="parent"><VaccinationEventDashboard onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.VACCINATION.SCHEDULE} element={<ProtectedRoute requiredRole="parent"><VaccinationSchedule /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.VACCINATION.REGISTRATION} element={<ProtectedRoute requiredRole="parent"><VaccinationRegistrationForm /></ProtectedRoute>} />
+      <Route path={ROUTES.PARENT.VACCINATION.NEWS} element={<ProtectedRoute requiredRole="parent"><VaccinationNews /></ProtectedRoute>} />
 
       {/* Fallback Route */}
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
