@@ -20,7 +20,8 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
-    name: "", // full name
+    firstName: "", // First name
+    lastName: "",  // Last name
     email: "",
     username: "",
     password: "",
@@ -64,10 +65,10 @@ const Register: React.FC = () => {
         username: form.username,
         password: form.password,
         email: form.email,
-        fullName: form.name,
-        role: "parent", // Giá trị mặc định hoặc có thể chọn từ dropdown
-        phone: form.phone, // Thêm lại trường `phone`
-        cccd: form.cccd,  // Thêm lại trường `cccd`
+        firstName: form.firstName,
+        lastName: form.lastName,
+        phone: form.phone,
+        cccd: form.cccd,
       });
       alert("Đăng ký thành công! Vui lòng đăng nhập.");
       navigate(ROUTES.LOGIN);
@@ -123,15 +124,26 @@ const Register: React.FC = () => {
             </Typography>
           </Box>
           <form onSubmit={handleRegister}>
-            <TextField
-              label="Họ và tên"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-            />
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <TextField
+                label="Họ"
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                fullWidth
+                margin="none"
+                required
+              />
+              <TextField
+                label="Tên"
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                fullWidth
+                margin="none"
+                required
+              />
+            </Box>
             <TextField
               label="Email"
               name="email"
@@ -187,7 +199,7 @@ const Register: React.FC = () => {
               required
             />
             <TextField
-              label="CCCD/CMND"
+              label="Căn cước công dân"
               name="cccd"
               value={form.cccd}
               onChange={handleChange}
@@ -205,7 +217,6 @@ const Register: React.FC = () => {
                 />
               }
               label="Tôi đồng ý với các điều khoản và điều kiện"
-<<<<<<< HEAD
             />
             {error && (
               <Typography color="error" align="center">
@@ -213,9 +224,6 @@ const Register: React.FC = () => {
               </Typography>
             )}
             <Button
-=======
-            />            <Button
->>>>>>> 1ae402fa813c8c13324944e0cf7cf445148a5ae3
               type="submit"
               variant="contained"
               color="primary"
