@@ -19,28 +19,20 @@ import { Search, Assignment, Menu } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "../../components/Logo";
 import Navbar from "../../components/Navbar";
+import { ManagerDashboardProps } from "../../types";
+import { ROUTES } from "../../constants";
 
-interface ManagerDashboardProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleNavigateToHome = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
   };
 
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -48,7 +40,7 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
   };
 
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -97,8 +89,6 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
         onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}

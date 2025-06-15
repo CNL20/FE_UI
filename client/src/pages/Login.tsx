@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   FormControl,
   InputLabel,
   MenuItem,
@@ -18,27 +16,28 @@ import {
   Paper,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { SelectChangeEvent } from "@mui/material/Select";
 import GoogleIcon from "@mui/icons-material/Google";
-import { useNavigate } from "react-router-dom";
+import { SelectChangeEvent } from "@mui/material/Select";
+import { login } from "../services/apiClient";
+import { LoginProps, UserRole } from "../types";
 
+// Roles với value dạng chữ thường cho backend
 const roles = [
-  { value: "admin", label: "Quản trị viên" },
-  { value: "parent", label: "Phụ huynh" },
-  { value: "manager", label: "Quản lý" },
-  { value: "nurse", label: "Y tá trường học" },
+  { value: "admin" as UserRole, label: "Quản trị viên" },
+  { value: "parent" as UserRole, label: "Phụ huynh" },
+  { value: "manager" as UserRole, label: "Quản lý" },
+  { value: "nurse" as UserRole, label: "Y tá trường học" },
 ];
 
-interface LoginProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-}
-
-const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
-  const navigate = useNavigate();
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
-    role: "",
+  const [form, setForm] = useState<{
+    role: UserRole;
+    username: string;
+    password: string;
+    remember: boolean;
+  }>({
+    role: "parent",
     username: "",
     password: "",
     remember: false,
@@ -59,27 +58,34 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
     }
   };
 
-  const handleSelectChange = (e: SelectChangeEvent) => {
+  const handleSelectChange = (e: SelectChangeEvent<UserRole>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name || "role"]: value as UserRole,
     }));
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Form Role:", form.role);
 
     if (!form.role) {
       alert("Vui lòng chọn vai trò trước khi đăng nhập.");
       return;
     }
 
-    setIsAuthenticated(true);
-    setUserRole(form.role);
-    navigate(`/${form.role}`);
+    try {
+      await login(form.username, form.password, form.role);
+      onLogin(form.role);
+    } catch (error) {
+      alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+      console.error("Login error:", error);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    // Chuyển hướng sang backend để khởi tạo quá trình Google OAuth
+    window.location.href = 'https://localhost:5001/signin-google';
   };
 
   return (
@@ -131,18 +137,23 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
               onChange={handleInputChange}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+                  <IconButton
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 ),
               }}
             />
             <FormControl fullWidth margin="normal">
-              <InputLabel>Vai trò</InputLabel>
+              <InputLabel id="role-label">Vai trò</InputLabel>
               <Select
+                labelId="role-label"
                 value={form.role}
                 onChange={handleSelectChange}
                 name="role"
+                label="Vai trò"
                 required
               >
                 <MenuItem value="" disabled>
@@ -188,9 +199,9 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
                 },
               }}
               startIcon={<GoogleIcon sx={{ color: "#4285F4" }} />}
-              onClick={() => console.log("Login with Google")}
+              onClick={handleGoogleLogin}
             >
-              Google
+              Đăng nhập bằng Google
             </Button>
             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
               Chưa có tài khoản? <Link href="/register">Đăng ký</Link>

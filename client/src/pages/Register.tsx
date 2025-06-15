@@ -13,21 +13,23 @@ import {
   Link,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { register } from "../services/apiClient";
+import { ROUTES } from "../constants";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
+    name: "", // full name
     email: "",
     username: "",
     password: "",
     confirmPassword: "",
     agreeTerms: false,
-    phoneNumber: "",
-    idCard: "",
+    phone: "", // Thêm trường `phone`
+    cccd: "",  // Thêm trường `cccd`
   });
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
@@ -44,14 +46,38 @@ const Register: React.FC = () => {
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (form.password !== form.confirmPassword) {
-      alert("Mật khẩu không khớp");
+      setError("Mật khẩu không khớp");
       return;
     }
-    alert("Đăng ký thành công! Vui lòng đăng nhập.");
-    navigate("/login");
+    if (!form.agreeTerms) {
+      setError("Bạn phải đồng ý với điều khoản!");
+      return;
+    }
+
+    try {
+      await register({
+        username: form.username,
+        password: form.password,
+        email: form.email,
+        fullName: form.name,
+        role: "parent", // Giá trị mặc định hoặc có thể chọn từ dropdown
+        phone: form.phone, // Thêm lại trường `phone`
+        cccd: form.cccd,  // Thêm lại trường `cccd`
+      });
+      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      navigate(ROUTES.LOGIN);
+    } catch (err: any) {
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Đăng ký thất bại, vui lòng thử lại!");
+      }
+    }
   };
 
   return (
@@ -70,26 +96,15 @@ const Register: React.FC = () => {
             Đăng ký
           </Typography>
           <form onSubmit={handleRegister}>
-            <Box display="flex" gap={2}>
-              <TextField
-                label="Họ"
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-              />
-              <TextField
-                label="Tên"
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-                required
-              />
-            </Box>
+            <TextField
+              label="Họ và tên"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
             <TextField
               label="Email"
               name="email"
@@ -137,17 +152,17 @@ const Register: React.FC = () => {
             />
             <TextField
               label="Số điện thoại"
-              name="phoneNumber"
-              value={form.phoneNumber}
+              name="phone"
+              value={form.phone}
               onChange={handleChange}
               fullWidth
               margin="normal"
               required
             />
             <TextField
-              label="Căn cước công dân"
-              name="idCard"
-              value={form.idCard}
+              label="CCCD/CMND"
+              name="cccd"
+              value={form.cccd}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -164,6 +179,11 @@ const Register: React.FC = () => {
               }
               label="Tôi đồng ý với các điều khoản và điều kiện"
             />
+            {error && (
+              <Typography color="error" align="center">
+                {error}
+              </Typography>
+            )}
             <Button
               type="submit"
               variant="contained"

@@ -3,54 +3,51 @@ import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import HealthCheckSchedule from "./HealthCheckSchedule";
+import { HealthCheckDashboardProps } from "../../types";
+import { ROUTES } from "../../constants";
 
-interface HealthCheckDashboardProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleNavigateToHome = () => navigate("/");
+  const handleNavigateToHome = () => {
+    navigate(ROUTES.HOME);
+  };
+
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
+
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
+
   const handleNavigateToSchedule = () => {
-    navigate("/parent/health-check-schedule");
+    navigate(ROUTES.PARENT.HEALTH_CHECK.SCHEDULE);
   };
+
   const handleNavigateToRegistration = () => {
-    navigate("/parent/health-check-registration");
+    navigate(ROUTES.PARENT.HEALTH_CHECK.REGISTRATION);
   };
+
   const handleNavigateToResults = () => {
-    navigate("/parent/health-check-results");
+    navigate(ROUTES.PARENT.HEALTH_CHECK.RESULTS);
   };
 
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
+        onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
-        onLogout={onLogout}
       />
       <Box sx={{ height: 68 }} />
       <div

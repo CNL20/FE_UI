@@ -29,18 +29,10 @@ import {
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
 import { useNavigate, useLocation } from "react-router-dom";
+import { NurseDashboardProps } from "../../types";
+import { ROUTES } from "../../constants";
 
-interface NurseDashboardProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const NurseDashboard: React.FC<NurseDashboardProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,11 +46,11 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({
   });
 
   const handleNavigateToHome = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
   };
 
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -66,7 +58,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({
   };
 
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -98,8 +90,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
         onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}

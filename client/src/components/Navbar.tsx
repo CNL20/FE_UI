@@ -11,11 +11,10 @@ import {
 } from "@mui/material";
 import { AccountCircle as AccountCircleIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ROUTES } from "../constants";
 
 interface NavbarProps {
-  isHomePage?: boolean;
-  setIsAuthenticated?: (isAuthenticated: boolean) => void;
-  setUserRole?: (userRole: string) => void;
+  isAuthenticated?: boolean;
   onLogout?: () => void;
   onNavigateToHome?: () => void;
   onNavigateToNews?: () => void;
@@ -23,9 +22,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  isHomePage,
-  setIsAuthenticated,
-  setUserRole,
+  isAuthenticated = false,
   onLogout,
   onNavigateToHome,
   onNavigateToNews,
@@ -36,46 +33,42 @@ const Navbar: React.FC<NavbarProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   // Kiểm tra nếu đang ở trang Manager, Admin, hoặc Nurse
-  const isManager = location.pathname.startsWith("/manager");
-  const isAdmin = location.pathname.startsWith("/admin");
-  const isNurse = location.pathname.startsWith("/nurse");
-  const isParent = location.pathname.startsWith("/parent");
+  const isManager = location.pathname.startsWith(ROUTES.MANAGER.DASHBOARD);
+  const isAdmin = location.pathname.startsWith(ROUTES.ADMIN.DASHBOARD);
+  const isNurse = location.pathname.startsWith(ROUTES.NURSE.DASHBOARD);
+  const isParent = location.pathname.startsWith(ROUTES.PARENT.DASHBOARD);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
   const handleLogout = () => {
+    handleClose();
     if (onLogout) {
       onLogout();
-    } else if (setIsAuthenticated) {
-      setIsAuthenticated(false);
-      if (setUserRole) setUserRole("");
-      navigate("/");
     }
-    handleMenuClose();
   };
 
   const handleProfile = () => {
     navigate("/profile");
-    handleMenuClose();
+    handleClose();
   };
 
   const handleNavigateToHome = () => {
     if (onNavigateToHome) {
       onNavigateToHome();
     } else if (isAdmin) {
-      navigate("/admin");
+      navigate(ROUTES.ADMIN.DASHBOARD);
     } else if (isManager) {
-      navigate("/manager");
+      navigate(ROUTES.MANAGER.DASHBOARD);
     } else if (isNurse) {
-      navigate("/nurse");
+      navigate(ROUTES.NURSE.DASHBOARD);
     } else {
-      navigate("/");
+      navigate(ROUTES.HOME);
     }
   };
 
@@ -83,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({
     if (onNavigateToNews) {
       onNavigateToNews();
     } else {
-      navigate("/");
+      navigate(ROUTES.HOME);
       setTimeout(() => {
         const el = document.getElementById("school-health-news");
         if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -95,13 +88,19 @@ const Navbar: React.FC<NavbarProps> = ({
     if (onNavigateToContact) {
       onNavigateToContact();
     } else {
-      navigate("/");
+      navigate(ROUTES.HOME);
       setTimeout(() => {
         const el = document.getElementById("contact");
         if (el) el.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
   };
+
+  const handleNavigateToLogin = () => {
+    navigate(ROUTES.LOGIN);
+  };
+
+  const isHomePage = location.pathname === ROUTES.HOME;
 
   return (
     <AppBar
@@ -195,20 +194,20 @@ const Navbar: React.FC<NavbarProps> = ({
               >
                 Liên hệ
               </Button>
-              <IconButton onClick={handleMenuOpen} color="inherit">
+              <IconButton onClick={handleMenu} color="inherit">
                 <AccountCircleIcon />
               </IconButton>
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
+                onClose={handleClose}
               >
                 {isManager && (
                   <>
                     <MenuItem
                       onClick={() => {
                         navigate("/manager/health-records");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Quản lý hồ sơ y tế
@@ -216,7 +215,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/manager/medical-staff-management");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Quản lý nhân sự y tế trường
@@ -224,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/manager/alerts-and-notifications");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Cảnh báo & Thông báo
@@ -232,7 +231,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/manager/event-and-appointment-management");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Quản lý sự kiện & lịch hẹn
@@ -244,7 +243,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/admin/manage-accounts");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Quản lý tài khoản
@@ -252,7 +251,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/admin/activity-logs");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Nhật ký hoạt động
@@ -264,7 +263,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/health-profile-form");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Khai báo hồ sơ sức khỏe
@@ -272,7 +271,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/medication-form");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Sử dụng thuốc
@@ -280,7 +279,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/health-check-dashboard");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Khám sức khỏe

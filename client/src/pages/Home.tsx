@@ -1,15 +1,20 @@
 import React from "react";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import Navbar from "../components/Navbar";
-
-interface HomeProps {
-  onLogin?: (role: string) => void;
-}
+import { HomeProps } from "../types";
+import { ROUTES } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC<HomeProps> = ({ onLogin }) => {
+  const navigate = useNavigate();
+
+  const handleNavigateToLogin = () => {
+    navigate(ROUTES.LOGIN);
+  };
+
   return (
     <>
-      <Navbar isHomePage={true} />
+      <Navbar />
       <Box
         display="flex"
         flexDirection="column"

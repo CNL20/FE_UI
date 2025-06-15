@@ -1,0 +1,137 @@
+// API endpoints
+export const API_BASE_URL = process.env['REACT_APP_API_BASE_URL'] || 'https://localhost:5001/api';
+
+export const API_ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/auth/login',
+    REGISTER: '/auth/register',
+    LOGOUT: '/auth/logout',
+    REFRESH_TOKEN: '/auth/refresh-token',
+    GOOGLE_LOGIN: '/auth/google-login',
+  },
+  USERS: {
+    BASE: '/users',
+    PROFILE: '/users/profile',
+    CHANGE_PASSWORD: '/users/change-password',
+  },
+  HEALTH_RECORDS: {
+    BASE: '/health-records',
+    STUDENT: (studentId: string) => `/health-records/student/${studentId}`,
+  },
+  EVENTS: {
+    BASE: '/events',
+    UPCOMING: '/events/upcoming',
+    PAST: '/events/past',
+  },
+  APPOINTMENTS: {
+    BASE: '/appointments',
+    STUDENT: (studentId: string) => `/appointments/student/${studentId}`,
+  },
+  NOTIFICATIONS: {
+    BASE: '/notifications',
+    MARK_AS_READ: (id: string) => `/notifications/${id}/read`,
+  },
+};
+
+// Route paths
+export const ROUTES = {
+  HOME: '/',
+  LOGIN: '/login',
+  REGISTER: '/register',
+  ADMIN: {
+    DASHBOARD: '/admin',
+    MANAGE_ACCOUNTS: '/admin/manage-accounts',
+    ACTIVITY_LOGS: '/admin/activity-logs',
+  },
+  MANAGER: {
+    DASHBOARD: '/manager',
+    HEALTH_RECORDS: '/manager/health-records',
+    MEDICAL_STAFF: '/manager/medical-staff-management',
+    ALERTS: '/manager/alerts-and-notifications',
+    EVENTS: '/manager/event-and-appointment-management',
+  },
+  NURSE: {
+    DASHBOARD: '/nurse',
+  },
+  PARENT: {
+    DASHBOARD: '/parent',
+    HEALTH_PROFILE: '/parent-pages/health-profile-form',
+    MEDICATION: '/parent-pages/medication-form',
+    HEALTH_CHECK: {
+      DASHBOARD: '/parent-pages/health-check-dashboard',
+      SCHEDULE: '/parent-pages/health-check-schedule',
+      REGISTRATION: '/parent-pages/health-check-registration-form',
+      RESULTS: '/parent-pages/health-check-results',
+    },
+    VACCINATION: {
+      DASHBOARD: '/parent-pages/vaccination-event-dashboard',
+      SCHEDULE: '/parent-pages/vaccination-schedule',
+      REGISTRATION: '/parent-pages/vaccination-registration-form',
+      NEWS: '/parent-pages/vaccination-news',
+    },
+  },
+};
+
+// Local storage keys
+export const STORAGE_KEYS = {
+  AUTH_TOKEN: 'auth_token',
+  REFRESH_TOKEN: 'refresh_token',
+  USER_ROLE: 'user_role',
+  USER_DATA: 'user_data',
+  THEME: 'theme',
+  LANGUAGE: 'language',
+};
+
+// Form validation
+export const VALIDATION = {
+  PASSWORD: {
+    MIN_LENGTH: 8,
+    PATTERN: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    MESSAGE: 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character',
+  },
+  EMAIL: {
+    PATTERN: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+    MESSAGE: 'Invalid email address',
+  },
+  PHONE: {
+    PATTERN: /^\+?[1-9]\d{1,14}$/,
+    MESSAGE: 'Invalid phone number',
+  },
+};
+
+// Date formats
+export const DATE_FORMATS = {
+  DISPLAY: 'dd/MM/yyyy',
+  API: 'yyyy-MM-dd',
+  DATETIME: 'dd/MM/yyyy HH:mm',
+  TIME: 'HH:mm',
+};
+
+// Pagination
+export const PAGINATION = {
+  DEFAULT_PAGE_SIZE: 10,
+  PAGE_SIZE_OPTIONS: [10, 20, 50, 100],
+};
+
+// Notification types
+export const NOTIFICATION_TYPES = {
+  INFO: 'info',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+  ERROR: 'error',
+} as const;
+
+// Event types
+export const EVENT_TYPES = {
+  CHECKUP: 'checkup',
+  VACCINATION: 'vaccination',
+  EMERGENCY: 'emergency',
+} as const;
+
+// Appointment status
+export const APPOINTMENT_STATUS = {
+  SCHEDULED: 'scheduled',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled',
+  NO_SHOW: 'no-show',
+} as const; 

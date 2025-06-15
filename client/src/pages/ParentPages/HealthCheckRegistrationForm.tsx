@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../constants";
+import { registerHealthCheck } from "../../services/apiClient";
 
 const HealthCheckRegistrationForm: React.FC = () => {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const HealthCheckRegistrationForm: React.FC = () => {
     healthCheckRound: "",
     reason: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -23,25 +26,34 @@ const HealthCheckRegistrationForm: React.FC = () => {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    console.log("Form Data Submitted:", formData);
-    alert("Thông tin đăng ký đã được gửi thành công!");
+  const handleSubmit = async () => {
+    try {
+      await registerHealthCheck(formData);
+      alert("Thông tin đăng ký đã được gửi thành công!");
+      navigate(ROUTES.PARENT.HEALTH_CHECK.DASHBOARD);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Đăng ký thất bại, vui lòng thử lại!");
+    }
   };
 
   return (
     <>
       <Navbar
-        setIsAuthenticated={() => {}}
-        setUserRole={() => {}}
-        onLogout={() => {}}
-        onNavigateToHome={() => navigate("/")}
-        onNavigateToNews={() => navigate("/")}
-        onNavigateToContact={() => navigate("/")}
+        isAuthenticated={true}
+        onLogout={() => navigate(ROUTES.LOGIN)}
+        onNavigateToHome={() => navigate(ROUTES.HOME)}
+        onNavigateToNews={() => navigate(ROUTES.HOME)}
+        onNavigateToContact={() => navigate(ROUTES.HOME)}
       />
       <Box sx={{ p: 3 }}>
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
           Đăng Ký Khám Sức Khỏe
         </Typography>
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
         <h1 style={{ textAlign: "center", color: "rgba(8, 26, 74, 0.5)", marginBottom: "20px" }}>
           Đơn Đăng Kí Khám Sức Khỏe
         </h1>

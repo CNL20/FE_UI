@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { UserRole } from "./types";
+import { ROUTES, STORAGE_KEYS } from "./constants";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -25,228 +27,246 @@ import VaccinationSchedule from "./pages/ParentPages/VaccinationSchedule";
 import VaccinationNews from "./pages/ParentPages/VaccinationNews";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const savedAuth = localStorage.getItem("isAuthenticated");
-    return savedAuth === "true";
+  const [authState, setAuthState] = useState(() => {
+    const savedAuth = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const savedRole = localStorage.getItem(STORAGE_KEYS.USER_ROLE) as UserRole | null;
+    return {
+      isAuthenticated: !!savedAuth,
+      userRole: savedRole || "",
+    };
   });
-  const [userRole, setUserRole] = useState(() => {
-    return localStorage.getItem("userRole") || "";
-  });
+
   const navigate = useNavigate();
+  const location = useLocation();
 
+  // Chỉ cập nhật localStorage khi authState thực sự thay đổi
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", isAuthenticated.toString());
-    localStorage.setItem("userRole", userRole);
-  }, [isAuthenticated, userRole]);
+    if (authState.isAuthenticated) {
+      localStorage.setItem(STORAGE_KEYS.USER_ROLE, authState.userRole);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    }
+  }, [authState.isAuthenticated, authState.userRole]);
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUserRole("");
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userRole");
-    navigate("/");
-  };
+  const handleLogout = useCallback(() => {
+    setAuthState({ isAuthenticated: false, userRole: "" });
+    navigate(ROUTES.HOME);
+  }, [navigate]);
+
+  const handleLogin = useCallback((role: UserRole) => {
+    setAuthState({ isAuthenticated: true, userRole: role });
+    navigate(`/${role}`);
+  }, [navigate]);
+
+  // Protected Route Component
+  const ProtectedRoute = useCallback(({ 
+    children, 
+    requiredRole 
+  }: { 
+    children: React.ReactNode; 
+    requiredRole?: UserRole;
+  }) => {
+    if (!authState.isAuthenticated) {
+      return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
+    }
+
+    if (requiredRole && authState.userRole !== requiredRole) {
+      return <Navigate to={`/${authState.userRole}`} replace />;
+    }
+
+    return <>{children}</>;
+  }, [authState.isAuthenticated, authState.userRole, location]);
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      {/* Public Routes */}
+      <Route 
+        path={ROUTES.HOME} 
+        element={<Home isAuthenticated={authState.isAuthenticated} />} 
+      />
       <Route
-        path="/login"
+        path={ROUTES.LOGIN}
         element={
-          isAuthenticated ? (
-            <Navigate to={`/${userRole}`} />
+          authState.isAuthenticated ? (
+            <Navigate to={`/${authState.userRole}`} replace />
           ) : (
-            <Login
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-            />
+            <Login onLogin={handleLogin} />
           )
         }
       />
-      <Route path="/register" element={<Register />} />
+      <Route path={ROUTES.REGISTER} element={<Register />} />
 
+      {/* Admin Routes */}
       <Route
-        path="/admin/*"
+        path={`${ROUTES.ADMIN.DASHBOARD}/*`}
         element={
-          isAuthenticated && userRole === "admin" ? (
-            <AdminDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard onLogout={handleLogout} />
+          </ProtectedRoute>
         }
       />
       <Route
-        path="/manager/*"
+        path={ROUTES.ADMIN.MANAGE_ACCOUNTS}
         element={
-          isAuthenticated && userRole === "manager" ? (
-            <ManagerDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/nurse/*"
-        element={
-          isAuthenticated && userRole === "nurse" ? (
-            <NurseDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/health-records"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <HealthRecords />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/medical-staff-management"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <MedicalStaffManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/alerts-and-notifications"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <AlertsAndNotifications />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/event-and-appointment-management"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <EventAndAppointmentManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/parent"
-        element={
-          isAuthenticated && userRole === "parent" ? (
-            <ParentDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/manage-accounts"
-        element={
-          isAuthenticated && userRole === "admin" ? (
+          <ProtectedRoute requiredRole="admin">
             <ManageAccounts />
-          ) : (
-            <Navigate to="/login" />
-          )
+          </ProtectedRoute>
         }
       />
       <Route
-        path="/admin/activity-logs"
+        path={ROUTES.ADMIN.ACTIVITY_LOGS}
         element={
-          isAuthenticated && userRole === "admin" ? (
+          <ProtectedRoute requiredRole="admin">
             <ActivityLogs />
-          ) : (
-            <Navigate to="/login" />
-          )
+          </ProtectedRoute>
         }
-      />
-      <Route
-        path="/parent-pages/health-profile-form"
-        element={
-          <HealthProfileForm
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent-pages/medication-form"
-        element={
-          <MedicationForm
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent-pages/health-check-dashboard"
-        element={
-          <HealthCheckDashboard
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent-pages/vaccination-event-dashboard"
-        element={
-          <VaccinationEventDashboard
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent/health-check-schedule"
-        element={<HealthCheckSchedule />}
-      />
-      <Route
-        path="/parent/health-check-registration"
-        element={<HealthCheckRegistrationForm />}
-      />
-      <Route
-        path="/parent/health-check-results"
-        element={<HealthCheckResults />}
-      />
-      <Route
-        path="/parent/vaccination-registration"
-        element={<VaccinationRegistrationForm />}
-      />
-      <Route
-        path="/parent/vaccination-schedule"
-        element={<VaccinationSchedule />}
-      />
-      <Route
-        path="/parent/vaccination-news"
-        element={<VaccinationNews />}
       />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Manager Routes */}
+      <Route
+        path={`${ROUTES.MANAGER.DASHBOARD}/*`}
+        element={
+          <ProtectedRoute requiredRole="manager">
+            <ManagerDashboard onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.MANAGER.HEALTH_RECORDS}
+        element={
+          <ProtectedRoute requiredRole="manager">
+            <HealthRecords />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.MANAGER.MEDICAL_STAFF}
+        element={
+          <ProtectedRoute requiredRole="manager">
+            <MedicalStaffManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.MANAGER.ALERTS}
+        element={
+          <ProtectedRoute requiredRole="manager">
+            <AlertsAndNotifications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.MANAGER.EVENTS}
+        element={
+          <ProtectedRoute requiredRole="manager">
+            <EventAndAppointmentManagement />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Nurse Routes */}
+      <Route
+        path={`${ROUTES.NURSE.DASHBOARD}/*`}
+        element={
+          <ProtectedRoute requiredRole="nurse">
+            <NurseDashboard onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Parent Routes */}
+      <Route
+        path={`${ROUTES.PARENT.DASHBOARD}/*`}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <ParentDashboard onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.HEALTH_PROFILE}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <HealthProfileForm onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.MEDICATION}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <MedicationForm onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.HEALTH_CHECK.DASHBOARD}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <HealthCheckDashboard onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.HEALTH_CHECK.SCHEDULE}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <HealthCheckSchedule />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.HEALTH_CHECK.REGISTRATION}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <HealthCheckRegistrationForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.HEALTH_CHECK.RESULTS}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <HealthCheckResults />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.VACCINATION.DASHBOARD}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <VaccinationEventDashboard onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.VACCINATION.SCHEDULE}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <VaccinationSchedule />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.VACCINATION.REGISTRATION}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <VaccinationRegistrationForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PARENT.VACCINATION.NEWS}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <VaccinationNews />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Fallback Route */}
+      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
   );
 }

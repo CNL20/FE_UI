@@ -3,20 +3,25 @@ import { useNavigate } from "react-router-dom";
 import "../../styles.css";
 import Navbar from "../../components/Navbar";
 import { Box } from "@mui/material";
+import { HealthProfileFormProps } from "../../types";
+import { ROUTES } from "../../constants";
+import { submitHealthProfile } from "../../services/apiClient";
 
-interface HealthProfileFormProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
+interface HealthProfileFormData {
+  studentName: string;
+  class: string;
+  gender: string;
+  height: string;
+  weight: string;
+  eyeCondition: string;
+  chronicDiseases: string;
+  underlyingConditions: string;
+  medicalRecord: File | null;
 }
 
-const HealthProfileForm: React.FC<HealthProfileFormProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<HealthProfileFormData>({
     studentName: "",
     class: "",
     gender: "",
@@ -25,8 +30,9 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({
     eyeCondition: "",
     chronicDiseases: "",
     underlyingConditions: "",
-    medicalRecord: null as File | null,
+    medicalRecord: null,
   });
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -36,29 +42,49 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      medicalRecord: e.target.files ? e.target.files[0] : null,
-    });
+    const file = e.target.files?.[0] || null;
+    setFormData(prev => ({
+      ...prev,
+      medicalRecord: file
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Add form submission logic here
-    navigate("/parent-dashboard");
+    try {
+      const formDataToSend = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          if (value instanceof File) {
+            formDataToSend.append(key, value);
+          } else {
+            formDataToSend.append(key, String(value));
+          }
+        }
+      });
+
+      await submitHealthProfile(formDataToSend);
+      alert("Hồ sơ sức khỏe đã được gửi thành công!");
+      navigate(ROUTES.PARENT.DASHBOARD);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Gửi hồ sơ thất bại, vui lòng thử lại!");
+    }
   };
 
-  const handleNavigateToHome = () => navigate("/");
+  const handleNavigateToHome = () => {
+    navigate(ROUTES.HOME);
+  };
+
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
+
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -68,12 +94,10 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
+        onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
-        onLogout={onLogout}
       />
       <Box sx={{ height: 68 }} />
       <div

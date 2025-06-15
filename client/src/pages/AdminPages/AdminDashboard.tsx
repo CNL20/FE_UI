@@ -11,26 +11,18 @@ import {
 import { People, History, Search } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { AdminDashboardProps } from "../../types";
+import { ROUTES } from "../../constants";
 
-interface AdminDashboardProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handleNavigateToHome = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
   };
 
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -38,7 +30,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
 
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -48,8 +40,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
         onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
