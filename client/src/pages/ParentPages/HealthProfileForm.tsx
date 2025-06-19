@@ -32,7 +32,6 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
     underlyingConditions: "",
     medicalRecord: null,
   });
-  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -67,7 +66,7 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
       alert("Hồ sơ sức khỏe đã được gửi thành công!");
       navigate(ROUTES.PARENT.DASHBOARD);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Gửi hồ sơ thất bại, vui lòng thử lại!");
+      alert(err.response?.data?.message || "Gửi hồ sơ thất bại, vui lòng thử lại!");
     }
   };
 

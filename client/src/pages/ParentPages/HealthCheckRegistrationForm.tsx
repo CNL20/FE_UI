@@ -14,7 +14,6 @@ const HealthCheckRegistrationForm: React.FC = () => {
     healthCheckRound: "",
     reason: "",
   });
-  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,14 +31,13 @@ const HealthCheckRegistrationForm: React.FC = () => {
       alert("Thông tin đăng ký đã được gửi thành công!");
       navigate(ROUTES.PARENT.HEALTH_CHECK.DASHBOARD);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Đăng ký thất bại, vui lòng thử lại!");
+      alert(err.response?.data?.message || "Đăng ký thất bại, vui lòng thử lại!");
     }
   };
 
   return (
     <>
       <Navbar
-        isAuthenticated={true}
         onLogout={() => navigate(ROUTES.LOGIN)}
         onNavigateToHome={() => navigate(ROUTES.HOME)}
         onNavigateToNews={() => navigate(ROUTES.HOME)}
@@ -49,11 +47,6 @@ const HealthCheckRegistrationForm: React.FC = () => {
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
           Đăng Ký Khám Sức Khỏe
         </Typography>
-        {error && (
-          <Typography color="error" sx={{ mb: 2 }}>
-            {error}
-          </Typography>
-        )}
         <h1 style={{ textAlign: "center", color: "rgba(8, 26, 74, 0.5)", marginBottom: "20px" }}>
           Đơn Đăng Kí Khám Sức Khỏe
         </h1>

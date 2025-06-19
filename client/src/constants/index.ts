@@ -1,6 +1,24 @@
 // API endpoints
 export const API_BASE_URL = process.env['REACT_APP_API_BASE_URL'] || 'https://localhost:5001/api';
 
+// JWT Configuration
+export const JWT_CONFIG = {
+  ISSUER: process.env['REACT_APP_JWT_ISSUER'] || 'school-heath-api',
+  KEY: 'chuyenhaikhonghaivinokhonghehaitinao' // This should be kept secure on backend only
+};
+
+// Google OAuth Configuration
+export const GOOGLE_CONFIG = {
+  CLIENT_ID: process.env['REACT_APP_GOOGLE_CLIENT_ID'] || '365950590865-aevmgc7ia4s9b7avl4cuaao6fp5tahct.apps.googleusercontent.com',
+  REDIRECT_URI: process.env['REACT_APP_GOOGLE_REDIRECT_URI'] || 'https://localhost:5001/signin-google'
+};
+
+// Environment Configuration
+export const ENV_CONFIG = {
+  ENVIRONMENT: process.env['REACT_APP_ENVIRONMENT'] || 'development',
+  DEBUG: process.env['REACT_APP_DEBUG'] === 'true'
+};
+
 export const API_ENDPOINTS = {
   AUTH: {
     LOGIN: '/auth/login',
@@ -8,6 +26,7 @@ export const API_ENDPOINTS = {
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh-token',
     GOOGLE_LOGIN: '/auth/google-login',
+    GOOGLE_SIGNIN: '/signin-google',
   },
   USERS: {
     BASE: '/users',

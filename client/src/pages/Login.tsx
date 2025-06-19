@@ -12,14 +12,13 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
-  IconButton,
-  Link,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import GoogleIcon from "@mui/icons-material/Google";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { login } from "../services/apiClient";
 import { LoginProps, UserRole } from "../types";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 // Roles với value dạng chữ thường cho backend
 const roles = [
@@ -68,12 +67,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!form.role) {
       alert("Vui lòng chọn vai trò trước khi đăng nhập.");
       return;
     }
-
     try {
       await login(form.username, form.password, form.role);
       onLogin(form.role);
@@ -83,10 +80,6 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    // Chuyển hướng sang backend để khởi tạo quá trình Google OAuth
-    window.location.href = 'https://localhost:5001/signin-google';
-  };
   return (
     <Box
       display="flex"
@@ -216,33 +209,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               }}
             >
               Đăng nhập
-            </Button>            <Button
-              variant="outlined"
-              fullWidth
-              sx={{
-                mt: 2,
-                borderColor: "#4285F4",
-                color: "#4285F4", 
-                textTransform: "none",
-                fontWeight: "bold",
-                fontSize: "16px",
-                py: 1,
-                borderRadius: 2,
-                transition: "all 0.3s",
-                "&:hover": {
-                  borderColor: "#4285F4",
-                  backgroundColor: "rgba(66, 133, 244, 0.1)",
-                  transform: "translateY(-2px)",
-                },
-              }}
-              startIcon={<GoogleIcon sx={{ color: "#4285F4" }} />}
-              onClick={handleGoogleLogin}
-            >
-              Đăng nhập với Google
             </Button>
-            <Typography variant="body2" align="center" sx={{ mt: 3, mb: 1 }}>
-              Chưa có tài khoản? <Link href="/register" sx={{ color: "#1976d2", fontWeight: "medium" }}>Đăng ký</Link>
-            </Typography>
           </Box>
         </CardContent>
         </Card>

@@ -93,7 +93,7 @@ const ManageAccounts: React.FC = () => {
   );
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setPage(value);
@@ -285,7 +285,7 @@ const ManageAccounts: React.FC = () => {
       />
       <Dialog
         open={isDialogOpen}
-        onClose={(event, reason) => {
+        onClose={(_event, reason) => {
           if (reason !== "backdropClick") {
             handleDialogClose();
           }

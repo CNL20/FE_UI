@@ -28,14 +28,13 @@ import {
   Warning as IncidentIcon,
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { NurseDashboardProps } from "../../types";
 import { ROUTES } from "../../constants";
 
 const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
   const [tabValue, setTabValue] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [newSupply, setNewSupply] = useState({
@@ -65,7 +64,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
     }, 100);
   };
 
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
@@ -381,7 +380,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
           </Box>
         )}
 
-        <Dialog open={openDialog} onClose={undefined} disableEscapeKeyDown>
+        <Dialog open={openDialog} onClose={handleDialogClose} disableEscapeKeyDown>
           <DialogTitle>Thêm Vật Tư Y Tế</DialogTitle>
           <DialogContent>
             <TextField

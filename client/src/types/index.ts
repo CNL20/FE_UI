@@ -113,6 +113,7 @@ export interface FormField {
 export interface LoginCredentials {
   username: string;
   password: string;
+  role: UserRole;
 }
 
 export interface RegisterPayload {
@@ -123,12 +124,28 @@ export interface RegisterPayload {
   password: string;
   phone: string;
   cccd: string;
+  role: UserRole;
+}
+
+export interface GoogleAuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+  role: UserRole;
+}
+
+export interface AuthResponse {
+  token: string;
+  refreshToken: string;
+  user: User;
+  role: UserRole;
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   token: string | null;
+  role: UserRole | null;
 }
 
 // Component Props Types

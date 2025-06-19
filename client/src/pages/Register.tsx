@@ -15,11 +15,23 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { register } from "../services/apiClient";
 import { ROUTES } from "../constants";
+import { UserRole } from "../types";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+    agreeTerms: boolean;
+    phone: string;
+    cccd: string;
+    role: UserRole;
+  }>({
     firstName: "", // First name
     lastName: "",  // Last name
     email: "",
@@ -29,6 +41,7 @@ const Register: React.FC = () => {
     agreeTerms: false,
     phone: "", // Thêm trường `phone`
     cccd: "",  // Thêm trường `cccd`
+    role: "parent", // Mặc định là parent khi đăng ký
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -69,6 +82,7 @@ const Register: React.FC = () => {
         lastName: form.lastName,
         phone: form.phone,
         cccd: form.cccd,
+        role: form.role,
       });
       alert("Đăng ký thành công! Vui lòng đăng nhập.");
       navigate(ROUTES.LOGIN);

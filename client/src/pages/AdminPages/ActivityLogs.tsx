@@ -156,7 +156,7 @@ const ActivityLogs: React.FC = () => {
       {/* Modal */}
       <Modal
         open={modalOpen}
-        onClose={(event, reason) => {
+        onClose={(_event, reason) => {
           if (reason !== "backdropClick") {
             setModalOpen(false);
           }

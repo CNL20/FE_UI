@@ -14,7 +14,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../constants";
 
 interface NavbarProps {
-  isAuthenticated?: boolean;
   onLogout?: () => void;
   onNavigateToHome?: () => void;
   onNavigateToNews?: () => void;
@@ -22,7 +21,6 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  isAuthenticated = false,
   onLogout,
   onNavigateToHome,
   onNavigateToNews,
@@ -94,10 +92,6 @@ const Navbar: React.FC<NavbarProps> = ({
         if (el) el.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-  };
-
-  const handleNavigateToLogin = () => {
-    navigate(ROUTES.LOGIN);
   };
 
   const isHomePage = location.pathname === ROUTES.HOME;
@@ -287,7 +281,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/vaccination-event-dashboard");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Sự kiện tiêm chủng

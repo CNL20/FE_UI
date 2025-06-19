@@ -6,25 +6,21 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   TextField,
   Drawer,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  IconButton,
 } from "@mui/material";
-import { Search, Assignment, Menu } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
-import Logo from "../../components/Logo";
+import { Search, Assignment } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ManagerDashboardProps } from "../../types";
 import { ROUTES } from "../../constants";
 
 const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleNavigateToHome = () => {

@@ -2,7 +2,6 @@ import React from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import HealthCheckSchedule from "./HealthCheckSchedule";
 import { HealthCheckDashboardProps } from "../../types";
 import { ROUTES } from "../../constants";
 

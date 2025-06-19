@@ -51,7 +51,6 @@ const HealthCheckSchedule: React.FC = () => {
   return (
     <>
       <Navbar
-        isAuthenticated={true}
         onLogout={() => navigate(ROUTES.LOGIN)}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
