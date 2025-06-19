@@ -1,0 +1,638 @@
+openapi: 3.0.1
+info:
+  title: School Medical API
+  version: 1.0.0
+  description: API quản lý y tế học đường
+servers:
+  - url: http://localhost:3000
+tags:
+  - name: Nurse
+    description: Quản lý học sinh, hồ sơ sức khỏe, phát thuốc, sự cố y tế
+  - name: Vaccination
+    description: Quản lý chiến dịch tiêm chủng, xác nhận, phân công, điểm danh, kết quả
+paths:
+  /api/nurse/students:
+    get:
+      tags: [Nurse]
+      summary: Lấy danh sách học sinh
+      responses:
+        '200':
+          description: Danh sách học sinh
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+    post:
+      tags: [Nurse]
+      summary: Thêm học sinh mới
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '201':
+          description: Học sinh đã được tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+  /api/nurse/students/{id}:
+    get:
+      tags: [Nurse]
+      summary: Lấy thông tin học sinh theo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Thông tin học sinh
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: Không tìm thấy
+    put:
+      tags: [Nurse]
+      summary: Cập nhật thông tin học sinh
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          description: Không tìm thấy
+    delete:
+      tags: [Nurse]
+      summary: Xóa học sinh
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Đã xóa
+        '404':
+          description: Không tìm thấy
+  /api/nurse/students/{id}/health:
+    get:
+      tags: [Nurse]
+      summary: Lấy hồ sơ sức khỏe học sinh
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Hồ sơ sức khỏe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthRecord'
+        '404':
+          description: Không tìm thấy
+    post:
+      tags: [Nurse]
+      summary: Thêm/cập nhật hồ sơ sức khỏe
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HealthRecord'
+      responses:
+        '201':
+          description: Đã tạo mới
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthRecord'
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthRecord'
+    delete:
+      tags: [Nurse]
+      summary: Xóa hồ sơ sức khỏe
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Đã xóa
+        '404':
+          description: Không tìm thấy
+  /api/nurse/medications:
+    get:
+      tags: [Nurse]
+      summary: Lấy danh sách yêu cầu phát thuốc
+      responses:
+        '200':
+          description: Danh sách yêu cầu
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MedicationRequest'
+    post:
+      tags: [Nurse]
+      summary: Thêm yêu cầu phát thuốc
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicationRequest'
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicationRequest'
+  /api/nurse/medications/{id}:
+    get:
+      tags: [Nurse]
+      summary: Lấy yêu cầu phát thuốc theo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Thông tin yêu cầu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicationRequest'
+        '404':
+          description: Không tìm thấy
+    put:
+      tags: [Nurse]
+      summary: Cập nhật yêu cầu phát thuốc
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicationRequest'
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicationRequest'
+        '404':
+          description: Không tìm thấy
+    delete:
+      tags: [Nurse]
+      summary: Xóa yêu cầu phát thuốc
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Đã xóa
+        '404':
+          description: Không tìm thấy
+  /api/nurse/incidents:
+    get:
+      tags: [Nurse]
+      summary: Lấy danh sách sự cố y tế
+      responses:
+        '200':
+          description: Danh sách sự cố
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MedicalIncident'
+    post:
+      tags: [Nurse]
+      summary: Thêm sự cố y tế
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicalIncident'
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalIncident'
+  /api/nurse/incidents/{id}:
+    get:
+      tags: [Nurse]
+      summary: Lấy sự cố y tế theo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Thông tin sự cố
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalIncident'
+        '404':
+          description: Không tìm thấy
+    put:
+      tags: [Nurse]
+      summary: Cập nhật sự cố y tế
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicalIncident'
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicalIncident'
+        '404':
+          description: Không tìm thấy
+    delete:
+      tags: [Nurse]
+      summary: Xóa sự cố y tế
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Đã xóa
+        '404':
+          description: Không tìm thấy
+  /api/vaccination/campaigns:
+    get:
+      tags: [Vaccination]
+      summary: Lấy danh sách chiến dịch tiêm chủng
+      responses:
+        '200':
+          description: Danh sách chiến dịch
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VaccinationCampaign'
+    post:
+      tags: [Vaccination]
+      summary: Tạo chiến dịch tiêm chủng
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaccinationCampaign'
+      responses:
+        '201':
+          description: Đã tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaccinationCampaign'
+  /api/vaccination/campaigns/{id}:
+    get:
+      tags: [Vaccination]
+      summary: Lấy thông tin chiến dịch
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Thông tin chiến dịch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaccinationCampaign'
+        '404':
+          description: Không tìm thấy
+  /api/vaccination/campaigns/{id}/confirmations:
+    get:
+      tags: [Vaccination]
+      summary: Lấy xác nhận tiêm chủng của chiến dịch
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Danh sách xác nhận
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VaccinationConfirmation'
+  /api/vaccination/campaigns/{id}/assign-nurse:
+    post:
+      tags: [Vaccination]
+      summary: Phân công y tá cho chiến dịch
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaccinationAssignment'
+      responses:
+        '200':
+          description: Đã phân công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaccinationAssignment'
+  /api/vaccination/campaigns/{id}/agreed-students:
+    get:
+      tags: [Vaccination]
+      summary: Lấy danh sách học sinh đồng ý tiêm
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Danh sách xác nhận
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VaccinationConfirmation'
+  /api/vaccination/campaigns/{id}/results:
+    get:
+      tags: [Vaccination]
+      summary: Lấy kết quả tiêm chủng
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Danh sách kết quả
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VaccinationResult'
+  /api/vaccination/confirmations:
+    post:
+      tags: [Vaccination]
+      summary: Phụ huynh xác nhận tiêm chủng
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaccinationConfirmation'
+      responses:
+        '200':
+          description: Đã xác nhận
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaccinationConfirmation'
+  /api/vaccination/campaigns/{id}/attendance:
+    post:
+      tags: [Vaccination]
+      summary: Y tá điểm danh học sinh
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaccinationAttendance'
+      responses:
+        '200':
+          description: Đã điểm danh
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaccinationAttendance'
+  /api/vaccination/campaigns/{id}/result:
+    post:
+      tags: [Vaccination]
+      summary: Y tá cập nhật kết quả tiêm chủng
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VaccinationResult'
+      responses:
+        '200':
+          description: Đã cập nhật
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaccinationResult'
+components:
+  schemas:
+    Student:
+      type: object
+      properties:
+        Id:
+          type: integer
+        Name:
+          type: string
+    HealthRecord:
+      type: object
+      properties:
+        StudentId:
+          type: integer
+        Allergies:
+          type: string
+        ChronicDiseases:
+          type: string
+        Immunizations:
+          type: string
+    MedicationRequest:
+      type: object
+      properties:
+        Id:
+          type: integer
+        StudentId:
+          type: integer
+        MedicineName:
+          type: string
+        Dosage:
+          type: string
+        TimeOfDay:
+          type: string
+        Status:
+          type: string
+    MedicalIncident:
+      type: object
+      properties:
+        Id:
+          type: integer
+        StudentId:
+          type: integer
+        IncidentType:
+          type: string
+        Description:
+          type: string
+        Date:
+          type: string
+        Status:
+          type: string
+        Resolution:
+          type: string
+    VaccinationCampaign:
+      type: object
+      properties:
+        Id:
+          type: integer
+        VaccineName:
+          type: string
+        Schedule:
+          type: string
+        Description:
+          type: string
+    VaccinationConfirmation:
+      type: object
+      properties:
+        Id:
+          type: integer
+        CampaignId:
+          type: integer
+        StudentName:
+          type: string
+        ClassName:
+          type: string
+        Schedule:
+          type: string
+        ParentDecision:
+          type: string
+        ParentNote:
+          type: string
+    VaccinationAssignment:
+      type: object
+      properties:
+        CampaignId:
+          type: integer
+        NurseName:
+          type: string
+    VaccinationAttendance:
+      type: object
+      properties:
+        CampaignId:
+          type: integer
+        StudentName:
+          type: string
+        ClassName:
+          type: string
+        Date:
+          type: string
+        Present:
+          type: boolean
+    VaccinationResult:
+      type: object
+      properties:
+        CampaignId:
+          type: integer
+        StudentName:
+          type: string
+        ClassName:
+          type: string
+        Schedule:
+          type: string
+        Status:
+          type: string
+        Note:
+          type: string 
