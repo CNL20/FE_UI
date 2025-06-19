@@ -23,7 +23,6 @@ const Register: React.FC = () => {
   const [form, setForm] = useState<{
     firstName: string;
     lastName: string;
-    email: string;
     username: string;
     password: string;
     confirmPassword: string;
@@ -34,7 +33,6 @@ const Register: React.FC = () => {
   }>({
     firstName: "", // First name
     lastName: "",  // Last name
-    email: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -77,7 +75,7 @@ const Register: React.FC = () => {
       await register({
         username: form.username,
         password: form.password,
-        email: form.email,
+        email: "",
         firstName: form.firstName,
         lastName: form.lastName,
         phone: form.phone,
@@ -158,15 +156,6 @@ const Register: React.FC = () => {
                 required
               />
             </Box>
-            <TextField
-              label="Email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              fullWidth
-              margin="normal"
-              required
-            />
             <TextField
               label="Tên đăng nhập"
               name="username"

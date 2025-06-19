@@ -127,13 +127,6 @@ export interface RegisterPayload {
   role: UserRole;
 }
 
-export interface GoogleAuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-  role: UserRole;
-}
-
 export interface AuthResponse {
   token: string;
   refreshToken: string;

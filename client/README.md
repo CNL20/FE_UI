@@ -1,105 +1,109 @@
-# School Health Management System - Frontend
+# Hệ Thống Y Tế Học Đường - Frontend
 
-## Cấu hình cho Backend
+## Cấu trúc thư mục
 
-### 1. Environment Variables
+```
+├── client/                 # Frontend React application
+│   ├── public/            # Static files
+│   │   ├── assets/       # Images, fonts, etc.
+│   │   └── index.html    # Main HTML file
+│   ├── src/              # React source code
+│   │   ├── components/   # Reusable components
+│   │   ├── pages/        # Page components
+│   │   ├── services/     # API services
+│   │   ├── utils/        # Utility functions
+│   │   ├── styles/       # Global styles
+│   │   └── App.js        # Main React component
+│   └── package.json      # Frontend dependencies
+│
+└── docs/                  # Documentation
+    └── api/             # API documentation
 
-Tạo file `.env` trong thư mục `client/` với nội dung sau:
-
-```env
-# API Configuration
-REACT_APP_API_BASE_URL=https://localhost:5001/api
-
-# JWT Configuration
-REACT_APP_JWT_ISSUER=school-heath-api
-
-# Development Configuration
-REACT_APP_ENVIRONMENT=development
-REACT_APP_DEBUG=true
 ```
 
-### 2. Backend Configuration
+## Công nghệ sử dụng
 
-Đảm bảo backend của bạn có các cấu hình sau trong `appsettings.json`:
+### Frontend
 
-```json
-{
-  "Jwt": {
-    "Key": "chuyenhaikhonghaivinokhonghehaitinao",
-    "Issuer": "school-heath-api"
-  },
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=SchoolHealthDB;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
+* React 18.x
+* Material-UI 5.x
+* Chart.js cho biểu đồ
+* Axios cho API calls
+* React Router cho routing
+* Redux Toolkit cho state management
 
-### 3. CORS Configuration
+### Development Tools
 
-Backend cần cấu hình CORS để cho phép frontend truy cập:
+* ESLint cho code linting
+* Prettier cho code formatting
+* Jest cho testing
 
-```csharp
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReactApp",
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:3000")
-                   .AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowCredentials();
-        });
-});
-```
+## Cài đặt và Chạy
 
-### 4. API Endpoints
+### Yêu cầu
 
-Frontend đã được cấu hình để gọi các endpoints sau:
+* Node.js 18.x
+* npm hoặc yarn
 
-- **Authentication:**
-  - `POST /api/auth/login` - Đăng nhập
-  - `POST /api/auth/register` - Đăng ký
-  - `POST /api/auth/logout` - Đăng xuất
-  - `POST /api/auth/refresh-token` - Refresh token
-  - `POST /api/auth/google-login` - Google OAuth
-  - `GET /signin-google` - Google OAuth redirect
+### Cài đặt
 
-- **Users:**
-  - `GET /api/users/profile` - Lấy thông tin user
-  - `PUT /api/users/change-password` - Đổi mật khẩu
+1. Clone repository:
 
-- **Health Records:**
-  - `GET /api/health-records/student/{id}` - Lấy hồ sơ sức khỏe
+git clone [repository-url]
+cd school-health-system
 
-- **Events:**
-  - `GET /api/events/upcoming` - Lấy sự kiện sắp tới
-  - `GET /api/events/past` - Lấy sự kiện đã qua
+1. Cài đặt dependencies:
 
-### 5. Chạy ứng dụng
-
-```bash
-# Cài đặt dependencies
+# Cài đặt frontend dependencies
+cd client
 npm install
 
-# Chạy ứng dụng
+### Chạy ứng dụng
+
 npm start
-```
 
-Ứng dụng sẽ chạy tại: http://localhost:3000
+## Tính năng chính
 
-### 6. Lưu ý bảo mật
+### Dashboard
 
-- JWT Key nên được lưu trữ an toàn trên backend
-- Sử dụng HTTPS trong production
-- Validate tất cả input từ user
+* Admin Dashboard  
+   * Quản lý tài khoản  
+   * Thống kê và báo cáo  
+   * Quản lý thông báo  
+   * Cài đặt hệ thống
+* Parent Dashboard  
+   * Xem thông tin học sinh  
+   * Theo dõi sức khỏe  
+   * Lịch sử khám bệnh  
+   * Đặt lịch khám
 
-### 7. Troubleshooting
+### Quản lý sức khỏe
 
-Nếu gặp lỗi CORS:
-1. Kiểm tra backend có chạy trên port 5001 không
-2. Đảm bảo CORS policy đã được cấu hình đúng
-3. Kiểm tra SSL certificate nếu sử dụng HTTPS
+* Hồ sơ sức khỏe học sinh
+* Lịch sử khám bệnh
+* Biểu đồ theo dõi
+* Thông báo khám định kỳ
 
-Nếu gặp lỗi authentication:
-1. Kiểm tra JWT configuration
-2. Kiểm tra database connection 
+### Báo cáo & Thống kê
+
+* Biểu đồ thống kê
+* Báo cáo định kỳ
+* Xuất dữ liệu
+* Phân tích xu hướng
+
+## Performance Optimization
+
+* Code splitting
+* Lazy loading
+* Image optimization
+* Caching
+
+## Monitoring & Logging
+
+* Error tracking
+* Performance monitoring
+* User activity logging
+
+## About
+
+ No description, website, or topics provided. 

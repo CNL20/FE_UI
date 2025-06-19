@@ -20,7 +20,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  InputLabel,
   Typography,
 } from "@mui/material";
 import {
@@ -33,7 +32,6 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LockIcon from "@mui/icons-material/Lock";
 import PeopleIcon from "@mui/icons-material/People";
@@ -63,7 +61,6 @@ const ManageAccounts: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
   const navigate = useNavigate();
 
   const accounts: Account[] = [
@@ -195,9 +192,6 @@ const ManageAccounts: React.FC = () => {
                 Vai trò
               </TableCell>
               <TableCell align="center" style={{ color: "#ffffff" }}>
-                Email
-              </TableCell>
-              <TableCell align="center" style={{ color: "#ffffff" }}>
                 Trạng thái
               </TableCell>
               <TableCell align="center" style={{ color: "#ffffff" }}>
@@ -235,7 +229,6 @@ const ManageAccounts: React.FC = () => {
                     <MenuItem value="Phụ huynh">Phụ huynh</MenuItem>
                   </Select>
                 </TableCell>
-                <TableCell align="center">{account.email}</TableCell>
                 <TableCell align="center">
                   <span
                     style={{
@@ -323,32 +316,6 @@ const ManageAccounts: React.FC = () => {
                 ),
               }}
             />
-            <TextField
-              label="Email"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EmailIcon />
-                  </InputAdornment>
-                ),
-              }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <InputLabel id="role-label">Vai trò</InputLabel>
-            <Select
-              labelId="role-label"
-              label="Vai trò"
-              variant="outlined"
-              fullWidth
-              margin="dense"
-            >
-              <MenuItem value="Y tá">Y tá</MenuItem>
-              <MenuItem value="Quản lý">Quản lý</MenuItem>
-            </Select>
             <TextField
               label="Tên đăng nhập"
               variant="outlined"

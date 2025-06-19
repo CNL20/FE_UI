@@ -1,6 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserRole, RegisterPayload } from '../types';
-import { STORAGE_KEYS, API_ENDPOINTS, JWT_CONFIG } from '../constants';
+import { STORAGE_KEYS, API_ENDPOINTS } from '../constants';
 
 const apiClient = axios.create({
   baseURL: process.env['REACT_APP_API_BASE_URL'] || 'https://localhost:5001/api',
@@ -16,8 +16,6 @@ apiClient.interceptors.request.use(
     const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
-      // Thêm issuer vào header nếu cần
-      config.headers['X-JWT-Issuer'] = JWT_CONFIG.ISSUER;
     }
     return config;
   },
@@ -97,24 +95,6 @@ export const login = async (
     return response.data;
   } catch (error) {
     console.error('Login failed:', error);
-    throw error;
-  }
-};
-
-export const googleLogin = async (token: string) => {
-  try {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.GOOGLE_LOGIN, { token });
-    const { accessToken, refreshToken, user, role } = response.data;
-    
-    // Lưu thông tin vào localStorage
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, accessToken);
-    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-    localStorage.setItem(STORAGE_KEYS.USER_ROLE, role);
-    localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
-    
-    return response.data;
-  } catch (error) {
-    console.error('Google login failed:', error);
     throw error;
   }
 };
