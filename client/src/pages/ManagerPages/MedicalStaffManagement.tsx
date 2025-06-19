@@ -2,10 +2,14 @@ import React from "react";
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
-const MedicalStaffManagement: React.FC = () => {
+interface MedicalStaffManagementProps {
+  onLogout?: () => void;
+}
+
+const MedicalStaffManagement: React.FC<MedicalStaffManagementProps> = ({ onLogout }) => {
   return (
     <>
-      <Navbar />
+      <Navbar {...(onLogout ? { onLogout } : {})} />
       <Box
         sx={{
           p: 3,

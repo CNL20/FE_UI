@@ -82,7 +82,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   };
 
   const handleAddSupply = () => {
-    console.log("New Supply Added:", newSupply);
     setOpenDialog(false);
   };
 
@@ -380,7 +379,15 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
           </Box>
         )}
 
-        <Dialog open={openDialog} onClose={handleDialogClose} disableEscapeKeyDown>
+        <Dialog
+          open={openDialog}
+          onClose={(_event, reason) => {
+            if (reason !== "backdropClick") {
+              handleDialogClose();
+            }
+          }}
+          disableEscapeKeyDown
+        >
           <DialogTitle>Thêm Vật Tư Y Tế</DialogTitle>
           <DialogContent>
             <TextField

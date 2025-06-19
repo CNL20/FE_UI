@@ -29,15 +29,15 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({ onLogout })
   };
 
   const handleNavigateToSchedule = () => {
-    navigate(ROUTES.PARENT.HEALTH_CHECK.SCHEDULE);
+    navigate("/parent/health-check-schedule");
   };
 
   const handleNavigateToRegistration = () => {
-    navigate(ROUTES.PARENT.HEALTH_CHECK.REGISTRATION);
+    navigate("/parent/health-check-registration");
   };
 
   const handleNavigateToResults = () => {
-    navigate(ROUTES.PARENT.HEALTH_CHECK.RESULTS);
+    navigate("/parent/health-check-results");
   };
 
   return (

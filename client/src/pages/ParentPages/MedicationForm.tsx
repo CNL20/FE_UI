@@ -50,7 +50,6 @@ const MedicationForm: React.FC<MedicationFormProps> = ({ onLogout }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Thông tin đã gửi:", formData);
     alert("Thông tin đã được gửi thành công!");
   };
 

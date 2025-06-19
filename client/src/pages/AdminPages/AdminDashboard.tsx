@@ -53,8 +53,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
+          border: "1px solid red", // Thêm border để kiểm tra hiển thị
         }}
       >
+        <Typography variant="h4" sx={{ mb: 2, textAlign: "center" }}>
+          Admin Dashboard
+        </Typography>
         {/* Search Bar */}
         <Box mb={3}>
           <TextField

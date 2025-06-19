@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
@@ -82,6 +82,13 @@ const HealthCheckSchedule: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate("/parent/health-check-dashboard")}
+            >
+              Quay Về
+            </Button>
       </Box>
     </>
   );

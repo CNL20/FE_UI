@@ -2,29 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { UserRole } from "./types";
 import { ROUTES, STORAGE_KEYS } from "./constants";
+import AdminRouter from "./router/adminRouter";
+import ParentRouter from "./router/parentRouter";
+import ManagerRouter from "./router/managerRouter";
+import NurseRouter from "./router/nurseRouter";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import AdminDashboard from "./pages/AdminPages/AdminDashboard";
-import ManagerDashboard from "./pages/ManagerPages/ManagerDashboard";
-import NurseDashboard from "./pages/NursePages/NurseDashboard";
-import HealthRecords from "./pages/ManagerPages/HealthRecords";
-import MedicalStaffManagement from "./pages/ManagerPages/MedicalStaffManagement";
-import AlertsAndNotifications from "./pages/ManagerPages/AlertsAndNotifications";
-import EventAndAppointmentManagement from "./pages/ManagerPages/EventAndAppointmentManagement";
-import ParentDashboard from "./pages/ParentPages/ParentDashboard";
-import ManageAccounts from "./pages/AdminPages/ManageAccounts";
-import ActivityLogs from "./pages/AdminPages/ActivityLogs";
-import HealthProfileForm from "./pages/ParentPages/HealthProfileForm";
-import MedicationForm from "./pages/ParentPages/MedicationForm";
-import HealthCheckDashboard from "./pages/ParentPages/HealthCheckDashboard";
-import VaccinationEventDashboard from "./pages/ParentPages/VaccinationEventDashboard";
-import HealthCheckSchedule from "./pages/ParentPages/HealthCheckSchedule";
-import HealthCheckRegistrationForm from "./pages/ParentPages/HealthCheckRegistrationForm";
-import HealthCheckResults from "./pages/ParentPages/HealthCheckResults";
-import VaccinationRegistrationForm from "./pages/ParentPages/VaccinationRegistrationForm";
-import VaccinationSchedule from "./pages/ParentPages/VaccinationSchedule";
-import VaccinationNews from "./pages/ParentPages/VaccinationNews";
 import DiseasePrevention from "./pages/DiseasePrevention";
 import NutritionGuide from "./pages/NutritionGuide";
 import MentalHealthCare from "./pages/MentalHealthCare";
@@ -52,14 +36,16 @@ function App() {
     }
   }, [authState.isAuthenticated, authState.userRole]);
 
-  const handleLogout = useCallback(() => {
-    setAuthState({ isAuthenticated: false, userRole: "" });
-    navigate(ROUTES.HOME);
-  }, [navigate]);
-
   const handleLogin = useCallback((role: UserRole) => {
     setAuthState({ isAuthenticated: true, userRole: role });
-    navigate(`/${role}`);
+    navigate(`/${role}/dashboard`);
+  }, [navigate]);
+
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    setAuthState({ isAuthenticated: false, userRole: "" });
+    navigate(ROUTES.HOME);
   }, [navigate]);
 
   // Protected Route Component
@@ -70,6 +56,7 @@ function App() {
     children: React.ReactNode; 
     requiredRole?: UserRole;
   }) => {
+
     if (!authState.isAuthenticated) {
       return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
     }
@@ -89,9 +76,7 @@ function App() {
       <Route path={ROUTES.REGISTER} element={<Register />} />
 
       {/* Admin Routes */}
-      <Route path={`${ROUTES.ADMIN.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="admin"><AdminDashboard onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.ADMIN.MANAGE_ACCOUNTS} element={<ProtectedRoute requiredRole="admin"><ManageAccounts /></ProtectedRoute>} />
-      <Route path={ROUTES.ADMIN.ACTIVITY_LOGS} element={<ProtectedRoute requiredRole="admin"><ActivityLogs /></ProtectedRoute>} />
+      <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Public Routes for Health Information */}
       <Route path="/disease-prevention" element={<DiseasePrevention />} />
@@ -99,27 +84,14 @@ function App() {
       <Route path="/mental-health-care" element={<MentalHealthCare />} />
 
       {/* Manager Routes */}
-      <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="manager"><ManagerDashboard onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.MANAGER.HEALTH_RECORDS} element={<ProtectedRoute requiredRole="manager"><HealthRecords /></ProtectedRoute>} />
-      <Route path={ROUTES.MANAGER.MEDICAL_STAFF} element={<ProtectedRoute requiredRole="manager"><MedicalStaffManagement /></ProtectedRoute>} />
-      <Route path={ROUTES.MANAGER.ALERTS} element={<ProtectedRoute requiredRole="manager"><AlertsAndNotifications /></ProtectedRoute>} />
-      <Route path={ROUTES.MANAGER.EVENTS} element={<ProtectedRoute requiredRole="manager"><EventAndAppointmentManagement /></ProtectedRoute>} />
+      <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="manager"><ManagerRouter onLogout={handleLogout} /></ProtectedRoute>} />
+      
 
       {/* Nurse Routes */}
-      <Route path={`${ROUTES.NURSE.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="nurse"><NurseDashboard onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={`${ROUTES.NURSE.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="nurse"><NurseRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Parent Routes */}
-      <Route path={`${ROUTES.PARENT.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="parent"><ParentDashboard onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.HEALTH_PROFILE} element={<ProtectedRoute requiredRole="parent"><HealthProfileForm onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.MEDICATION} element={<ProtectedRoute requiredRole="parent"><MedicationForm onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.HEALTH_CHECK.DASHBOARD} element={<ProtectedRoute requiredRole="parent"><HealthCheckDashboard onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.HEALTH_CHECK.SCHEDULE} element={<ProtectedRoute requiredRole="parent"><HealthCheckSchedule /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.HEALTH_CHECK.REGISTRATION} element={<ProtectedRoute requiredRole="parent"><HealthCheckRegistrationForm /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.HEALTH_CHECK.RESULTS} element={<ProtectedRoute requiredRole="parent"><HealthCheckResults /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.VACCINATION.DASHBOARD} element={<ProtectedRoute requiredRole="parent"><VaccinationEventDashboard onLogout={handleLogout} /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.VACCINATION.SCHEDULE} element={<ProtectedRoute requiredRole="parent"><VaccinationSchedule /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.VACCINATION.REGISTRATION} element={<ProtectedRoute requiredRole="parent"><VaccinationRegistrationForm /></ProtectedRoute>} />
-      <Route path={ROUTES.PARENT.VACCINATION.NEWS} element={<ProtectedRoute requiredRole="parent"><VaccinationNews /></ProtectedRoute>} />
+      <Route path={`${ROUTES.PARENT.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="parent"><ParentRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Fallback Route */}
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />

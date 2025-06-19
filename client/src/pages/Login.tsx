@@ -14,7 +14,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { login } from "../services/apiClient";
 import { LoginProps, UserRole } from "../types";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
@@ -67,17 +66,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.role) {
-      alert("Vui lòng chọn vai trò trước khi đăng nhập.");
-      return;
-    }
-    try {
-      await login(form.username, form.password, form.role);
-      onLogin(form.role);
-    } catch (error) {
-      alert("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
-      console.error("Login error:", error);
-    }
+    onLogin(form.role);
   };
 
   return (

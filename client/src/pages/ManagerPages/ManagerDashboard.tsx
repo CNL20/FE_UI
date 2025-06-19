@@ -16,10 +16,9 @@ import {
 import { Search, Assignment } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import { ManagerDashboardProps } from "../../types";
 import { ROUTES } from "../../constants";
 
-const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ onLogout }) => {
+const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -63,6 +62,10 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ onLogout }) => {
     navigate("/manager/event-and-appointment-management");
   };
 
+  const handleLogout = () => {
+    if (onLogout) onLogout();
+  };
+
   const menuItems = [
     {
       text: "Quản lý hồ sơ y tế",
@@ -84,8 +87,7 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({ onLogout }) => {
 
   return (
     <>
-      <Navbar
-        onLogout={onLogout}
+      <Navbar {...(onLogout ? { onLogout: handleLogout } : {})}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}

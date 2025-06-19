@@ -30,16 +30,16 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ onLogout }) => {
   };
 
   const handleMedicationFormNavigation = () => {
-    navigate("/parent-pages/medication-form");
+    navigate("/parent/medication-form");
   };
   const handleHealthProfileNavigation = () => {
-    navigate("/parent-pages/health-profile-form");
+    navigate("/parent/health-profile-form");
   };
   const handleHealthCheckNavigation = () => {
-    navigate("/parent-pages/health-check-dashboard");
+    navigate("/parent/health-check-dashboard");
   };
   const handleVaccinationEventNavigation = () => {
-    navigate("/parent-pages/vaccination-event-dashboard");
+    navigate("/parent/vaccination-event-dashboard");
   };
 
   return (

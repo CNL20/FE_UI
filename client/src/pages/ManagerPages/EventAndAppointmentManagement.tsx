@@ -2,10 +2,14 @@ import React from "react";
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
-const EventAndAppointmentManagement: React.FC = () => {
+interface EventAndAppointmentManagementProps {
+  onLogout?: () => void;
+}
+
+const EventAndAppointmentManagement: React.FC<EventAndAppointmentManagementProps> = ({ onLogout }) => {
   return (
     <>
-      <Navbar />
+      <Navbar {...(onLogout ? { onLogout } : {})} />
       <Box
         sx={{
           p: 3,

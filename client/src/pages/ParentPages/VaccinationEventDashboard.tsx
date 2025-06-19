@@ -105,8 +105,8 @@ const VaccinationEventDashboard: React.FC<VaccinationEventDashboardProps> = ({ o
             }}
             onClick={handleNavigateToVaccinationRegistration}
           >
-            <h3>Đăng kí tiêm chủng</h3>
-            <p>Đăng kí tiêm chủng vaccin cho học sinh.</p>
+            <h3>Xác nhận tiêm chủng</h3>
+            <p>Xác nhận tiêm chủng vaccin cho học sinh.</p>
           </div>
           <div
             style={{
@@ -152,6 +152,7 @@ const VaccinationEventDashboard: React.FC<VaccinationEventDashboardProps> = ({ o
           >
             Quay về
           </button>
+          
         </div>
       </div>
     </>

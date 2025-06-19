@@ -1,6 +1,28 @@
 import React from "react";
+import Navbar from "../../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
-const VaccinationNews: React.FC = () => {
+const VaccinationNews: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
+  const navigate = useNavigate();
+
+  const handleNavigateToHome = () => {
+    navigate("/");
+  };
+  const handleNavigateToNews = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("school-health-news");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+  const handleNavigateToContact = () => {
+    navigate("/");
+    setTimeout(() => {
+      const el = document.getElementById("contact");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   const vaccineNews = [
     {
       vaccineName: "COVID-19",
@@ -30,39 +52,62 @@ const VaccinationNews: React.FC = () => {
   ];
 
   return (
-    <div
-      style={{
-        padding: "20px",
-        backgroundColor: "#f4f4f4",
-        minHeight: "100vh",
-      }}
-    >
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Tin tức về vaccin</h1>
-      <p style={{ textAlign: "center", marginBottom: "20px", fontSize: "16px", color: "#555" }}>
-        Hiện tại trường đang triển khai các chương trình tiêm chủng vaccin nhằm bảo vệ sức khỏe học sinh và cộng đồng.
-        Dưới đây là thông tin chi tiết về các loại vaccin và lợi ích của chúng.
-      </p>
-      <p style={{ textAlign: "center", marginBottom: "20px", fontSize: "16px", color: "#555" }}>
-        Hoàn cảnh bệnh hiện tại: Một số bệnh như COVID-19, Viêm gan B, Sởi, Cúm, và Thủy đậu vẫn đang là mối nguy cơ lớn đối với sức khỏe cộng đồng.
-        Việc tiêm chủng là biện pháp hiệu quả để phòng ngừa và giảm thiểu tác động của các bệnh này.
-      </p>
-      {vaccineNews.map((news, index) => (
-        <div
-          key={index}
+    <>
+      <Navbar {...(onLogout ? { onLogout } : {})}
+        onNavigateToHome={handleNavigateToHome}
+        onNavigateToNews={handleNavigateToNews}
+        onNavigateToContact={handleNavigateToContact}
+      />
+      <div
+        style={{
+          padding: "20px",
+          backgroundColor: "#f4f4f4",
+          minHeight: "100vh",
+        }}
+      >
+        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Tin tức về vaccin</h1>
+        <p style={{ textAlign: "center", marginBottom: "20px", fontSize: "16px", color: "#555" }}>
+          Hiện tại trường đang triển khai các chương trình tiêm chủng vaccin nhằm bảo vệ sức khỏe học sinh và cộng đồng.
+          Dưới đây là thông tin chi tiết về các loại vaccin và lợi ích của chúng.
+        </p>
+        <p style={{ textAlign: "center", marginBottom: "20px", fontSize: "16px", color: "#555" }}>
+          Hoàn cảnh bệnh hiện tại: Một số bệnh như COVID-19, Viêm gan B, Sởi, Cúm, và Thủy đậu vẫn đang là mối nguy cơ lớn đối với sức khỏe cộng đồng.
+          Việc tiêm chủng là biện pháp hiệu quả để phòng ngừa và giảm thiểu tác động của các bệnh này.
+        </p>
+        {vaccineNews.map((news, index) => (
+          <div
+            key={index}
+            style={{
+              backgroundColor: "white",
+              padding: "20px",
+              marginBottom: "20px",
+              borderRadius: "10px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            <h2 style={{ color: "#3498db" }}>{news.vaccineName}</h2>
+            <p><strong>Giới thiệu:</strong> {news.description}</p>
+            <p><strong>Lợi ích:</strong> {news.benefits}</p>
+          </div>
+        ))}
+        <button
           style={{
-            backgroundColor: "white",
-            padding: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            backgroundColor: "#2ecc71",
+            color: "white",
+            padding: "10px 24px",
+            border: "none",
+            borderRadius: "6px",
+            fontSize: "16px",
+            cursor: "pointer",
+            display: "block",
+            margin: "32px auto",
           }}
+          onClick={() => navigate("/parent/vaccination-event-dashboard")}
         >
-          <h2 style={{ color: "#3498db" }}>{news.vaccineName}</h2>
-          <p><strong>Giới thiệu:</strong> {news.description}</p>
-          <p><strong>Lợi ích:</strong> {news.benefits}</p>
-        </div>
-      ))}
-    </div>
+          Quay về trang tiêm chủng
+        </button>
+      </div>
+    </>
   );
 };
 
