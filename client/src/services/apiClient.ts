@@ -3,7 +3,7 @@ import { UserRole, RegisterPayload } from '../types';
 import { STORAGE_KEYS, API_ENDPOINTS } from '../constants';
 
 const apiClient = axios.create({
-  baseURL: process.env['REACT_APP_API_BASE_URL'] || 'https://localhost:5001/api',
+  baseURL: process.env['REACT_APP_API_BASE_URL'] || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },

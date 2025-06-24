@@ -18,6 +18,7 @@ import { LoginProps, UserRole } from "../types";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { login as loginApi } from "../services/apiClient";
 
 // Roles với value dạng chữ thường cho backend
 const roles = [
@@ -66,7 +67,12 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(form.role);
+    try {
+      await loginApi(form.username, form.password, form.role);
+      onLogin(form.role);
+    } catch (error) {
+      alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+    }
   };
 
   return (

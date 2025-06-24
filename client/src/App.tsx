@@ -8,7 +8,6 @@ import ManagerRouter from "./router/managerRouter";
 import NurseRouter from "./router/nurseRouter";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
 import DiseasePrevention from "./pages/DiseasePrevention";
 import NutritionGuide from "./pages/NutritionGuide";
 import MentalHealthCare from "./pages/MentalHealthCare";
@@ -73,7 +72,6 @@ function App() {
       {/* Public Routes */}
       <Route path={ROUTES.HOME} element={<Home isAuthenticated={authState.isAuthenticated} />} />
       <Route path={ROUTES.LOGIN} element={authState.isAuthenticated ? <Navigate to={`/${authState.userRole}`} replace /> : <Login onLogin={handleLogin} />} />
-      <Route path={ROUTES.REGISTER} element={<Register />} />
 
       {/* Admin Routes */}
       <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />
