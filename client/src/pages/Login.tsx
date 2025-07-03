@@ -22,10 +22,10 @@ import { login as loginApi } from "../services/apiClient";
 
 // Roles với value dạng chữ thường cho backend
 const roles = [
-  { value: "admin" as UserRole, label: "Quản trị viên" },
-  { value: "parent" as UserRole, label: "Phụ huynh" },
-  { value: "manager" as UserRole, label: "Quản lý" },
-  { value: "nurse" as UserRole, label: "Y tá trường học" },
+  { value: "Admin" as UserRole, label: "Quản trị viên" },
+  { value: "Parent" as UserRole, label: "Phụ huynh" },
+  { value: "Manager" as UserRole, label: "Quản lý" },
+  { value: "Nurse" as UserRole, label: "Y tá trường học" },
 ];
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
@@ -36,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     password: string;
     remember: boolean;
   }>({
-    role: "parent",
+    role: "Parent" as UserRole,
     username: "",
     password: "",
     remember: false,

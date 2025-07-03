@@ -1,5 +1,5 @@
 // User related types
-export type UserRole = 'admin' | 'manager' | 'nurse' | 'parent';
+export type UserRole = 'Admin' | 'Manager' | 'Nurse' | 'Parent';
 
 export interface User {
   id: string;
