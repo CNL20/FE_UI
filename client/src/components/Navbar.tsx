@@ -16,6 +16,10 @@ interface NavbarProps {
   isHomePage?: boolean;
   setIsAuthenticated?: (isAuthenticated: boolean) => void;
   setUserRole?: (userRole: string) => void;
+  onLogout?: () => void;
+  onNavigateToHome?: () => void;
+  onNavigateToNews?: () => void;
+  onNavigateToContact?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
