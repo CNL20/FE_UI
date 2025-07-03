@@ -95,7 +95,8 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   const isHomePage = location.pathname === ROUTES.HOME;
-
+  console.log("location.pathname:", location.pathname);
+  console.log("ROUTES.NURSE.DASHBOARD:", ROUTES.NURSE.DASHBOARD);
   return (
     <AppBar
       position="fixed"
@@ -285,10 +286,16 @@ const Navbar: React.FC<NavbarProps> = ({
                       }}
                     >
                       Sự kiện tiêm chủng
-                    </MenuItem>
+                    </MenuItem>                  </>
+                )}
+                {isNurse && (
+                  <>
+                    {/* Nurse không có menu item riêng */}
                   </>
                 )}
-                <MenuItem onClick={handleProfile}>Thông tin tài khoản</MenuItem>
+                {!isNurse && (
+                  <MenuItem onClick={handleProfile}>Thông tin tài khoản</MenuItem>
+                )}
                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
               </Menu>
             </>

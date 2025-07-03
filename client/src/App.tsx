@@ -74,7 +74,7 @@ function App() {
       <Route path={ROUTES.LOGIN} element={authState.isAuthenticated ? <Navigate to={`/${authState.userRole}`} replace /> : <Login onLogin={handleLogin} />} />
 
       {/* Admin Routes */}
-      <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="Admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Public Routes for Health Information */}
       <Route path="/disease-prevention" element={<DiseasePrevention />} />
@@ -82,14 +82,14 @@ function App() {
       <Route path="/mental-health-care" element={<MentalHealthCare />} />
 
       {/* Manager Routes */}
-      <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="Manager"><ManagerRouter onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="manager"><ManagerRouter onLogout={handleLogout} /></ProtectedRoute>} />
       
 
       {/* Nurse Routes */}
-      <Route path={`${ROUTES.NURSE.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="Nurse"><NurseRouter onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={`${ROUTES.NURSE.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="nurse"><NurseRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Parent Routes */}
-      <Route path={`${ROUTES.PARENT.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="Parent"><ParentRouter onLogout={handleLogout} /></ProtectedRoute>} />
+      <Route path={`${ROUTES.PARENT.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="parent"><ParentRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
       {/* Fallback Route */}
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
