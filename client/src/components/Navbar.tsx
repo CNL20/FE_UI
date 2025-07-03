@@ -95,8 +95,6 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   const isHomePage = location.pathname === ROUTES.HOME;
-  console.log("location.pathname:", location.pathname);
-  console.log("ROUTES.NURSE.DASHBOARD:", ROUTES.NURSE.DASHBOARD);
   return (
     <AppBar
       position="fixed"

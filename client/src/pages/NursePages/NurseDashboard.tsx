@@ -1,5 +1,5 @@
 // Nurse Dashboard Page
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Box,
   Paper,
@@ -43,26 +43,25 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
     expiryDate: "",
     location: "",
   });
-
-  const handleNavigateToHome = () => {
+  const handleNavigateToHome = useCallback(() => {
     navigate(ROUTES.HOME);
-  };
+  }, [navigate]);
 
-  const handleNavigateToNews = () => {
+  const handleNavigateToNews = useCallback(() => {
     navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
-  };
+  }, [navigate]);
 
-  const handleNavigateToContact = () => {
+  const handleNavigateToContact = useCallback(() => {
     navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
-  };
+  }, [navigate]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
