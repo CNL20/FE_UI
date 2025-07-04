@@ -11,6 +11,36 @@ export interface User {
   updatedAt: Date;
 }
 
+// Student and Parent related types
+export interface Student {
+  id?: number; // Keep for backward compatibility
+  studentId?: number; // New field from backend
+  student_code?: string; // Keep for backward compatibility  
+  studentCode?: string; // New field from backend
+  name: string;
+  dob: string;
+  gender: 'male' | 'female';
+  class: string;
+  school: string;
+  address: string;
+  parent_cccd: string;
+  blood_type: string;
+  height: number;
+  weight: number;
+  status: 'active' | 'inactive';
+  parent?: ParentInfo;
+}
+
+export interface ParentInfo {
+  id: number;
+  account_id: number;
+  name: string;
+  phone: string;
+  cccd: string;
+  relationship?: 'father' | 'mother' | 'guardian';
+  emergencyContact?: string;
+}
+
 // Health Record related types
 export interface HealthRecord {
   id: string;
@@ -43,6 +73,43 @@ export interface Vaccination {
   batchNumber: string;
   administeredBy: string;
   nextDueDate?: Date;
+}
+
+// Medical Incident related types
+export interface MedicalIncident {
+  id: string;
+  studentId: string;
+  studentName: string;
+  className: string;
+  incidentType: 'injury' | 'illness' | 'emergency' | 'allergy' | 'other';
+  description: string;
+  symptoms: string[];
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  location: string;
+  dateTime: Date;
+  treatmentGiven: string;
+  medicationsUsed: string[];
+  additionalNotes: string;
+  parentNotified: boolean;
+  parentNotificationTime?: Date;
+  nurseId: string;
+  nurseName: string;
+  status: 'active' | 'resolved' | 'follow-up-required';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateMedicalIncidentPayload {
+  studentId: number;
+  incidentType: 'injury' | 'illness' | 'emergency' | 'allergy' | 'other';
+  description: string;
+  symptoms: string[];
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  location: string;
+  treatmentGiven: string;
+  medicationsUsed: string[];
+  additionalNotes: string;
+  parentNotified: boolean;
 }
 
 // Event related types
@@ -83,14 +150,73 @@ export interface Notification {
   createdAt: Date;
 }
 
+// Vaccination related types
+export interface VaccinationCampaign {
+  id: string;
+  name: string;
+  description: string;
+  vaccineType: string;
+  startDate: string;
+  endDate: string;
+  targetAgeGroup: string;
+  location: string;
+  maxParticipants: number;
+  currentParticipants: number;
+  status: 'active' | 'completed' | 'cancelled';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VaccinationConfirmation {
+  id: string;
+  campaignId: string;
+  studentId: string;
+  parentId: string;
+  confirmationDate: string;
+  appointmentDate: string;
+  status: 'confirmed' | 'completed' | 'cancelled';
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VaccinationConfirmationPayload {
+  campaignId: string;
+  studentId: string;
+  appointmentDate: string;
+  notes?: string;
+}
+
+// Medicine Inventory types
+export interface MedicineItem {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  quantity: number;
+  unit: string;
+  expiryDate: string;
+  batchNumber: string;
+  manufacturer: string;
+  status: 'available' | 'expired' | 'low_stock';
+  createdAt: string;
+  updatedAt: string;
+}
+
 // API Response types
 export interface ApiResponse<T> {
   success: boolean;
-  data?: T;
-  error?: {
-    code: string;
-    message: string;
-  };
+  data: T;
+  message: string;
+  timestamp: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 // Form related types
@@ -163,4 +289,20 @@ export interface NurseDashboardProps extends DashboardProps {}
 export interface HealthProfileFormProps extends DashboardProps {}
 export interface MedicationFormProps extends DashboardProps {}
 export interface VaccinationEventDashboardProps extends DashboardProps {}
-export interface HealthCheckDashboardProps extends DashboardProps {} 
+export interface HealthCheckDashboardProps extends DashboardProps {}
+
+// Search and Filter types
+export interface StudentSearchFilters {
+  name?: string;
+  class?: string;
+  school?: string;
+  status?: 'active' | 'inactive';
+}
+
+export interface MedicalEventFilters {
+  studentId?: string;
+  from?: string;
+  to?: string;
+  eventType?: string;
+  severity?: 'low' | 'medium' | 'high' | 'critical';
+}

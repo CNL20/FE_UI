@@ -18,8 +18,37 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
+    CHECK: '/auth/check',
     REFRESH_TOKEN: '/auth/refresh-token',
   },
+  STUDENT: {
+    BASE: '/student',
+    SEARCH_BY_NAME: (name: string) => `/student/search-by-name?name=${encodeURIComponent(name)}`,
+    BY_ID: (id: string) => `/student/${id}`,
+  },
+  MEDICAL_EVENT: {
+    BASE: '/medical-event',
+    CREATE: '/medical-event',
+    LIST: '/medical-event',
+    BY_ID: (id: string) => `/medical-event/${id}`,
+    STUDENT: (studentId: string) => `/medical-event/student/${studentId}`,
+    WITH_FILTERS: (filters: Record<string, string>) => {
+      const params = new URLSearchParams(filters);
+      return `/medical-event?${params.toString()}`;
+    },
+  },
+  VACCINATION: {
+    CAMPAIGNS: '/vaccination/campaigns',
+    CAMPAIGN_CONFIRMATIONS: (id: string) => `/vaccination/campaigns/${id}/confirmations`,
+    CONFIRMATIONS: '/vaccination/confirmations',
+  },
+  PARENT: {
+    BY_ID: (id: string) => `/parent/${id}`,
+  },
+  MEDICINE_INVENTORY: {
+    BASE: '/medicine-inventory',
+  },
+  // Legacy endpoints for backward compatibility
   USERS: {
     BASE: '/users',
     PROFILE: '/users/profile',
@@ -144,4 +173,4 @@ export const APPOINTMENT_STATUS = {
   COMPLETED: 'completed',
   CANCELLED: 'cancelled',
   NO_SHOW: 'no-show',
-} as const; 
+} as const;
