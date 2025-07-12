@@ -18,8 +18,38 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     REGISTER: '/auth/register',
     LOGOUT: '/auth/logout',
+    CHECK: '/auth/check',
     REFRESH_TOKEN: '/auth/refresh-token',
   },
+  STUDENT: {
+    BASE: '/student',
+    SEARCH_BY_NAME: (name: string) => `/student/search-by-name?name=${encodeURIComponent(name)}`,
+    BY_ID: (id: string) => `/student/${id}`,
+  },
+  MEDICAL_EVENT: {
+    BASE: '/medical-event',
+    CREATE: '/medical-event',
+    LIST: '/medical-event',
+    BY_ID: (id: string) => `/medical-event/${id}`,
+    STUDENT: (studentId: string) => `/medical-event/student/${studentId}`,
+    WITH_FILTERS: (filters: Record<string, string>) => {
+      const params = new URLSearchParams(filters);
+      return `/medical-event?${params.toString()}`;
+    },
+  },
+  VACCINATION: {
+    CAMPAIGNS: '/vaccination/campaigns',
+    CAMPAIGN_SCHEDULE: (id: number | string) => `/vaccination/campaigns/${id}/schedule`,
+    CAMPAIGN_CONFIRMATIONS: (id: string) => `/vaccination/campaigns/${id}/confirmations`,
+    CONFIRMATIONS: '/vaccination/confirmations',
+  },
+  PARENT: {
+    BY_ID: (id: string) => `/parent/${id}`,
+  },
+  MEDICINE_INVENTORY: {
+    BASE: '/medicine-inventory',
+  },
+  // Legacy endpoints for backward compatibility
   USERS: {
     BASE: '/users',
     PROFILE: '/users/profile',
@@ -44,7 +74,6 @@ export const API_ENDPOINTS = {
   },
 };
 
-// Route paths
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
@@ -60,6 +89,7 @@ export const ROUTES = {
     MEDICAL_STAFF: '/manager/medical-staff-management',
     ALERTS: '/manager/alerts-and-notifications',
     EVENTS: '/manager/event-and-appointment-management',
+    VACCINATION_CAMPAIGNS: '/manager/vaccination-campaigns',
   },
   NURSE: {
     DASHBOARD: '/nurse',
@@ -80,10 +110,10 @@ export const ROUTES = {
       REGISTRATION: '/parent-pages/vaccination-registration-form',
       NEWS: '/parent-pages/vaccination-news',
     },
+    NOTIFICATION: '/parent/notification',
   },
 };
 
-// Local storage keys
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
   REFRESH_TOKEN: 'refresh_token',
@@ -91,9 +121,9 @@ export const STORAGE_KEYS = {
   USER_DATA: 'user_data',
   THEME: 'theme',
   LANGUAGE: 'language',
+  TOKEN: 'token',
 };
 
-// Form validation
 export const VALIDATION = {
   PASSWORD: {
     MIN_LENGTH: 8,
@@ -110,7 +140,6 @@ export const VALIDATION = {
   },
 };
 
-// Date formats
 export const DATE_FORMATS = {
   DISPLAY: 'dd/MM/yyyy',
   API: 'yyyy-MM-dd',
@@ -118,13 +147,11 @@ export const DATE_FORMATS = {
   TIME: 'HH:mm',
 };
 
-// Pagination
 export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 10,
   PAGE_SIZE_OPTIONS: [10, 20, 50, 100],
 };
 
-// Notification types
 export const NOTIFICATION_TYPES = {
   INFO: 'info',
   SUCCESS: 'success',
@@ -132,17 +159,15 @@ export const NOTIFICATION_TYPES = {
   ERROR: 'error',
 } as const;
 
-// Event types
 export const EVENT_TYPES = {
   CHECKUP: 'checkup',
   VACCINATION: 'vaccination',
   EMERGENCY: 'emergency',
 } as const;
 
-// Appointment status
 export const APPOINTMENT_STATUS = {
   SCHEDULED: 'scheduled',
   COMPLETED: 'completed',
   CANCELLED: 'cancelled',
   NO_SHOW: 'no-show',
-} as const; 
+} as const;
