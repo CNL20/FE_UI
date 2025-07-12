@@ -39,7 +39,10 @@ export const API_ENDPOINTS = {
   },
   VACCINATION: {
     CAMPAIGNS: '/vaccination/campaigns',
+<<<<<<< HEAD
     CAMPAIGN_SCHEDULE: (id: number | string) => `/vaccination/campaigns/${id}/schedule`,
+=======
+>>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     CAMPAIGN_CONFIRMATIONS: (id: string) => `/vaccination/campaigns/${id}/confirmations`,
     CONFIRMATIONS: '/vaccination/confirmations',
   },
@@ -77,7 +80,6 @@ export const API_ENDPOINTS = {
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
-  REGISTER: '/register',
   ADMIN: {
     DASHBOARD: '/admin',
     MANAGE_ACCOUNTS: '/admin/manage-accounts',

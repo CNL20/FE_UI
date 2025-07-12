@@ -104,7 +104,6 @@ const Navbar: React.FC<NavbarProps> = ({
   };
 
   const isHomePage = location.pathname === ROUTES.HOME;
-
   return (
     <AppBar
       position="fixed"
@@ -164,11 +163,50 @@ const Navbar: React.FC<NavbarProps> = ({
                 )}
                 {isParent && (
                   <>
+<<<<<<< HEAD
                     <MenuItem onClick={() => { navigate("/parent-pages/health-profile-form"); handleClose(); }}>Khai báo hồ sơ sức khỏe</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent-pages/medication-form"); handleClose(); }}>Sử dụng thuốc</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent-pages/health-check-dashboard"); handleClose(); }}>Khám sức khỏe</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent-pages/vaccination-event-dashboard"); handleClose(); }}>Sự kiện tiêm chủng</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent/notification"); handleClose(); }}>Thông báo</MenuItem>
+=======
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/parent-pages/health-profile-form");
+                        handleClose();
+                      }}
+                    >
+                      Khai báo hồ sơ sức khỏe
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/parent-pages/medication-form");
+                        handleClose();
+                      }}
+                    >
+                      Sử dụng thuốc
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/parent-pages/health-check-dashboard");
+                        handleClose();
+                      }}
+                    >
+                      Khám sức khỏe
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/parent-pages/vaccination-event-dashboard");
+                        handleClose();
+                      }}
+                    >
+                      Sự kiện tiêm chủng
+                    </MenuItem>                  </>
+                )}
+                {isNurse && (
+                  <>
+                    {/* Nurse không có menu item riêng */}
+>>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   </>
                 )}
                 {!isNurse && (
