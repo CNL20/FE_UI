@@ -11,6 +11,8 @@ import VaccinationRegistrationForm from "../pages/ParentPages/VaccinationRegistr
 import VaccinationSchedule from "../pages/ParentPages/VaccinationSchedule";
 import VaccinationNews from "../pages/ParentPages/VaccinationNews";
 import HealthCheckSchedule from "../pages/ParentPages/HealthCheckSchedule";
+import ParentNotification from "../pages/ParentPages/ParentNotification"; // <-- Thêm dòng này
+
 const ParentRouter: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const safeLogout = onLogout || (() => {});
   return (
@@ -22,10 +24,26 @@ const ParentRouter: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
       <Route path="health-check-registration" element={<HealthCheckRegistrationForm />} />
       <Route path="health-check-results" element={<HealthCheckResults />} />
       <Route path="health-check-schedule" element={<HealthCheckSchedule />} />
+
+      {/* Sự kiện tiêm chủng: dashboard + các chức năng con */}
       <Route path="vaccination-event-dashboard" element={<VaccinationEventDashboard onLogout={safeLogout} />} />
-      <Route path="vaccination-registration" element={<VaccinationRegistrationForm />} />
+      {/* Khi bấm vào "Xác nhận tiêm chủng" sẽ navigate sang route này (có thể truyền campaignId hoặc không tuỳ hệ thống) */}
+      <Route path="vaccination-event-dashboard/consent/:campaignId" element={<VaccinationRegistrationForm />} />
+      {/* Nếu không có campaignId, bạn có thể thêm route này: */}
+      <Route path="vaccination-event-dashboard/consent" element={<VaccinationRegistrationForm />} />
+      <Route path="vaccination-event-dashboard/schedule" element={<VaccinationSchedule />} />
+      <Route path="vaccination-event-dashboard/news" element={<VaccinationNews />} />
+
+      {/* Nếu có phiếu đăng ký/vaccination form theo chiến dịch thì vẫn giữ */}
+      <Route path="vaccination-registration-form/:campaignId" element={<VaccinationRegistrationForm />} />
+
+      {/* Các đường dẫn xem lịch, xem tin tức, ... */}
       <Route path="vaccination-schedule" element={<VaccinationSchedule />} />
       <Route path="vaccination-news" element={<VaccinationNews />} />
+
+      {/* THÊM ROUTE THÔNG BÁO */}
+      <Route path="notification" element={<ParentNotification />} />
+
       <Route index element={<Navigate to="dashboard" replace />} />
     </Routes>
   );
