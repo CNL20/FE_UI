@@ -292,12 +292,74 @@ export const getMedicalIncidents = async (filters?: Record<string, string>) => {
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.append(key, value);
       });
-      endpoint += `?${params.toString()}`;
-    }
+      endpoint += `?${params.toString()}`;    }
+    
     const response = await apiClient.get(endpoint);
-    return response.data;
+    
+    // Handle different response structures
+    let incidents = [];
+    if (response.data) {
+      if (Array.isArray(response.data)) {
+        incidents = response.data;
+      } else if (response.data.data && Array.isArray(response.data.data)) {
+        incidents = response.data.data;
+      } else if (response.data.events && Array.isArray(response.data.events)) {
+        incidents = response.data.events;
+      } else {
+        incidents = [response.data];
+      }
+    }
+
+    // Map backend fields to frontend expected format
+    const mappedIncidents = incidents.map((incident: any, index: number) => {
+      // Smart severity mapping based on eventType if severity not provided
+      const inferSeverity = (eventType: string) => {
+        switch (eventType?.toLowerCase()) {
+          case 'emergency': return 'critical';
+          case 'allergy': return 'high';
+          case 'injury': return 'medium';
+          case 'illness': return 'low';
+          default: return 'low';
+        }
+      };
+
+      const mapped = {
+        id: incident.id || incident.eventId || `temp-${index}`,
+        studentName: incident.studentName || incident.student?.name || incident.Student?.name || 'Unknown Student',
+        className: incident.className || incident.student?.className || incident.Student?.className || 'Unknown Class',
+        incidentType: incident.eventType || incident.incidentType || incident.EventType || 'other',
+        severity: incident.severity || incident.Severity || inferSeverity(incident.eventType || incident.EventType),
+        dateTime: incident.eventDate || incident.dateTime || incident.EventDate || incident.createdAt || new Date().toISOString(),
+        description: incident.description || incident.Description || 'No description available',
+        location: incident.location || incident.Location || 'Unknown location',
+        status: incident.status || incident.Status || 'active',
+        parentNotified: incident.parentNotified || incident.ParentNotified || false,
+        treatmentGiven: incident.outcome || incident.treatmentGiven || incident.Outcome || '',
+        medicationsUsed: incident.usedSupplies ? 
+          (typeof incident.usedSupplies === 'string' ? incident.usedSupplies.split(', ') : incident.usedSupplies) : 
+          (incident.UsedSupplies ? 
+            (typeof incident.UsedSupplies === 'string' ? incident.UsedSupplies.split(', ') : incident.UsedSupplies) : []),
+        symptoms: incident.symptoms ? 
+          (typeof incident.symptoms === 'string' ? incident.symptoms.split(', ') : incident.symptoms) : 
+          (incident.Symptoms ? 
+            (typeof incident.Symptoms === 'string' ? incident.Symptoms.split(', ') : incident.Symptoms) : []),
+        additionalNotes: incident.notes || incident.additionalNotes || incident.Notes || ''
+      };
+      
+      return mapped;
+    });
+
+    return mappedIncidents;
   } catch (error: any) {
-    console.error('Failed to get medical incidents:', error.response?.data || error.message);
+    console.error('❌ Failed to get medical incidents:', error);
+    console.error('❌ Error response:', error.response?.data);
+    console.error('❌ Error status:', error.response?.status);
+    
+    // Return empty array instead of throwing to prevent UI crash
+    if (error.response?.status === 404) {
+      return [];
+    }
+    
     throw error;
   }
 };

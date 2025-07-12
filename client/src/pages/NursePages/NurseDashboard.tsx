@@ -378,9 +378,7 @@ const MedicalIncidentManager: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const loadIncidents = async () => {
+  };  const loadIncidents = async () => {
     try {
       const response = await getMedicalIncidents({
         ...filters,
@@ -390,26 +388,20 @@ const MedicalIncidentManager: React.FC = () => {
         limit: rowsPerPage.toString(),
       });
 
-      let incidentData = [];
-      if (response?.data) {
-        incidentData = Array.isArray(response.data)
-          ? response.data
-          : [response.data];
-      } else if (Array.isArray(response)) {
-        incidentData = response;
-      } else {
-        incidentData = [];
-      }
-
-      setIncidents(incidentData);
-      calculateStatistics(incidentData);
+      setIncidents(response || []);
+      calculateStatistics(response || []);
     } catch (error: any) {
+      console.error('❌ Error loading incidents:', error);
       setIncidents([]);
       if (error.response?.status !== 404) {
         setNotificationMessage(
           `Lỗi tải danh sách sự cố: ${error.message || "Không thể kết nối đến server"}`
         );
         setNotificationSeverity("error");
+        setShowNotification(true);
+      } else {
+        setNotificationMessage("Chưa có sự cố y tế nào được ghi nhận");
+        setNotificationSeverity("info");
         setShowNotification(true);
       }
     }
@@ -1202,12 +1194,14 @@ const MedicalIncidentManager: React.FC = () => {
                 </Button>
               </Box>
             </Box>
-          )}
-        </DialogContent>
+          )}        </DialogContent>
       </Dialog>
       <Paper sx={{ mt: 3 }}>
         <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
           <Typography variant="h6">Danh Sách Sự Cố Y Tế</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Đã tải {incidents.length} sự cố {incidents.length > 0 && incidents[0]?.id && typeof incidents[0].id === 'string' && incidents[0].id.includes("mock") ? "(Dữ liệu mẫu)" : ""}
+          </Typography>
         </Box>
         <TableContainer>
           <Table>
@@ -1219,8 +1213,7 @@ const MedicalIncidentManager: React.FC = () => {
                 <TableCell>Thời gian</TableCell>
                 <TableCell>Trạng thái</TableCell>
                 <TableCell>Thao tác</TableCell>
-              </TableRow>
-            </TableHead>
+              </TableRow>            </TableHead>
             <TableBody>
               {incidents
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -1229,29 +1222,51 @@ const MedicalIncidentManager: React.FC = () => {
                     <TableCell>
                       <Box>
                         <Typography variant="body2" fontWeight="medium">
-                          {incident.studentName}
+                          {incident.studentName || "N/A"}
                         </Typography>
                         <Typography variant="caption" color="text.secondary">
-                          {incident.className}
+                          {incident.className || "N/A"}
                         </Typography>
                       </Box>
+                    </TableCell>                    <TableCell>
+                      {(() => {
+                        const foundType = incidentTypes.find((t) => t.value === incident.incidentType);
+                        return foundType?.label || incident.incidentType || "N/A";
+                      })()}
                     </TableCell>
                     <TableCell>
-                      {incidentTypes.find((t) => t.value === incident.incidentType)?.label}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={severityLevels.find((s) => s.value === incident.severity)?.label}
-                        color={getSeverityColor(incident.severity) as any}
-                        size="small"
-                      />
+                      {(() => {
+                        const foundSeverity = severityLevels.find((s) => s.value === incident.severity);
+                        const displayText = foundSeverity?.label || incident.severity || "N/A";
+                        return (
+                          <Chip
+                            label={displayText}
+                            color={getSeverityColor(incident.severity) as any}
+                            size="small"
+                          />
+                        );
+                      })()}
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2">
-                        {new Date(incident.dateTime).toLocaleDateString("vi-VN")}
+                        {(() => {
+                          try {
+                            const date = new Date(incident.dateTime);
+                            return isNaN(date.getTime()) ? "N/A" : date.toLocaleDateString("vi-VN");
+                          } catch {
+                            return "N/A";
+                          }
+                        })()}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {new Date(incident.dateTime).toLocaleTimeString("vi-VN")}
+                        {(() => {
+                          try {
+                            const date = new Date(incident.dateTime);
+                            return isNaN(date.getTime()) ? "N/A" : date.toLocaleTimeString("vi-VN");
+                          } catch {
+                            return "N/A";
+                          }
+                        })()}
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -1380,7 +1395,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
         .finally(() => setLoadingSupplies(false));
     }
   }, [tabValue]);
-
   // Lấy danh sách campaign mà y tá được bổ nhiệm
   useEffect(() => {
     if (tabValue === 1) {
@@ -1401,7 +1415,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
         })
         .catch(() => setAssignedCampaigns([]));
     }
-  }, [tabValue]);
+  }, [tabValue, selectedCampaignId]);
 
   // Load Vaccination Schedule cho campaign đã chọn
   useEffect(() => {

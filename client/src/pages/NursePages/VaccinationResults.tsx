@@ -147,9 +147,8 @@ const VaccinationResults: React.FC = () => {
         }
         return (
           <DatePicker
-            value={dateValue}
-            format="YYYY-MM-DD"
-            onChange={(date, dateString) =>
+            value={dateValue}            format="YYYY-MM-DD"
+            onChange={(date: Dayjs | null, dateString: string | string[]) =>
               handleDateChange(
                 record.studentId,
                 date,
@@ -173,11 +172,10 @@ const VaccinationResults: React.FC = () => {
           followUpValue = typeof str === "string" && str !== "" ? dayjs(str) : null;
         }
         return (
-          <DatePicker
-            value={followUpValue}
+          <DatePicker            value={followUpValue}
             format="YYYY-MM-DD"
             placeholder="Chọn ngày"
-            onChange={(date, dateString) =>
+            onChange={(date: Dayjs | null, dateString: string | string[]) =>
               handleFollowUpChange(
                 record.studentId,
                 date,
