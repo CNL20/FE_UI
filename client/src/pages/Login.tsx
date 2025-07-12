@@ -65,11 +65,23 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }));
   };
 
+  // Lưu access_token, nurse_id vào localStorage nếu có
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginApi(form.username, form.password, form.role);
-      onLogin(form.role);
+      const data = await loginApi(form.username, form.password, form.role);
+      if (data && data.access_token) {
+        localStorage.setItem("token", data.access_token);
+        // Nếu là nurse, lưu thêm nurse_id
+        if (form.role === "nurse" && data.user && data.user.nurse_id) {
+          localStorage.setItem("nurse_id", data.user.nurse_id);
+        } else {
+          localStorage.removeItem("nurse_id");
+        }
+        onLogin(form.role);
+      } else {
+        alert("Đăng nhập thất bại: Không nhận được access token!");
+      }
     } catch (error) {
       alert("Tên đăng nhập hoặc mật khẩu không đúng!");
     }
@@ -82,20 +94,21 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       alignItems="center"
       justifyContent="center"
       minHeight="100vh"
-      bgcolor="#e3f2fd" // Màu xanh nhạt
+      bgcolor="#e3f2fd"
       p={2}
-    >        <Card sx={{ 
-          maxWidth: 500, 
-          boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-          borderRadius: 2,
-          overflow: "hidden",
-          width: "100%"
-        }}>
+    >
+      <Card sx={{
+        maxWidth: 500,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+        borderRadius: 2,
+        overflow: "hidden",
+        width: "100%"
+      }}>
         <CardContent>
           <Box textAlign="center" mb={3}>
-            <Typography 
-              variant="h4" 
-              gutterBottom 
+            <Typography
+              variant="h4"
+              gutterBottom
               sx={{
                 fontWeight: "bold",
                 color: "#1976d2",
@@ -184,15 +197,16 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                 />
               }
               label="Ghi nhớ mật khẩu"
-            />            <Button
+            />
+            <Button
               type="submit"
               variant="contained"
               color="primary"
               fullWidth
-              sx={{ 
-                mt: 2, 
-                py: 1.2, 
-                fontSize: "1rem", 
+              sx={{
+                mt: 2,
+                py: 1.2,
+                fontSize: "1rem",
                 fontWeight: "bold",
                 background: "linear-gradient(90deg, #1976d2 30%, #64b5f6 100%)",
                 transition: "all 0.3s",
@@ -207,8 +221,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
             </Button>
           </Box>
         </CardContent>
-        </Card>
-      </Box>
+      </Card>
+    </Box>
   );
 };
 
