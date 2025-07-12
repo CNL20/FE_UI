@@ -1,4 +1,3 @@
-// Manager Dashboard Page
 import React, { useState } from "react";
 import {
   Box,
@@ -12,8 +11,9 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  IconButton,
 } from "@mui/material";
-import { Search, Assignment } from "@mui/icons-material";
+import { Search, Assignment, Menu as MenuIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ROUTES } from "../../constants";
@@ -62,6 +62,10 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
     navigate("/manager/event-and-appointment-management");
   };
 
+  const handleNavigateToVaccinationCampaigns = () => {
+    navigate("/manager/vaccination-campaigns");
+  };
+
   const handleLogout = () => {
     if (onLogout) onLogout();
   };
@@ -83,11 +87,16 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
       text: "Quản lý sự kiện & lịch hẹn",
       onClick: handleNavigateToEventAndAppointmentManagement,
     },
+    {
+      text: "Quản lý chiến dịch tiêm chủng",
+      onClick: handleNavigateToVaccinationCampaigns,
+    },
   ];
 
   return (
     <>
-      <Navbar {...(onLogout ? { onLogout: handleLogout } : {})}
+      <Navbar
+        {...(onLogout ? { onLogout: handleLogout } : {})}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
@@ -104,6 +113,13 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
       >
         {/* Menu Button next to Search Bar */}
         <Box mb={3} display="flex" alignItems="center">
+          <IconButton
+            edge="start"
+            sx={{ mr: 2, color: "#007BFF", background: "#fff" }}
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+          </IconButton>
           <TextField
             fullWidth
             variant="outlined"
@@ -147,8 +163,6 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
               {menuItems.map((item, index) => (
                 <ListItem button key={index} onClick={item.onClick}>
                   <ListItemIcon sx={{ color: "#fff" }}>
-                    {" "}
-                    {/* White icons */}
                     <Assignment />
                   </ListItemIcon>
                   <ListItemText primary={item.text} />
