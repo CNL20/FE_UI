@@ -1,4 +1,3 @@
-// Manager Dashboard Page
 import React, { useState } from "react";
 import {
   Box,
@@ -6,7 +5,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   TextField,
   Drawer,
   List,
@@ -15,32 +13,21 @@ import {
   ListItemText,
   IconButton,
 } from "@mui/material";
-import { Search, Assignment, Menu } from "@mui/icons-material";
-import { useNavigate, useLocation } from "react-router-dom";
-import Logo from "../../components/Logo";
+import { Search, Assignment, Menu as MenuIcon } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import { ROUTES } from "../../constants";
 
-interface ManagerDashboardProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleNavigateToHome = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
   };
 
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -48,7 +35,7 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
   };
 
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -75,6 +62,14 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
     navigate("/manager/event-and-appointment-management");
   };
 
+  const handleNavigateToVaccinationCampaigns = () => {
+    navigate("/manager/vaccination-campaigns");
+  };
+
+  const handleLogout = () => {
+    if (onLogout) onLogout();
+  };
+
   const menuItems = [
     {
       text: "Quản lý hồ sơ y tế",
@@ -92,14 +87,16 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
       text: "Quản lý sự kiện & lịch hẹn",
       onClick: handleNavigateToEventAndAppointmentManagement,
     },
+    {
+      text: "Quản lý chiến dịch tiêm chủng",
+      onClick: handleNavigateToVaccinationCampaigns,
+    },
   ];
 
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
-        onLogout={onLogout}
+        {...(onLogout ? { onLogout: handleLogout } : {})}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
@@ -116,6 +113,13 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
       >
         {/* Menu Button next to Search Bar */}
         <Box mb={3} display="flex" alignItems="center">
+          <IconButton
+            edge="start"
+            sx={{ mr: 2, color: "#007BFF", background: "#fff" }}
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+          </IconButton>
           <TextField
             fullWidth
             variant="outlined"
@@ -159,8 +163,6 @@ const ManagerDashboard: React.FC<ManagerDashboardProps> = ({
               {menuItems.map((item, index) => (
                 <ListItem button key={index} onClick={item.onClick}>
                   <ListItemIcon sx={{ color: "#fff" }}>
-                    {" "}
-                    {/* White icons */}
                     <Assignment />
                   </ListItemIcon>
                   <ListItemText primary={item.text} />

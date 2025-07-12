@@ -12,33 +12,31 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
-  IconButton,
-  Link,
-  Container,
-  Paper,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import GoogleIcon from "@mui/icons-material/Google";
-import { useNavigate } from "react-router-dom";
+import { LoginProps, UserRole } from "../types";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { login as loginApi } from "../services/apiClient";
 
+// Roles với value dạng chữ thường cho backend
 const roles = [
-  { value: "admin", label: "Quản trị viên" },
-  { value: "parent", label: "Phụ huynh" },
-  { value: "manager", label: "Quản lý" },
-  { value: "nurse", label: "Y tá trường học" },
+  { value: "admin" as UserRole, label: "Quản trị viên" },
+  { value: "parent" as UserRole, label: "Phụ huynh" },
+  { value: "manager" as UserRole, label: "Quản lý" },
+  { value: "nurse" as UserRole, label: "Y tá trường học" },
 ];
 
-interface LoginProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-}
-
-const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
-  const navigate = useNavigate();
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({
-    role: "",
+  const [form, setForm] = useState<{
+    role: UserRole;
+    username: string;
+    password: string;
+    remember: boolean;
+  }>({
+    role: "parent" as UserRole,
     username: "",
     password: "",
     remember: false,
@@ -59,52 +57,82 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
     }
   };
 
-  const handleSelectChange = (e: SelectChangeEvent) => {
+  const handleSelectChange = (e: SelectChangeEvent<UserRole>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name || "role"]: value as UserRole,
     }));
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Lưu access_token, nurse_id vào localStorage nếu có
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Form Role:", form.role);
-
-    if (!form.role) {
-      alert("Vui lòng chọn vai trò trước khi đăng nhập.");
-      return;
+    try {
+      const data = await loginApi(form.username, form.password, form.role);
+      if (data && data.access_token) {
+        localStorage.setItem("token", data.access_token);
+        // Nếu là nurse, lưu thêm nurse_id
+        if (form.role === "nurse" && data.user && data.user.nurse_id) {
+          localStorage.setItem("nurse_id", data.user.nurse_id);
+        } else {
+          localStorage.removeItem("nurse_id");
+        }
+        onLogin(form.role);
+      } else {
+        alert("Đăng nhập thất bại: Không nhận được access token!");
+      }
+    } catch (error) {
+      alert("Tên đăng nhập hoặc mật khẩu không đúng!");
     }
-
-    setIsAuthenticated(true);
-    setUserRole(form.role);
-    navigate(`/${form.role}`);
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            Đăng nhập
-          </Typography>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      minHeight="100vh"
+      bgcolor="#e3f2fd"
+      p={2}
+    >
+      <Card sx={{
+        maxWidth: 500,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+        borderRadius: 2,
+        overflow: "hidden",
+        width: "100%"
+      }}>
+        <CardContent>
+          <Box textAlign="center" mb={3}>
+            <Typography
+              variant="h4"
+              gutterBottom
+              sx={{
+                fontWeight: "bold",
+                color: "#1976d2",
+                position: "relative",
+                pb: 1.5,
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "80px",
+                  height: "4px",
+                  background: "linear-gradient(90deg, #1976d2 0%, #64b5f6 100%)",
+                  borderRadius: "2px"
+                }
+              }}
+            >
+              Đăng nhập hệ thống
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Vui lòng nhập thông tin đăng nhập của bạn
+            </Typography>
+          </Box>
           <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -131,18 +159,23 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
               onChange={handleInputChange}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={() => setShowPassword((prev) => !prev)}>
+                  <IconButton
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                  >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 ),
               }}
             />
             <FormControl fullWidth margin="normal">
-              <InputLabel>Vai trò</InputLabel>
+              <InputLabel id="role-label">Vai trò</InputLabel>
               <Select
+                labelId="role-label"
                 value={form.role}
                 onChange={handleSelectChange}
                 name="role"
+                label="Vai trò"
                 required
               >
                 <MenuItem value="" disabled>
@@ -167,38 +200,29 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserRole }) => {
             />
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Đăng nhập
-            </Button>
-            <Button
-              variant="outlined"
+              color="primary"
               fullWidth
               sx={{
                 mt: 2,
-                borderColor: "#4285F4",
-                color: "#4285F4",
-                textTransform: "none",
+                py: 1.2,
+                fontSize: "1rem",
                 fontWeight: "bold",
-                fontSize: "16px",
+                background: "linear-gradient(90deg, #1976d2 30%, #64b5f6 100%)",
+                transition: "all 0.3s",
                 "&:hover": {
-                  backgroundColor: "#f1f1f1",
-                },
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 15px rgba(25, 118, 210, 0.3)",
+                  background: "linear-gradient(90deg, #1565c0 30%, #42a5f5 100%)"
+                }
               }}
-              startIcon={<GoogleIcon sx={{ color: "#4285F4" }} />}
-              onClick={() => console.log("Login with Google")}
             >
-              Google
+              Đăng nhập
             </Button>
-            <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-              Chưa có tài khoản? <Link href="/register">Đăng ký</Link>
-            </Typography>
           </Box>
-        </Paper>
-      </Box>
-    </Container>
+        </CardContent>
+      </Card>
+    </Box>
   );
 };
 

@@ -2,10 +2,14 @@ import React from "react";
 import { Box, Typography, Grid, Card, CardContent } from "@mui/material";
 import Navbar from "../../components/Navbar";
 
-const AlertsAndNotifications: React.FC = () => {
+interface AlertsAndNotificationsProps {
+  onLogout?: () => void;
+}
+
+const AlertsAndNotifications: React.FC<AlertsAndNotificationsProps> = ({ onLogout }) => {
   return (
     <>
-      <Navbar />
+      <Navbar {...(onLogout ? { onLogout } : {})} />
       <Box
         sx={{
           p: 3,

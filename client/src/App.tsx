@@ -1,222 +1,151 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
+import { UserRole } from "./types";
+import { ROUTES, STORAGE_KEYS } from "./constants";
+import AdminRouter from "./router/adminRouter";
+import ParentRouter from "./router/parentRouter";
+import ManagerRouter from "./router/managerRouter";
+import NurseRouter from "./router/nurseRouter";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Register from "./pages/Register";
-import AdminDashboard from "./pages/AdminPages/AdminDashboard";
-import ManagerDashboard from "./pages/ManagerPages/ManagerDashboard";
-import NurseDashboard from "./pages/NursePages/NurseDashboard";
-import HealthRecords from "./pages/ManagerPages/HealthRecords";
-import MedicalStaffManagement from "./pages/ManagerPages/MedicalStaffManagement";
-import AlertsAndNotifications from "./pages/ManagerPages/AlertsAndNotifications";
-import EventAndAppointmentManagement from "./pages/ManagerPages/EventAndAppointmentManagement";
-import ParentDashboard from "./pages/ParentPages/ParentDashboard";
-import ManageAccounts from "./pages/AdminPages/ManageAccounts";
-import ActivityLogs from "./pages/AdminPages/ActivityLogs";
-import HealthProfileForm from "./pages/ParentPages/HealthProfileForm";
-import MedicationForm from "./pages/ParentPages/MedicationForm";
-import HealthCheckDashboard from "./pages/ParentPages/HealthCheckDashboard";
-import VaccinationEventDashboard from "./pages/ParentPages/VaccinationEventDashboard";
+import DiseasePrevention from "./pages/DiseasePrevention";
+import NutritionGuide from "./pages/NutritionGuide";
+import MentalHealthCare from "./pages/MentalHealthCare";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const savedAuth = localStorage.getItem("isAuthenticated");
-    return savedAuth === "true";
+  // Session: check for expiry (30 minutes, can adjust)
+  const [authState, setAuthState] = useState(() => {
+    const savedAuth = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const savedRole = localStorage.getItem(STORAGE_KEYS.USER_ROLE) as UserRole | null;
+    const savedTime = localStorage.getItem('AUTH_TIMESTAMP');
+    const currentTime = Date.now();
+    const sessionExpiry = 1800000; // 30 minutes
+    if (savedAuth && savedRole && savedTime) {
+      const timeDiff = currentTime - parseInt(savedTime);
+      if (timeDiff < sessionExpiry) {
+        return {
+          isAuthenticated: true,
+          userRole: savedRole,
+        };
+      }
+    }
+    // Expired or missing, clear
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    localStorage.removeItem('AUTH_TIMESTAMP');
+    return {
+      isAuthenticated: false,
+      userRole: "",
+    };
   });
-  const [userRole, setUserRole] = useState(() => {
-    return localStorage.getItem("userRole") || "";
-  });
+
   const navigate = useNavigate();
+  // Nếu bạn không dùng location trong logic, hãy xoá dòng này:
+  // const location = useLocation();
 
+  // Update localStorage on authState change
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", isAuthenticated.toString());
-    localStorage.setItem("userRole", userRole);
-  }, [isAuthenticated, userRole]);
+    if (authState.isAuthenticated) {
+      localStorage.setItem(STORAGE_KEYS.USER_ROLE, authState.userRole);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    }
+  }, [authState.isAuthenticated, authState.userRole]);
 
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUserRole("");
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("userRole");
-    navigate("/");
-  };
+  const handleLogin = useCallback((role: UserRole) => {
+    // Set token (dummy if not from backend), role, timestamp
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, 'temp_token');
+    localStorage.setItem(STORAGE_KEYS.USER_ROLE, role);
+    localStorage.setItem('AUTH_TIMESTAMP', Date.now().toString());
+    setAuthState({ isAuthenticated: true, userRole: role });
+    navigate(`/${role}/dashboard`);
+  }, [navigate]);
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    localStorage.removeItem('AUTH_TIMESTAMP');
+    setAuthState({ isAuthenticated: false, userRole: "" });
+    navigate(ROUTES.HOME);
+  }, [navigate]);
+
+  // ProtectedRoute
+  const ProtectedRoute = useCallback(({
+    children,
+    requiredRole
+  }: {
+    children: React.ReactNode;
+    requiredRole?: UserRole;
+  }) => {
+    if (!authState.isAuthenticated) {
+      return <Navigate to={ROUTES.LOGIN} replace />;
+    }
+    if (requiredRole && authState.userRole !== requiredRole) {
+      return <Navigate to={`/${authState.userRole}/dashboard`} replace />;
+    }
+    return <>{children}</>;
+  }, [authState.isAuthenticated, authState.userRole]);
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      {/* Public Routes */}
+      <Route path={ROUTES.HOME} element={<Home isAuthenticated={authState.isAuthenticated} />} />
       <Route
-        path="/login"
+        path={ROUTES.LOGIN}
         element={
-          isAuthenticated ? (
-            <Navigate to={`/${userRole}`} />
-          ) : (
-            <Login
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-            />
-          )
-        }
-      />
-      <Route path="/register" element={<Register />} />
-
-      <Route
-        path="/admin/*"
-        element={
-          isAuthenticated && userRole === "admin" ? (
-            <AdminDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/*"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <ManagerDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/nurse/*"
-        element={
-          isAuthenticated && userRole === "nurse" ? (
-            <NurseDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/health-records"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <HealthRecords />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/medical-staff-management"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <MedicalStaffManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/alerts-and-notifications"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <AlertsAndNotifications />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/manager/event-and-appointment-management"
-        element={
-          isAuthenticated && userRole === "manager" ? (
-            <EventAndAppointmentManagement />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/parent"
-        element={
-          isAuthenticated && userRole === "parent" ? (
-            <ParentDashboard
-              setIsAuthenticated={setIsAuthenticated}
-              setUserRole={setUserRole}
-              onLogout={handleLogout}
-            />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/manage-accounts"
-        element={
-          isAuthenticated && userRole === "admin" ? (
-            <ManageAccounts />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/admin/activity-logs"
-        element={
-          isAuthenticated && userRole === "admin" ? (
-            <ActivityLogs />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-      <Route
-        path="/parent-pages/health-profile-form"
-        element={
-          <HealthProfileForm
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent-pages/medication-form"
-        element={
-          <MedicationForm
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent-pages/health-check-dashboard"
-        element={
-          <HealthCheckDashboard
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
-        }
-      />
-      <Route
-        path="/parent-pages/vaccination-event-dashboard"
-        element={
-          <VaccinationEventDashboard
-            setIsAuthenticated={setIsAuthenticated}
-            setUserRole={setUserRole}
-            onLogout={handleLogout}
-          />
+          authState.isAuthenticated
+            ? <Navigate to={`/${authState.userRole}/dashboard`} replace />
+            : <Login onLogin={handleLogin} />
         }
       />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Admin */}
+      <Route
+        path={ROUTES.ADMIN.DASHBOARD + '/*'}
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminRouter onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Public Health Info */}
+      <Route path="/disease-prevention" element={<DiseasePrevention />} />
+      <Route path="/nutrition-guide" element={<NutritionGuide />} />
+      <Route path="/mental-health-care" element={<MentalHealthCare />} />
+
+      {/* Manager */}
+      <Route
+        path={`${ROUTES.MANAGER.DASHBOARD}/*`}
+        element={
+          <ProtectedRoute requiredRole="manager">
+            <ManagerRouter onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Nurse */}
+      <Route
+        path={`${ROUTES.NURSE.DASHBOARD}/*`}
+        element={
+          <ProtectedRoute requiredRole="nurse">
+            <NurseRouter onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Parent */}
+      <Route
+        path={`${ROUTES.PARENT.DASHBOARD}/*`}
+        element={
+          <ProtectedRoute requiredRole="parent">
+            <ParentRouter onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
   );
 }

@@ -2,45 +2,51 @@ import React from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
+import { HealthCheckDashboardProps } from "../../types";
+import { ROUTES } from "../../constants";
 
-interface HealthCheckDashboardProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleNavigateToHome = () => navigate("/");
+  const handleNavigateToHome = () => {
+    navigate(ROUTES.HOME);
+  };
+
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
+
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
 
+  const handleNavigateToSchedule = () => {
+    navigate("/parent/health-check-schedule");
+  };
+
+  const handleNavigateToRegistration = () => {
+    navigate("/parent/health-check-registration");
+  };
+
+  const handleNavigateToResults = () => {
+    navigate("/parent/health-check-results");
+  };
+
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
+        onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
-        onLogout={onLogout}
       />
       <Box sx={{ height: 68 }} />
       <div
@@ -98,6 +104,7 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToSchedule}
           >
             <h3>Lịch Khám sức khỏe</h3>
             <p>Xem lịch khám sức khỏe của học sinh.</p>
@@ -111,6 +118,7 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToRegistration}
           >
             <h3>Đăng kí khám sức khỏe</h3>
             <p>Đăng kí lịch khám sức khỏe cho học sinh.</p>
@@ -124,6 +132,7 @@ const HealthCheckDashboard: React.FC<HealthCheckDashboardProps> = ({
               textAlign: "center",
               cursor: "pointer",
             }}
+            onClick={handleNavigateToResults}
           >
             <h3>Kết quả khám sức khỏe</h3>
             <p>Xem kết quả khám sức khỏe của học sinh.</p>

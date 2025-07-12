@@ -10,12 +10,16 @@ import {
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 
-const HealthRecords: React.FC = () => {
+interface HealthRecordsProps {
+  onLogout?: () => void;
+}
+
+const HealthRecords: React.FC<HealthRecordsProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
   return (
     <>
-      <Navbar />
+      <Navbar {...(onLogout ? { onLogout } : {})} />
       <Box
         sx={{
           p: 3,

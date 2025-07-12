@@ -1,15 +1,31 @@
 import React from "react";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 interface HomeProps {
   onLogin?: (role: string) => void;
+  isAuthenticated?: boolean;
 }
 
 const Home: React.FC<HomeProps> = ({ onLogin }) => {
+  const navigate = useNavigate();
+
+  const handleDiseasePreventionClick = () => {
+    navigate("/disease-prevention");
+  };
+
+  const handleNutritionGuideClick = () => {
+    navigate("/nutrition-guide");
+  };
+
+  const handleMentalHealthCareClick = () => {
+    navigate("/mental-health-care");
+  };
+
   return (
     <>
-      <Navbar isHomePage={true} />
+      <Navbar />
       <Box
         display="flex"
         flexDirection="column"
@@ -18,8 +34,14 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
         minHeight="100vh"
         bgcolor="background.default"
         p={4}
+        sx={{
+          backgroundImage: "url('https://i.pinimg.com/736x/10/c3/85/10c385aa71ae13c44beb7d59137811b2.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
-        <Box textAlign="center" mb={6} maxWidth="800px">
+        <Box textAlign="center" mb={6} maxWidth="850px" sx={{ color: "rgb(0, 0, 0)" }}>
           <Typography variant="h4" gutterBottom>
             Về Chúng Tôi
           </Typography>
@@ -118,6 +140,8 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
               background: "linear-gradient(135deg, #e3f2fd 60%, #bbdefb 100%)",
               animation: "fadeInUp 1s",
             }}
+            onClick={handleDiseasePreventionClick}
+            style={{ cursor: "pointer" }}
           >
             <CardContent>
               <Box display="flex" justifyContent="center" mb={2}>
@@ -150,6 +174,8 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
               background: "linear-gradient(135deg, #f1f8e9 60%, #c8e6c9 100%)",
               animation: "fadeInUp 1.2s",
             }}
+            onClick={handleNutritionGuideClick}
+            style={{ cursor: "pointer" }}
           >
             <CardContent>
               <Box display="flex" justifyContent="center" mb={2}>
@@ -182,6 +208,8 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
               background: "linear-gradient(135deg, #fff3e0 60%, #ffe0b2 100%)",
               animation: "fadeInUp 1.4s",
             }}
+            onClick={handleMentalHealthCareClick}
+            style={{ cursor: "pointer" }}
           >
             <CardContent>
               <Box display="flex" justifyContent="center" mb={2}>
@@ -281,7 +309,7 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
                 alt="address"
               />
               <Typography variant="body2" fontSize={14}>
-                Địa chỉ: 123 Đường Sức Khỏe, Quận Học Đường, TP. Giáo Dục
+                Địa chỉ: Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Thành phố Hồ Chí Minh
               </Typography>
             </Box>
           </Box>

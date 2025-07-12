@@ -11,11 +11,9 @@ import {
 } from "@mui/material";
 import { AccountCircle as AccountCircleIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ROUTES } from "../constants";
 
-interface NavbarProps {
-  isHomePage?: boolean;
-  setIsAuthenticated?: (isAuthenticated: boolean) => void;
-  setUserRole?: (userRole: string) => void;
+export interface NavbarProps {
   onLogout?: () => void;
   onNavigateToHome?: () => void;
   onNavigateToNews?: () => void;
@@ -23,9 +21,6 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({
-  isHomePage,
-  setIsAuthenticated,
-  setUserRole,
   onLogout,
   onNavigateToHome,
   onNavigateToNews,
@@ -35,47 +30,52 @@ const Navbar: React.FC<NavbarProps> = ({
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // Kiểm tra nếu đang ở trang Manager, Admin, hoặc Nurse
-  const isManager = location.pathname.startsWith("/manager");
-  const isAdmin = location.pathname.startsWith("/admin");
-  const isNurse = location.pathname.startsWith("/nurse");
-  const isParent = location.pathname.startsWith("/parent");
+  // Nhận diện vai trò
+  const isManager = location.pathname.startsWith(ROUTES.MANAGER.DASHBOARD);
+  const isAdmin = location.pathname.startsWith(ROUTES.ADMIN.DASHBOARD);
+  const isNurse = location.pathname.startsWith(ROUTES.NURSE.DASHBOARD);
+  const isParent =
+    location.pathname.startsWith(ROUTES.PARENT.DASHBOARD) ||
+    location.pathname.startsWith("/parent-pages") ||
+    location.pathname.startsWith("/parent/");
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
   const handleLogout = () => {
+    handleClose();
     if (onLogout) {
       onLogout();
-    } else if (setIsAuthenticated) {
-      setIsAuthenticated(false);
-      if (setUserRole) setUserRole("");
-      navigate("/");
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
+      navigate(ROUTES.HOME);
     }
-    handleMenuClose();
   };
 
   const handleProfile = () => {
     navigate("/profile");
-    handleMenuClose();
+    handleClose();
   };
 
   const handleNavigateToHome = () => {
     if (onNavigateToHome) {
       onNavigateToHome();
     } else if (isAdmin) {
-      navigate("/admin");
+      navigate(ROUTES.ADMIN.DASHBOARD);
     } else if (isManager) {
-      navigate("/manager");
+      navigate(ROUTES.MANAGER.DASHBOARD);
     } else if (isNurse) {
-      navigate("/nurse");
+      navigate(ROUTES.NURSE.DASHBOARD);
+    } else if (isParent) {
+      navigate(ROUTES.PARENT.DASHBOARD);
     } else {
-      navigate("/");
+      navigate(ROUTES.HOME);
     }
   };
 
@@ -83,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({
     if (onNavigateToNews) {
       onNavigateToNews();
     } else {
-      navigate("/");
+      navigate(ROUTES.HOME);
       setTimeout(() => {
         const el = document.getElementById("school-health-news");
         if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -95,7 +95,7 @@ const Navbar: React.FC<NavbarProps> = ({
     if (onNavigateToContact) {
       onNavigateToContact();
     } else {
-      navigate("/");
+      navigate(ROUTES.HOME);
       setTimeout(() => {
         const el = document.getElementById("contact");
         if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -103,6 +103,7 @@ const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
+  const isHomePage = location.pathname === ROUTES.HOME;
   return (
     <AppBar
       position="fixed"
@@ -132,131 +133,32 @@ const Navbar: React.FC<NavbarProps> = ({
         <Box>
           {isManager || isAdmin || isNurse || isParent ? (
             <>
-              <Button
-                color="inherit"
-                onClick={handleNavigateToHome}
-                sx={{
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 1.5,
-                  mx: 1,
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                  transition: "background 0.2s, color 0.2s",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.12)",
-                    color: "#1976d2",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
+              <Button color="inherit" onClick={handleNavigateToHome} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                 Trang chủ
               </Button>
-              <Button
-                color="inherit"
-                onClick={handleNavigateToNews}
-                sx={{
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 1.5,
-                  mx: 1,
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                  transition: "background 0.2s, color 0.2s",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.12)",
-                    color: "#1976d2",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
+              <Button color="inherit" onClick={handleNavigateToNews} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                 Tin tức
               </Button>
-              <Button
-                color="inherit"
-                onClick={handleNavigateToContact}
-                sx={{
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 1.5,
-                  mx: 1,
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                  transition: "background 0.2s, color 0.2s",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.12)",
-                    color: "#1976d2",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
+              <Button color="inherit" onClick={handleNavigateToContact} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                 Liên hệ
               </Button>
-              <IconButton onClick={handleMenuOpen} color="inherit">
+              <IconButton onClick={handleMenu} color="inherit">
                 <AccountCircleIcon />
               </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                 {isManager && (
                   <>
-                    <MenuItem
-                      onClick={() => {
-                        navigate("/manager/health-records");
-                        handleMenuClose();
-                      }}
-                    >
-                      Quản lý hồ sơ y tế
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        navigate("/manager/medical-staff-management");
-                        handleMenuClose();
-                      }}
-                    >
-                      Quản lý nhân sự y tế trường
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        navigate("/manager/alerts-and-notifications");
-                        handleMenuClose();
-                      }}
-                    >
-                      Cảnh báo & Thông báo
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        navigate("/manager/event-and-appointment-management");
-                        handleMenuClose();
-                      }}
-                    >
-                      Quản lý sự kiện & lịch hẹn
-                    </MenuItem>
+                    <MenuItem onClick={() => { navigate("/manager/health-records"); handleClose(); }}>Quản lý hồ sơ y tế</MenuItem>
+                    <MenuItem onClick={() => { navigate("/manager/medical-staff-management"); handleClose(); }}>Quản lý nhân sự y tế trường</MenuItem>
+                    <MenuItem onClick={() => { navigate("/manager/alerts-and-notifications"); handleClose(); }}>Cảnh báo & Thông báo</MenuItem>
+                    <MenuItem onClick={() => { navigate("/manager/event-and-appointment-management"); handleClose(); }}>Quản lý sự kiện & lịch hẹn</MenuItem>
+                    <MenuItem onClick={() => { navigate("/manager/vaccination-campaigns"); handleClose(); }}>Quản lý chiến dịch tiêm chủng</MenuItem>
                   </>
                 )}
                 {isAdmin && (
                   <>
-                    <MenuItem
-                      onClick={() => {
-                        navigate("/admin/manage-accounts");
-                        handleMenuClose();
-                      }}
-                    >
-                      Quản lý tài khoản
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        navigate("/admin/activity-logs");
-                        handleMenuClose();
-                      }}
-                    >
-                      Nhật ký hoạt động
-                    </MenuItem>
+                    <MenuItem onClick={() => { navigate("/admin/manage-accounts"); handleClose(); }}>Quản lý tài khoản</MenuItem>
+                    <MenuItem onClick={() => { navigate("/admin/activity-logs"); handleClose(); }}>Nhật ký hoạt động</MenuItem>
                   </>
                 )}
                 {isParent && (
@@ -264,7 +166,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/health-profile-form");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Khai báo hồ sơ sức khỏe
@@ -272,7 +174,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/medication-form");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Sử dụng thuốc
@@ -280,7 +182,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/health-check-dashboard");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Khám sức khỏe
@@ -288,102 +190,38 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem
                       onClick={() => {
                         navigate("/parent-pages/vaccination-event-dashboard");
-                        handleMenuClose();
+                        handleClose();
                       }}
                     >
                       Sự kiện tiêm chủng
                     </MenuItem>
+                    <MenuItem onClick={() => { navigate("/parent/notification"); handleClose(); }}>Thông báo</MenuItem>
                   </>
                 )}
-                <MenuItem onClick={handleProfile}>Thông tin tài khoản</MenuItem>
+                {isNurse && (
+                  <>
+                    {/* Nurse không có menu item riêng */}
+                  </>
+                )}
+                {!isNurse && (
+                  <MenuItem onClick={handleProfile}>Thông tin tài khoản</MenuItem>
+                )}
                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
               </Menu>
             </>
           ) : (
             <>
-              <Button
-                color="inherit"
-                onClick={() => navigate("/")}
-                sx={{
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 1.5,
-                  mx: 1,
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                  transition: "background 0.2s, color 0.2s",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.12)",
-                    color: "#1976d2",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
+              <Button color="inherit" onClick={() => navigate("/")} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                 Trang chủ
               </Button>
-              <Button
-                color="inherit"
-                onClick={handleNavigateToNews}
-                sx={{
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 1.5,
-                  mx: 1,
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                  transition: "background 0.2s, color 0.2s",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.12)",
-                    color: "#1976d2",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
+              <Button color="inherit" onClick={handleNavigateToNews} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                 Tin tức
               </Button>
-              <Button
-                color="inherit"
-                onClick={handleNavigateToContact}
-                sx={{
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: 1.5,
-                  mx: 1,
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
-                  transition: "background 0.2s, color 0.2s",
-                  "&:hover": {
-                    background: "rgba(255,255,255,0.12)",
-                    color: "#1976d2",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
+              <Button color="inherit" onClick={handleNavigateToContact} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                 Liên hệ
               </Button>
               {isHomePage && (
-                <Button
-                  color="inherit"
-                  onClick={() => navigate("/login")}
-                  sx={{
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: 1.5,
-                    mx: 1,
-                    borderRadius: 2,
-                    px: 2,
-                    py: 1,
-                    transition: "background 0.2s, color 0.2s",
-                    "&:hover": {
-                      background: "rgba(255,255,255,0.12)",
-                      color: "#1976d2",
-                      textDecoration: "underline",
-                    },
-                  }}
-                >
+                <Button color="inherit" onClick={() => navigate("/login")} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                   Đăng nhập
                 </Button>
               )}

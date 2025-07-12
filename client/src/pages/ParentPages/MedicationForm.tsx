@@ -2,30 +2,26 @@ import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
+import { MedicationFormProps } from "../../types";
+import { ROUTES } from "../../constants";
 
-interface MedicationFormProps {
-  setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUserRole: (userRole: string) => void;
-  onLogout: () => void;
-}
-
-const MedicationForm: React.FC<MedicationFormProps> = ({
-  setIsAuthenticated,
-  setUserRole,
-  onLogout,
-}) => {
+const MedicationForm: React.FC<MedicationFormProps> = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleNavigateToHome = () => navigate("/");
+  const handleNavigateToHome = () => {
+    navigate(ROUTES.HOME);
+  };
+
   const handleNavigateToNews = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("school-health-news");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }, 100);
   };
+
   const handleNavigateToContact = () => {
-    navigate("/");
+    navigate(ROUTES.HOME);
     setTimeout(() => {
       const el = document.getElementById("contact");
       if (el) el.scrollIntoView({ behavior: "smooth" });
@@ -54,19 +50,16 @@ const MedicationForm: React.FC<MedicationFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Thông tin đã gửi:", formData);
     alert("Thông tin đã được gửi thành công!");
   };
 
   return (
     <>
       <Navbar
-        setIsAuthenticated={setIsAuthenticated}
-        setUserRole={setUserRole}
+        onLogout={onLogout}
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
-        onLogout={onLogout}
       />
       <Box sx={{ height: 68 }} />
       <div
