@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { useNavigate, Routes, Route, Navigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { UserRole } from "./types";
 import { ROUTES, STORAGE_KEYS } from "./constants";
 import AdminRouter from "./router/adminRouter";
@@ -40,8 +40,7 @@ function App() {
   });
 
   const navigate = useNavigate();
-  // Nếu bạn không dùng location trong logic, hãy xoá dòng này:
-  // const location = useLocation();
+  const location = useLocation();
 
   // Update localStorage on authState change
   useEffect(() => {
@@ -61,6 +60,7 @@ function App() {
     setAuthState({ isAuthenticated: true, userRole: role });
     navigate(`/${role}/dashboard`);
   }, [navigate]);
+
   const handleLogout = useCallback(() => {
     localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
@@ -78,13 +78,13 @@ function App() {
     requiredRole?: UserRole;
   }) => {
     if (!authState.isAuthenticated) {
-      return <Navigate to={ROUTES.LOGIN} replace />;
+      return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
     }
     if (requiredRole && authState.userRole !== requiredRole) {
       return <Navigate to={`/${authState.userRole}/dashboard`} replace />;
     }
     return <>{children}</>;
-  }, [authState.isAuthenticated, authState.userRole]);
+  }, [authState.isAuthenticated, authState.userRole, location]);
 
   return (
     <Routes>
