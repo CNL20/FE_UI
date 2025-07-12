@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Table, Button, Checkbox, message, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useParams } from "react-router-dom";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 

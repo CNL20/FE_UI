@@ -95,11 +95,10 @@ const VaccinationSchedulePage: React.FC = () => {
       key: "attendance",
       align: "center" as const,
       render: (_: any, record: ScheduleItem) => (
-        <Select
-          style={{ width: 100 }}
+        <Select          style={{ width: 100 }}
           placeholder="Chọn"
           value={attendance[record.studentId]}
-          onChange={(value) => handleAttendanceChange(record.studentId, value as "present" | "absent")}
+          onChange={(value: "present" | "absent") => handleAttendanceChange(record.studentId, value)}
         >
           <Select.Option value="present">Có mặt</Select.Option>
           <Select.Option value="absent">Vắng</Select.Option>

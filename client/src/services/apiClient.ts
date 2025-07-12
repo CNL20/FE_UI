@@ -314,28 +314,28 @@ export const createMedicalIncident = async (data: any) => {
   }
 };
 
-// Optionally, map snake_case response to camelCase for frontend usage
+// Chuẩn hóa mapMedicalIncident để fallback giá trị nếu trường bị thiếu
 const mapMedicalIncident = (item: any) => ({
-  id: item.id,
-  studentId: item.student_id,
-  studentName: item.student_name,
-  className: item.class_name,
-  incidentType: item.event_type,
-  description: item.description,
+  id: item.id || item.eventId || '',
+  studentId: item.student_id || item.studentId || '',
+  studentName: item.student_name || item.studentName || 'N/A',
+  className: item.class_name || item.className || 'N/A',
+  incidentType: item.event_type || item.incidentType || 'other',
+  description: item.description || '',
   symptoms: item.symptoms ? item.symptoms.split(',').map((s: string) => s.trim()) : [],
-  severity: item.severity,
-  location: item.location,
-  dateTime: item.date_time,
-  treatmentGiven: item.outcome,
+  severity: item.severity || 'low',
+  location: item.location || '',
+  dateTime: item.date_time || item.dateTime || '',
+  treatmentGiven: item.outcome || '',
   medicationsUsed: item.used_supplies ? item.used_supplies.split(',').map((s: string) => s.trim()) : [],
-  additionalNotes: item.notes,
-  parentNotified: item.parent_notified,
-  parentNotificationTime: item.parent_notification_time,
-  nurseId: item.nurse_id,
-  nurseName: item.nurse_name,
-  status: item.status,
-  createdAt: item.created_at,
-  updatedAt: item.updated_at,
+  additionalNotes: item.notes || '',
+  parentNotified: item.parent_notified || false,
+  parentNotificationTime: item.parent_notification_time || '',
+  nurseId: item.nurse_id || '',
+  nurseName: item.nurse_name || '',
+  status: item.status || 'active',
+  createdAt: item.created_at || '',
+  updatedAt: item.updated_at || '',
 });
 
 export const getMedicalIncidentById = async (id: string) => {
@@ -359,7 +359,7 @@ export const getMedicalIncidents = async (filters?: Record<string, string>) => {
       endpoint += `?${params.toString()}`;
     }
     const response = await apiClient.get(endpoint);
-    // Map all items to camelCase
+    // Map all items to camelCase, fallback nếu thiếu trường
     if (Array.isArray(response.data)) {
       return response.data.map(mapMedicalIncident);
     } else if (response.data) {
@@ -367,7 +367,9 @@ export const getMedicalIncidents = async (filters?: Record<string, string>) => {
     }
     return [];
   } catch (error: any) {
-    console.error('Failed to get medical incidents:', error.response?.data || error.message);
+    if (error.response?.status === 404) {
+      return [];
+    }
     throw error;
   }
 };
