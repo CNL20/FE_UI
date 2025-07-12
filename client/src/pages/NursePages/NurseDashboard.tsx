@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// Nurse Dashboard Page with Medical Incident Management
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
 import React, { useState, useCallback, useEffect } from "react";
 import {
   Box,
@@ -47,10 +43,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-<<<<<<< HEAD
   CircularProgress,
-=======
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
 } from "@mui/material";
 import {
   LocalHospital as HospitalIcon,
@@ -71,7 +64,6 @@ import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { NurseDashboardProps, Student, MedicalIncident } from "../../types";
 import { ROUTES } from "../../constants";
-<<<<<<< HEAD
 import apiClient, {
   searchStudents,
   getStudentMedicalInfo,
@@ -131,34 +123,15 @@ type AssignedCampaign = {
 // Medical Incident Management Component
 const MedicalIncidentManager: React.FC = () => {
   const [activeStep, setActiveStep] = useState(-1);
-=======
-import { 
-  searchStudents,
-  getStudentMedicalInfo, 
-  createMedicalIncident,  getMedicalIncidents,
-  notifyParent 
-} from "../../services/apiClient";
-
-// Enhanced Medical Incident Management Component with Statistics
-const MedicalIncidentManager: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
   const [incidents, setIncidents] = useState<MedicalIncident[]>([]);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationSeverity, setNotificationSeverity] =
     useState<"success" | "error" | "info" | "warning">("info");
-=======
-  const [incidents, setIncidents] = useState<MedicalIncident[]>([]);  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
-  const [notificationSeverity, setNotificationSeverity] = useState<"success" | "error" | "info" | "warning">("info");
-    // Enhanced state for filtering and pagination
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filters, setFilters] = useState({
@@ -171,10 +144,6 @@ const MedicalIncidentManager: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy] = useState("dateTime");
   const [sortOrder] = useState<"asc" | "desc">("desc");
-<<<<<<< HEAD
-=======
-  // Incident form state
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const [incidentForm, setIncidentForm] = useState({
     studentId: 0,
     incidentType: "injury" as const,
@@ -187,12 +156,6 @@ const MedicalIncidentManager: React.FC = () => {
     additionalNotes: "",
     parentNotified: false,
   });
-<<<<<<< HEAD
-
-=======
-  
-  // Statistics state
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const [statistics, setStatistics] = useState({
     totalIncidents: 0,
     todayIncidents: 0,
@@ -219,7 +182,6 @@ const MedicalIncidentManager: React.FC = () => {
   ];
 
   const commonSymptoms = [
-<<<<<<< HEAD
     "Sốt",
     "Đau đầu",
     "Buồn nôn",
@@ -256,24 +218,11 @@ const MedicalIncidentManager: React.FC = () => {
   ];
 
   // Search students by name only
-=======
-    "Sốt", "Đau đầu", "Buồn nôn", "Chóng mặt", "Đau bụng", "Ho", "Khó thở", 
-    "Phát ban", "Đau khớp", "Mệt mỏi", "Mất ý thức", "Xuất huyết", "Chuột rút"
-  ];
-
-  const commonMedications = [
-    "Paracetamol", "Ibuprofen", "Băng gạc", "Thuốc sát trùng", "Nước muối sinh lý",
-    "Thuốc cầm máu", "Thuốc chống dị ứng", "Oxy", "Thuốc nhỏ mắt", "Thuốc ho"
-  ];
-
-  const steps = ["Tìm Học Sinh", "Thông Tin Y Tế", "Ghi Nhận Sự Cố", "Xác Nhận"];  // Search students by name only
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const handleSearchStudents = async (query: string) => {
     if (query.length < 2) {
       setStudents([]);
       return;
     }
-<<<<<<< HEAD
 
     setLoading(true);
     try {
@@ -283,23 +232,11 @@ const MedicalIncidentManager: React.FC = () => {
         studentData = Array.isArray(response.data)
           ? response.data
           : [response.data];
-=======
-    
-    setLoading(true);
-    try {
-      const response = await searchStudents(query);
-      console.log("Search response:", response);
-        // Xử lý response tùy theo cấu trúc dữ liệu từ backend
-      let studentData = [];
-      if (response?.data) {
-        studentData = Array.isArray(response.data) ? response.data : [response.data];
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       } else if (Array.isArray(response)) {
         studentData = response;
       } else {
         studentData = [];
       }
-<<<<<<< HEAD
       const filteredStudents = studentData.filter((student: any) => {
         const studentName = (
           student.name ||
@@ -323,57 +260,27 @@ const MedicalIncidentManager: React.FC = () => {
 
       setStudents(normalizedStudents);
 
-=======
-      
-      // Lọc học sinh theo tên (chỉ tìm theo tên)
-      const filteredStudents = studentData.filter((student: any) => {
-        const studentName = (student.name || student.fullName || "").toLowerCase();
-        const searchTerm = query.toLowerCase();
-        return studentName.includes(searchTerm);
-      });
-        // Chuẩn hóa dữ liệu student từ database
-      const normalizedStudents = filteredStudents.map((student: any) => ({
-        ...student,
-        fullName: student.name || student.fullName, // Sử dụng name từ database
-        id: student.studentId || student.id || student.student_code || student.studentCode, // Đảm bảo có id
-        student_code: student.studentCode || student.student_code, // Đảm bảo có student_code
-      }));
-      
-      setStudents(normalizedStudents);
-      
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       if (normalizedStudents.length === 0) {
         setNotificationMessage(`Không tìm thấy học sinh nào có tên "${query}"`);
         setNotificationSeverity("info");
         setShowNotification(true);
       } else {
-<<<<<<< HEAD
         setNotificationMessage(
           `Tìm thấy ${normalizedStudents.length} học sinh có tên "${query}"`
         );
-=======
-        setNotificationMessage(`Tìm thấy ${normalizedStudents.length} học sinh có tên "${query}"`);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         setNotificationSeverity("success");
         setShowNotification(true);
       }
     } catch (error: any) {
-<<<<<<< HEAD
       setStudents([]);
       setNotificationMessage(
         `Lỗi tìm kiếm: ${error.message || "Không thể kết nối đến server"}`
       );
-=======
-      console.error("Error searching students:", error);
-      setStudents([]);
-      setNotificationMessage(`Lỗi tìm kiếm: ${error.message || 'Không thể kết nối đến server'}`);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       setNotificationSeverity("error");
       setShowNotification(true);
     } finally {
       setLoading(false);
     }
-<<<<<<< HEAD
   };
 
   const handleSelectStudent = async (student: Student) => {
@@ -390,25 +297,11 @@ const MedicalIncidentManager: React.FC = () => {
         : studentId;
 
     if (!numericStudentId || isNaN(numericStudentId)) {
-=======
-  };  // Select student and get medical info
-  const handleSelectStudent = async (student: Student) => {
-    console.log("Selected student:", student);
-    setSelectedStudent(student);
-    
-    // Fix: Use studentId from database response - check both new and old field names
-    const studentId = student.studentId || student.id || student.student_code || student.studentCode;
-    const numericStudentId = typeof studentId === 'string' ? parseInt(studentId, 10) : studentId;
-    
-    if (!numericStudentId || isNaN(numericStudentId)) {
-      console.error("Invalid student ID:", studentId, "from student:", student);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       setNotificationMessage("Lỗi: ID học sinh không hợp lệ");
       setNotificationSeverity("error");
       setShowNotification(true);
       return;
     }
-<<<<<<< HEAD
 
     setIncidentForm((prev) => ({
       ...prev,
@@ -423,71 +316,31 @@ const MedicalIncidentManager: React.FC = () => {
   };
 
   const handleCreateIncident = async () => {
-=======
-    
-    setIncidentForm(prev => ({ ...prev, studentId: numericStudentId }));
-    
-    try {
-      const medicalInfo = await getStudentMedicalInfo(numericStudentId.toString());
-      // Handle medical history if needed
-      console.log("Student medical info:", medicalInfo);
-    } catch (error) {
-      console.error("Error getting medical info:", error);
-    }
-    
-    setActiveStep(1);
-  };
-    // Create medical incident
-  const handleCreateIncident = async () => {
-    // Validation
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     if (!incidentForm.studentId || incidentForm.studentId === 0) {
       setNotificationMessage("Lỗi: Chưa chọn học sinh!");
       setNotificationSeverity("error");
       setShowNotification(true);
       return;
     }
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     if (!incidentForm.description.trim()) {
       setNotificationMessage("Lỗi: Vui lòng nhập mô tả sự cố!");
       setNotificationSeverity("error");
       setShowNotification(true);
       return;
     }
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     if (!incidentForm.location.trim()) {
       setNotificationMessage("Lỗi: Vui lòng nhập vị trí xảy ra sự cố!");
       setNotificationSeverity("error");
       setShowNotification(true);
       return;
     }
-<<<<<<< HEAD
-
-=======
-    
-    console.log("Creating incident with data:", incidentForm);
-    
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     setLoading(true);
     try {
       await createMedicalIncident(incidentForm);
       setNotificationMessage("Sự cố y tế đã được ghi nhận thành công!");
       setNotificationSeverity("success");
       setShowNotification(true);
-<<<<<<< HEAD
       setActiveStep(-1);
-=======
-        // Reset form
-      setActiveStep(0);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       setSelectedStudent(null);
       setIncidentForm({
         studentId: 0,
@@ -495,17 +348,12 @@ const MedicalIncidentManager: React.FC = () => {
         description: "",
         symptoms: [],
         severity: "low",
-<<<<<<< HEAD
         location: "",
         treatmentGiven: "",
-=======
-        location: "",        treatmentGiven: "",
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         medicationsUsed: [],
         additionalNotes: "",
         parentNotified: false,
       });
-<<<<<<< HEAD
       loadIncidents();
     } catch (error: any) {
       let errorMessage = "Có lỗi xảy ra khi ghi nhận sự cố!";
@@ -518,32 +366,12 @@ const MedicalIncidentManager: React.FC = () => {
             }`
           )
           .join("; ");
-=======
-      
-      // Refresh incidents list
-      loadIncidents();    } catch (error: any) {
-      console.error("Error creating incident:", error);
-      console.error("Detailed error response:", error.response?.data);
-      
-      let errorMessage = 'Có lỗi xảy ra khi ghi nhận sự cố!';
-      
-      if (error.response?.data?.errors) {
-        // Hiển thị chi tiết validation errors
-        const validationErrors = error.response.data.errors;
-        const errorDetails = Object.entries(validationErrors)
-          .map(([field, messages]: [string, any]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-          .join('; ');
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         errorMessage = `Lỗi validation: ${errorDetails}`;
       } else if (error.response?.data?.title) {
         errorMessage = error.response.data.title;
       } else if (error.message) {
         errorMessage = error.message;
       }
-<<<<<<< HEAD
-=======
-      
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       setNotificationMessage(errorMessage);
       setNotificationSeverity("error");
       setShowNotification(true);
@@ -552,10 +380,6 @@ const MedicalIncidentManager: React.FC = () => {
     }
   };
 
-<<<<<<< HEAD
-=======
-  // Load incidents
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const loadIncidents = async () => {
     try {
       const response = await getMedicalIncidents({
@@ -565,25 +389,17 @@ const MedicalIncidentManager: React.FC = () => {
         page: (page + 1).toString(),
         limit: rowsPerPage.toString(),
       });
-<<<<<<< HEAD
 
       let incidentData = [];
       if (response?.data) {
         incidentData = Array.isArray(response.data)
           ? response.data
           : [response.data];
-=======
-      
-      let incidentData = [];
-      if (response?.data) {
-        incidentData = Array.isArray(response.data) ? response.data : [response.data];
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       } else if (Array.isArray(response)) {
         incidentData = response;
       } else {
         incidentData = [];
       }
-<<<<<<< HEAD
 
       setIncidents(incidentData);
       calculateStatistics(incidentData);
@@ -593,23 +409,12 @@ const MedicalIncidentManager: React.FC = () => {
         setNotificationMessage(
           `Lỗi tải danh sách sự cố: ${error.message || "Không thể kết nối đến server"}`
         );
-=======
-      
-      setIncidents(incidentData);
-      calculateStatistics(incidentData);
-    } catch (error: any) {
-      console.error("Error loading incidents:", error);
-      setIncidents([]);
-      if (error.response?.status !== 404) {
-        setNotificationMessage(`Lỗi tải danh sách sự cố: ${error.message || 'Không thể kết nối đến server'}`);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         setNotificationSeverity("error");
         setShowNotification(true);
       }
     }
   };
 
-<<<<<<< HEAD
   const handleNotifyParent = async (incidentId: string | number | undefined) => {
   if (!incidentId || incidentId === "undefined") {
     setNotificationMessage("Không tìm thấy ID sự cố để gửi thông báo!");
@@ -635,28 +440,6 @@ const MedicalIncidentManager: React.FC = () => {
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters((prev) => ({ ...prev, [filterName]: value }));
     setPage(0);
-=======
-  // Notify parent
-  const handleNotifyParent = async (incidentId: string) => {
-    try {
-      await notifyParent(incidentId, { message: "Thông báo về sự cố y tế của con em bạn" });
-      setNotificationMessage("Đã thông báo cho phụ huynh!");
-      setNotificationSeverity("success");
-      setShowNotification(true);
-      loadIncidents();
-    } catch (error) {
-      console.error("Error notifying parent:", error);
-      setNotificationMessage("Có lỗi khi thông báo cho phụ huynh!");
-      setNotificationSeverity("error");
-      setShowNotification(true);
-    }
-  };
-
-  // Filter and sort handlers
-  const handleFilterChange = (filterName: string, value: string) => {
-    setFilters(prev => ({ ...prev, [filterName]: value }));
-    setPage(0); // Reset to first page when filtering
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   };
 
   const handleClearFilters = () => {
@@ -670,26 +453,17 @@ const MedicalIncidentManager: React.FC = () => {
     setPage(0);
   };
 
-<<<<<<< HEAD
-=======
-  // Pagination handlers
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
   const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-<<<<<<< HEAD
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-=======
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-<<<<<<< HEAD
   const calculateStatistics = useCallback((incidentList: MedicalIncident[]) => {
     const today = new Date().toDateString();
 
@@ -705,22 +479,6 @@ const MedicalIncidentManager: React.FC = () => {
       ).length,
       resolvedIncidents: incidentList.filter(
         (incident) => incident.status === "resolved"
-=======
-  // Calculate statistics from incidents
-  const calculateStatistics = useCallback((incidentList: MedicalIncident[]) => {
-    const today = new Date().toDateString();
-    
-    const stats = {
-      totalIncidents: incidentList.length,
-      todayIncidents: incidentList.filter(incident => 
-        new Date(incident.dateTime).toDateString() === today
-      ).length,
-      criticalIncidents: incidentList.filter(incident => 
-        incident.severity === "critical" || incident.severity === "high"
-      ).length,
-      resolvedIncidents: incidentList.filter(incident => 
-        incident.status === "resolved"
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       ).length,
       incidentsByType: incidentList.reduce((acc: any, incident) => {
         acc[incident.incidentType] = (acc[incident.incidentType] || 0) + 1;
@@ -730,7 +488,6 @@ const MedicalIncidentManager: React.FC = () => {
         acc[incident.severity] = (acc[incident.severity] || 0) + 1;
         return acc;
       }, {}),
-<<<<<<< HEAD
       weeklyTrend: [],
     };
 
@@ -751,23 +508,6 @@ const MedicalIncidentManager: React.FC = () => {
             >
               <Box>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-=======
-      weeklyTrend: [], // Could be calculated based on dates
-    };
-    
-    setStatistics(stats);
-  }, []);
-
-  // Statistics Dashboard Component
-  const StatisticsDashboard = () => (
-    <Grid container spacing={3} sx={{ mb: 3 }}>
-      <Grid item xs={12} md={3}>
-        <Card sx={{ bgcolor: 'primary.main', color: 'white' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   {statistics.totalIncidents}
                 </Typography>
                 <Typography variant="body2">Tổng sự cố</Typography>
@@ -777,7 +517,6 @@ const MedicalIncidentManager: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-<<<<<<< HEAD
       <Grid item xs={12} md={3}>
         <Card sx={{ bgcolor: "info.main", color: "white" }}>
           <CardContent>
@@ -790,15 +529,6 @@ const MedicalIncidentManager: React.FC = () => {
             >
               <Box>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-=======
-      
-      <Grid item xs={12} md={3}>
-        <Card sx={{ bgcolor: 'info.main', color: 'white' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   {statistics.todayIncidents}
                 </Typography>
                 <Typography variant="body2">Hôm nay</Typography>
@@ -808,7 +538,6 @@ const MedicalIncidentManager: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-<<<<<<< HEAD
       <Grid item xs={12} md={3}>
         <Card sx={{ bgcolor: "error.main", color: "white" }}>
           <CardContent>
@@ -821,15 +550,6 @@ const MedicalIncidentManager: React.FC = () => {
             >
               <Box>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-=======
-      
-      <Grid item xs={12} md={3}>
-        <Card sx={{ bgcolor: 'error.main', color: 'white' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   {statistics.criticalIncidents}
                 </Typography>
                 <Typography variant="body2">Nghiêm trọng</Typography>
@@ -839,7 +559,6 @@ const MedicalIncidentManager: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-<<<<<<< HEAD
       <Grid item xs={12} md={3}>
         <Card sx={{ bgcolor: "success.main", color: "white" }}>
           <CardContent>
@@ -852,15 +571,6 @@ const MedicalIncidentManager: React.FC = () => {
             >
               <Box>
                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-=======
-      
-      <Grid item xs={12} md={3}>
-        <Card sx={{ bgcolor: 'success.main', color: 'white' }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   {statistics.resolvedIncidents}
                 </Typography>
                 <Typography variant="body2">Đã giải quyết</Typography>
@@ -873,7 +583,6 @@ const MedicalIncidentManager: React.FC = () => {
     </Grid>
   );
 
-<<<<<<< HEAD
   const FiltersPanel = () => (
     <Accordion
       expanded={showFilters}
@@ -881,13 +590,6 @@ const MedicalIncidentManager: React.FC = () => {
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-=======
-  // Filters Panel Component
-  const FiltersPanel = () => (
-    <Accordion expanded={showFilters} onChange={() => setShowFilters(!showFilters)}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           <FilterIcon />
           <Typography>Bộ lọc tìm kiếm</Typography>
         </Box>
@@ -899,19 +601,12 @@ const MedicalIncidentManager: React.FC = () => {
               <InputLabel>Loại sự cố</InputLabel>
               <Select
                 value={filters.incidentType}
-<<<<<<< HEAD
                 onChange={(e) =>
                   handleFilterChange("incidentType", e.target.value)
                 }
               >
                 <MenuItem value="">Tất cả</MenuItem>
                 {incidentTypes.map((type) => (
-=======
-                onChange={(e) => handleFilterChange('incidentType', e.target.value)}
-              >
-                <MenuItem value="">Tất cả</MenuItem>
-                {incidentTypes.map(type => (
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   <MenuItem key={type.value} value={type.value}>
                     {type.label}
                   </MenuItem>
@@ -919,28 +614,17 @@ const MedicalIncidentManager: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-<<<<<<< HEAD
-=======
-          
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           <Grid item xs={12} md={3}>
             <FormControl fullWidth size="small">
               <InputLabel>Mức độ</InputLabel>
               <Select
                 value={filters.severity}
-<<<<<<< HEAD
                 onChange={(e) =>
                   handleFilterChange("severity", e.target.value)
                 }
               >
                 <MenuItem value="">Tất cả</MenuItem>
                 {severityLevels.map((level) => (
-=======
-                onChange={(e) => handleFilterChange('severity', e.target.value)}
-              >
-                <MenuItem value="">Tất cả</MenuItem>
-                {severityLevels.map(level => (
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   <MenuItem key={level.value} value={level.value}>
                     {level.label}
                   </MenuItem>
@@ -948,10 +632,6 @@ const MedicalIncidentManager: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-<<<<<<< HEAD
-=======
-          
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
@@ -959,20 +639,12 @@ const MedicalIncidentManager: React.FC = () => {
               type="date"
               label="Từ ngày"
               value={filters.dateFrom}
-<<<<<<< HEAD
               onChange={(e) =>
                 handleFilterChange("dateFrom", e.target.value)
               }
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
-=======
-              onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
@@ -980,7 +652,6 @@ const MedicalIncidentManager: React.FC = () => {
               type="date"
               label="Đến ngày"
               value={filters.dateTo}
-<<<<<<< HEAD
               onChange={(e) =>
                 handleFilterChange("dateTo", e.target.value)
               }
@@ -991,38 +662,16 @@ const MedicalIncidentManager: React.FC = () => {
             <Box sx={{ display: "flex", gap: 2 }}>
               <Button
                 variant="contained"
-=======
-              onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          
-          <Grid item xs={12}>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button 
-                variant="contained" 
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 onClick={loadIncidents}
                 startIcon={<SearchIcon />}
               >
                 Áp dụng bộ lọc
               </Button>
-<<<<<<< HEAD
               <Button variant="outlined" onClick={handleClearFilters}>
                 Xóa bộ lọc
               </Button>
               <Button
                 variant="outlined"
-=======
-              <Button 
-                variant="outlined" 
-                onClick={handleClearFilters}
-              >
-                Xóa bộ lọc
-              </Button>
-              <Button 
-                variant="outlined" 
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 onClick={loadIncidents}
                 startIcon={<RefreshIcon />}
               >
@@ -1033,13 +682,9 @@ const MedicalIncidentManager: React.FC = () => {
         </Grid>
       </AccordionDetails>
     </Accordion>
-<<<<<<< HEAD
   );
 
   useEffect(() => {
-=======
-  );  useEffect(() => {
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     loadIncidents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, sortBy, sortOrder, page, rowsPerPage]);
@@ -1050,17 +695,11 @@ const MedicalIncidentManager: React.FC = () => {
         handleSearchStudents(searchQuery);
       }
     }, 300);
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
     return () => clearTimeout(delayedSearch);
   }, [searchQuery]);
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-<<<<<<< HEAD
       case "low":
         return "success";
       case "medium":
@@ -1088,21 +727,6 @@ const MedicalIncidentManager: React.FC = () => {
           Quản Lý Sự Cố Y Tế
         </Typography>
         <Box sx={{ display: "flex", gap: 2 }}>
-=======
-      case "low": return "success";
-      case "medium": return "warning";
-      case "high": return "error";
-      case "critical": return "error";
-      default: return "info";
-    }
-  };
-    return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-          Quản Lý Sự Cố Y Tế
-        </Typography>        <Box sx={{ display: "flex", gap: 2 }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -1112,7 +736,6 @@ const MedicalIncidentManager: React.FC = () => {
             Ghi Nhận Sự Cố Mới
           </Button>
         </Box>
-<<<<<<< HEAD
       </Box>
       <StatisticsDashboard />
       <FiltersPanel />
@@ -1139,38 +762,6 @@ const MedicalIncidentManager: React.FC = () => {
             </IconButton>
           </Box>
         </DialogTitle>
-=======
-      </Box>      {/* Statistics Dashboard */}
-      <StatisticsDashboard />      {/* Filters Panel */}
-      <FiltersPanel />
-
-      {/* Create New Incident Dialog */}
-      <Dialog 
-        open={activeStep >= 0} 
-        maxWidth="md" 
-        fullWidth
-        aria-labelledby="incident-dialog-title"
-        aria-describedby="incident-dialog-description"
-        disablePortal={false}
-        keepMounted={false}
-        hideBackdrop={false}
-        disableEscapeKeyDown={false}
-        disableAutoFocus={false}
-        disableEnforceFocus={false}
-        disableRestoreFocus={false}
-        onClose={() => setActiveStep(-1)}
-      ><DialogTitle id="incident-dialog-title">
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography variant="h6">Ghi Nhận Sự Cố Y Tế</Typography>
-            <IconButton 
-              onClick={() => setActiveStep(-1)}
-              aria-label="Đóng dialog"
-            >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>        
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         <DialogContent id="incident-dialog-description">
           <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 3 }}>
             {steps.map((label) => (
@@ -1179,7 +770,6 @@ const MedicalIncidentManager: React.FC = () => {
               </Step>
             ))}
           </Stepper>
-<<<<<<< HEAD
           {/* Step 1: Search Students */}
           {activeStep === 0 && (
             <Box>
@@ -1194,50 +784,24 @@ const MedicalIncidentManager: React.FC = () => {
                 </Typography>
               </Alert>
               <TextField
-=======
-
-          {/* Step 1: Search Students */}
-          {activeStep === 0 && (            <Box>
-              <Typography variant="h6" gutterBottom>
-                Tìm Kiếm Học Sinh Theo Tên
-              </Typography>
-              
-              <Alert severity="info" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  <strong>Hướng dẫn:</strong> Nhập tên học sinh để tìm kiếm. Hệ thống chỉ tìm kiếm theo tên, không bao gồm mã số hay thông tin khác.
-                </Typography>
-              </Alert>
-                <TextField
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 fullWidth
                 label="Tìm kiếm học sinh theo tên"
                 placeholder="Nhập tên học sinh (ví dụ: Nguyễn Văn A)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 InputProps={{
-<<<<<<< HEAD
                   startAdornment: (
                     <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />
                   ),
-=======
-                  startAdornment: <SearchIcon sx={{ color: "text.secondary", mr: 1 }} />
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 }}
                 sx={{ mb: 3 }}
                 helperText="Nhập ít nhất 2 ký tự để tìm kiếm theo tên học sinh"
               />
-<<<<<<< HEAD
               {loading && <LinearProgress sx={{ mb: 2 }} />}
-=======
-              
-              {loading && <LinearProgress sx={{ mb: 2 }} />}
-              
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
               {students.length > 0 && (
                 <Box>
                   <Typography variant="subtitle1" sx={{ mb: 2 }}>
                     Tìm thấy {students.length} học sinh có tên "{searchQuery}"
-<<<<<<< HEAD
                   </Typography>
                   <Grid container spacing={2}>
                     {students.map((student, index) => (
@@ -1255,24 +819,10 @@ const MedicalIncidentManager: React.FC = () => {
                               transform: "translateY(-2px)",
                               transition: "all 0.2s ease-in-out",
                             },
-=======
-                  </Typography>                  <Grid container spacing={2}>
-                    {students.map((student, index) => (
-                      <Grid item xs={12} md={6} key={`student-${index}-${student.studentId || student.id || student.studentCode || student.student_code}`}>
-                        <Card 
-                          sx={{ 
-                            cursor: "pointer",
-                            "&:hover": { 
-                              boxShadow: 4,
-                              transform: 'translateY(-2px)',
-                              transition: 'all 0.2s ease-in-out'
-                            }
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                           }}
                           onClick={() => handleSelectStudent(student)}
                         >
                           <CardContent>
-<<<<<<< HEAD
                             <Typography variant="h6" sx={{ color: "primary.main" }}>
                               {student.name}
                             </Typography>
@@ -1290,23 +840,6 @@ const MedicalIncidentManager: React.FC = () => {
                               <strong>Nhóm máu:</strong> {student.blood_type || "N/A"}
                             </Typography>
                             <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-end" }}>
-=======
-                            <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                              {student.name}
-                            </Typography>                            <Typography color="text.secondary">
-                              <strong>Mã HS:</strong> {student.studentCode || student.student_code || 'N/A'}
-                            </Typography>
-                            <Typography color="text.secondary">
-                              <strong>Lớp:</strong> {student.class || 'N/A'}
-                            </Typography>
-                            <Typography color="text.secondary">
-                              <strong>Trường:</strong> {student.school || 'N/A'}
-                            </Typography>
-                            <Typography color="text.secondary">
-                              <strong>Nhóm máu:</strong> {student.blood_type || 'N/A'}
-                            </Typography>
-                            <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                               <Button size="small" variant="contained">
                                 Chọn học sinh này
                               </Button>
@@ -1318,7 +851,6 @@ const MedicalIncidentManager: React.FC = () => {
                   </Grid>
                 </Box>
               )}
-<<<<<<< HEAD
               {searchQuery.length >= 2 &&
                 students.length === 0 &&
                 !loading && (
@@ -1331,19 +863,6 @@ const MedicalIncidentManager: React.FC = () => {
                 )}
             </Box>
           )}
-=======
-              
-              {searchQuery.length >= 2 && students.length === 0 && !loading && (
-                <Alert severity="warning" sx={{ mt: 2 }}>
-                  <Typography variant="body2">
-                    Không tìm thấy học sinh nào có tên "{searchQuery}". Vui lòng thử với tên khác.
-                  </Typography>
-                </Alert>
-              )}
-            </Box>
-          )}
-
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           {/* Step 2: Student Medical Info */}
           {activeStep === 1 && selectedStudent && (
             <Box>
@@ -1354,7 +873,6 @@ const MedicalIncidentManager: React.FC = () => {
                   </Typography>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
-<<<<<<< HEAD
                       <Typography>
                         <strong>Họ tên:</strong> {selectedStudent.name}
                       </Typography>
@@ -1379,28 +897,10 @@ const MedicalIncidentManager: React.FC = () => {
                         <strong>Ghi chú y tế:</strong>{" "}
                         {selectedStudent.parent?.emergencyContact || "Không có"}
                       </Typography>
-=======
-                      <Typography><strong>Họ tên:</strong> {selectedStudent.name}</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography><strong>Lớp:</strong> {selectedStudent.class}</Typography>
-                    </Grid>                    <Grid item xs={12} md={6}>
-                      <Typography><strong>Ngày sinh:</strong> {selectedStudent.dob}</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography><strong>Nhóm máu:</strong> {selectedStudent.blood_type}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography><strong>Ghi chú y tế:</strong> {selectedStudent.parent?.emergencyContact || "Không có"}</Typography>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                     </Grid>
                   </Grid>
                 </CardContent>
               </Card>
-<<<<<<< HEAD
-=======
-              
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Button onClick={() => setActiveStep(0)}>Quay lại</Button>
                 <Button variant="contained" onClick={() => setActiveStep(2)}>
@@ -1409,10 +909,6 @@ const MedicalIncidentManager: React.FC = () => {
               </Box>
             </Box>
           )}
-<<<<<<< HEAD
-=======
-
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           {/* Step 3: Incident Form */}
           {activeStep === 2 && (
             <Box>
@@ -1422,7 +918,6 @@ const MedicalIncidentManager: React.FC = () => {
                     <InputLabel>Loại sự cố</InputLabel>
                     <Select
                       value={incidentForm.incidentType}
-<<<<<<< HEAD
                       onChange={(e) =>
                         setIncidentForm((prev) => ({
                           ...prev,
@@ -1431,11 +926,6 @@ const MedicalIncidentManager: React.FC = () => {
                       }
                     >
                       {incidentTypes.map((type) => (
-=======
-                      onChange={(e) => setIncidentForm(prev => ({ ...prev, incidentType: e.target.value as any }))}
-                    >
-                      {incidentTypes.map(type => (
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                         <MenuItem key={type.value} value={type.value}>
                           {type.label}
                         </MenuItem>
@@ -1443,16 +933,11 @@ const MedicalIncidentManager: React.FC = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-<<<<<<< HEAD
-=======
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth>
                     <InputLabel>Mức độ nghiêm trọng</InputLabel>
                     <Select
                       value={incidentForm.severity}
-<<<<<<< HEAD
                       onChange={(e) =>
                         setIncidentForm((prev) => ({
                           ...prev,
@@ -1461,11 +946,6 @@ const MedicalIncidentManager: React.FC = () => {
                       }
                     >
                       {severityLevels.map((level) => (
-=======
-                      onChange={(e) => setIncidentForm(prev => ({ ...prev, severity: e.target.value as any }))}
-                    >
-                      {severityLevels.map(level => (
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                         <MenuItem key={level.value} value={level.value}>
                           {level.label}
                         </MenuItem>
@@ -1473,16 +953,11 @@ const MedicalIncidentManager: React.FC = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-<<<<<<< HEAD
-=======
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Vị trí xảy ra sự cố"
                     value={incidentForm.location}
-<<<<<<< HEAD
                     onChange={(e) =>
                       setIncidentForm((prev) => ({
                         ...prev,
@@ -1492,13 +967,6 @@ const MedicalIncidentManager: React.FC = () => {
                     placeholder="Ví dụ: Sân chơi, lớp học, phòng y tế..."
                   />
                 </Grid>
-=======
-                    onChange={(e) => setIncidentForm(prev => ({ ...prev, location: e.target.value }))}
-                    placeholder="Ví dụ: Sân chơi, lớp học, phòng y tế..."
-                  />
-                </Grid>
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -1506,7 +974,6 @@ const MedicalIncidentManager: React.FC = () => {
                     rows={3}
                     label="Mô tả sự cố"
                     value={incidentForm.description}
-<<<<<<< HEAD
                     onChange={(e) =>
                       setIncidentForm((prev) => ({
                         ...prev,
@@ -1516,19 +983,11 @@ const MedicalIncidentManager: React.FC = () => {
                     placeholder="Mô tả chi tiết về sự cố đã xảy ra..."
                   />
                 </Grid>
-=======
-                    onChange={(e) => setIncidentForm(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Mô tả chi tiết về sự cố đã xảy ra..."
-                  />
-                </Grid>
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12}>
                   <Autocomplete
                     multiple
                     options={commonSymptoms}
                     value={incidentForm.symptoms}
-<<<<<<< HEAD
                     onChange={(_, newValue) =>
                       setIncidentForm((prev) => ({
                         ...prev,
@@ -1543,16 +1002,10 @@ const MedicalIncidentManager: React.FC = () => {
                           {...getTagProps({ index })}
                           key={`symptom-${option}-${index}`}
                         />
-=======
-                    onChange={(_, newValue) => setIncidentForm(prev => ({ ...prev, symptoms: newValue }))}                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip variant="outlined" label={option} {...getTagProps({ index })} key={`symptom-${option}-${index}`} />
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                       ))
                     }
                     renderInput={(params) => (
                       <TextField
-<<<<<<< HEAD
                         id={params.id}
                         InputProps={params.InputProps}
                         inputProps={params.inputProps}
@@ -1560,19 +1013,10 @@ const MedicalIncidentManager: React.FC = () => {
                         placeholder="Chọn hoặc nhập triệu chứng..."
                         size="small"
                         variant="outlined"
-=======
-                        {...params}
-                        label="Triệu chứng"
-                        placeholder="Chọn hoặc nhập triệu chứng..."
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                       />
                     )}
                   />
                 </Grid>
-<<<<<<< HEAD
-=======
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
@@ -1580,7 +1024,6 @@ const MedicalIncidentManager: React.FC = () => {
                     rows={3}
                     label="Điều trị đã thực hiện"
                     value={incidentForm.treatmentGiven}
-<<<<<<< HEAD
                     onChange={(e) =>
                       setIncidentForm((prev) => ({
                         ...prev,
@@ -1590,19 +1033,11 @@ const MedicalIncidentManager: React.FC = () => {
                     placeholder="Mô tả các biện pháp điều trị đã thực hiện..."
                   />
                 </Grid>
-=======
-                    onChange={(e) => setIncidentForm(prev => ({ ...prev, treatmentGiven: e.target.value }))}
-                    placeholder="Mô tả các biện pháp điều trị đã thực hiện..."
-                  />
-                </Grid>
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12}>
                   <Autocomplete
                     multiple
                     options={commonMedications}
                     value={incidentForm.medicationsUsed}
-<<<<<<< HEAD
                     onChange={(_, newValue) =>
                       setIncidentForm((prev) => ({
                         ...prev,
@@ -1635,29 +1070,12 @@ const MedicalIncidentManager: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-=======
-                    onChange={(_, newValue) => setIncidentForm(prev => ({ ...prev, medicationsUsed: newValue }))}                    renderTags={(value, getTagProps) =>
-                      value.map((option, index) => (
-                        <Chip variant="outlined" label={option} {...getTagProps({ index })} key={`medication-${option}-${index}`} />
-                      ))
-                    }
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Thuốc/Vật tư y tế đã sử dụng"
-                        placeholder="Chọn hoặc nhập thuốc đã sử dụng..."
-                      />
-                    )}
-                  />
-                </Grid>                <Grid item xs={12}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   <TextField
                     fullWidth
                     multiline
                     rows={2}
                     label="Ghi chú thêm"
                     value={incidentForm.additionalNotes}
-<<<<<<< HEAD
                     onChange={(e) =>
                       setIncidentForm((prev) => ({
                         ...prev,
@@ -1667,38 +1085,23 @@ const MedicalIncidentManager: React.FC = () => {
                     placeholder="Ghi chú thêm (nếu có)..."
                   />
                 </Grid>
-=======
-                    onChange={(e) => setIncidentForm(prev => ({ ...prev, additionalNotes: e.target.value }))}
-                    placeholder="Ghi chú thêm (nếu có)..."
-                  />
-                </Grid>
-                
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                 <Grid item xs={12}>
                   <FormControlLabel
                     control={
                       <Switch
                         checked={incidentForm.parentNotified}
-<<<<<<< HEAD
                         onChange={(e) =>
                           setIncidentForm((prev) => ({
                             ...prev,
                             parentNotified: e.target.checked,
                           }))
                         }
-=======
-                        onChange={(e) => setIncidentForm(prev => ({ ...prev, parentNotified: e.target.checked }))}
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                       />
                     }
                     label="Đã thông báo cho phụ huynh"
                   />
                 </Grid>
               </Grid>
-<<<<<<< HEAD
-=======
-              
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
               <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
                 <Button onClick={() => setActiveStep(1)}>Quay lại</Button>
                 <Button variant="contained" onClick={() => setActiveStep(3)}>
@@ -1707,25 +1110,16 @@ const MedicalIncidentManager: React.FC = () => {
               </Box>
             </Box>
           )}
-<<<<<<< HEAD
-=======
-
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           {/* Step 4: Confirmation */}
           {activeStep === 3 && selectedStudent && (
             <Box>
               <Typography variant="h6" gutterBottom>
                 Xác Nhận Thông Tin
               </Typography>
-<<<<<<< HEAD
-=======
-              
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
               <Card sx={{ mb: 3 }}>
                 <CardContent>
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
-<<<<<<< HEAD
                       <Typography variant="subtitle2" color="text.secondary">
                         Học sinh
                       </Typography>
@@ -1747,27 +1141,11 @@ const MedicalIncidentManager: React.FC = () => {
                       </Typography>
                       <Chip
                         label={severityLevels.find((s) => s.value === incidentForm.severity)?.label}
-=======
-                      <Typography variant="subtitle2" color="text.secondary">Học sinh</Typography>
-                      <Typography variant="body1">{selectedStudent.name} - {selectedStudent.class}</Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" color="text.secondary">Loại sự cố</Typography>
-                      <Typography variant="body1">
-                        {incidentTypes.find(t => t.value === incidentForm.incidentType)?.label}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle2" color="text.secondary">Mức độ</Typography>
-                      <Chip 
-                        label={severityLevels.find(s => s.value === incidentForm.severity)?.label}
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                         color={getSeverityColor(incidentForm.severity) as any}
                         size="small"
                       />
                     </Grid>
                     <Grid item xs={12} md={6}>
-<<<<<<< HEAD
                       <Typography variant="subtitle2" color="text.secondary">
                         Vị trí
                       </Typography>
@@ -1777,25 +1155,14 @@ const MedicalIncidentManager: React.FC = () => {
                       <Typography variant="subtitle2" color="text.secondary">
                         Mô tả
                       </Typography>
-=======
-                      <Typography variant="subtitle2" color="text.secondary">Vị trí</Typography>
-                      <Typography variant="body1">{incidentForm.location}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle2" color="text.secondary">Mô tả</Typography>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                       <Typography variant="body1">{incidentForm.description}</Typography>
                     </Grid>
                     {incidentForm.symptoms.length > 0 && (
                       <Grid item xs={12}>
-<<<<<<< HEAD
                         <Typography variant="subtitle2" color="text.secondary">
                           Triệu chứng
                         </Typography>
                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
-=======
-                        <Typography variant="subtitle2" color="text.secondary">Triệu chứng</Typography>                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                           {incidentForm.symptoms.map((symptom, index) => (
                             <Chip key={`symptom-chip-${symptom}-${index}`} label={symptom} size="small" />
                           ))}
@@ -1803,7 +1170,6 @@ const MedicalIncidentManager: React.FC = () => {
                       </Grid>
                     )}
                     <Grid item xs={12}>
-<<<<<<< HEAD
                       <Typography variant="subtitle2" color="text.secondary">
                         Điều trị
                       </Typography>
@@ -1815,13 +1181,6 @@ const MedicalIncidentManager: React.FC = () => {
                           Thuốc/Vật tư sử dụng
                         </Typography>
                         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
-=======
-                      <Typography variant="subtitle2" color="text.secondary">Điều trị</Typography>
-                      <Typography variant="body1">{incidentForm.treatmentGiven}</Typography>
-                    </Grid>                    {incidentForm.medicationsUsed.length > 0 && (
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle2" color="text.secondary">Thuốc/Vật tư sử dụng</Typography>                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: 1 }}>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                           {incidentForm.medicationsUsed.map((med, index) => (
                             <Chip key={`medication-chip-${med}-${index}`} label={med} size="small" />
                           ))}
@@ -1831,18 +1190,10 @@ const MedicalIncidentManager: React.FC = () => {
                   </Grid>
                 </CardContent>
               </Card>
-<<<<<<< HEAD
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <Button onClick={() => setActiveStep(2)}>Quay lại</Button>
                 <Button
                   variant="contained"
-=======
-              
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Button onClick={() => setActiveStep(2)}>Quay lại</Button>
-                <Button 
-                  variant="contained" 
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
                   onClick={handleCreateIncident}
                   disabled={loading}
                   startIcon={loading ? <LinearProgress /> : <SaveIcon />}
@@ -1854,19 +1205,10 @@ const MedicalIncidentManager: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
-<<<<<<< HEAD
-=======
-
-      {/* Enhanced Incidents List */}
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
       <Paper sx={{ mt: 3 }}>
         <Box sx={{ p: 2, borderBottom: 1, borderColor: "divider" }}>
           <Typography variant="h6">Danh Sách Sự Cố Y Tế</Typography>
         </Box>
-<<<<<<< HEAD
-=======
-        
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         <TableContainer>
           <Table>
             <TableHead>
@@ -1883,7 +1225,6 @@ const MedicalIncidentManager: React.FC = () => {
               {incidents
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((incident) => (
-<<<<<<< HEAD
                   <TableRow key={incident.id}>
                     <TableCell>
                       <Box>
@@ -1959,73 +1300,6 @@ const MedicalIncidentManager: React.FC = () => {
                 ))}
             </TableBody>
           </Table>
-=======
-                <TableRow key={incident.id}>
-                  <TableCell>
-                    <Box>
-                      <Typography variant="body2" fontWeight="medium">
-                        {incident.studentName}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {incident.className}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {incidentTypes.find(t => t.value === incident.incidentType)?.label}
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={severityLevels.find(s => s.value === incident.severity)?.label}
-                      color={getSeverityColor(incident.severity) as any}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {new Date(incident.dateTime).toLocaleDateString('vi-VN')}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {new Date(incident.dateTime).toLocaleTimeString('vi-VN')}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={incident.status === 'active' ? 'Đang xử lý' : 
-                             incident.status === 'resolved' ? 'Đã giải quyết' : 'Cần theo dõi'}
-                      color={incident.status === 'resolved' ? 'success' : 'warning'}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <Tooltip title={incident.parentNotified ? "Đã thông báo phụ huynh" : "Chưa thông báo phụ huynh"}>
-                        <IconButton 
-                          size="small" 
-                          onClick={() => handleNotifyParent(incident.id)}
-                          disabled={incident.parentNotified}
-                        >
-                          <Badge 
-                            color={incident.parentNotified ? "success" : "error"}
-                            variant="dot"
-                          >
-                            <NotificationsIcon />
-                          </Badge>
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Xem chi tiết">
-                        <IconButton size="small">
-                          <InfoIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
@@ -2035,7 +1309,6 @@ const MedicalIncidentManager: React.FC = () => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
             labelRowsPerPage="Số dòng mỗi trang:"
-<<<<<<< HEAD
             labelDisplayedRows={({ from, to, count }) =>
               `${from}-${to} trong ${count !== -1 ? count : `hơn ${to}`}`
             }
@@ -2052,24 +1325,6 @@ const MedicalIncidentManager: React.FC = () => {
           onClose={() => setShowNotification(false)}
           severity={notificationSeverity}
           sx={{ width: "100%" }}
-=======
-            labelDisplayedRows={({ from, to, count }) => `${from}-${to} trong ${count !== -1 ? count : `hơn ${to}`}`}
-          />
-        </TableContainer>
-      </Paper>
-
-      {/* Notification Snackbar */}
-      <Snackbar 
-        open={showNotification} 
-        autoHideDuration={6000}
-        onClose={() => setShowNotification(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <Alert 
-          onClose={() => setShowNotification(false)} 
-          severity={notificationSeverity}
-          sx={{ width: '100%' }}
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         >
           {notificationMessage}
         </Alert>
@@ -2095,7 +1350,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
     expiryDate: "",
     location: "",
   });
-<<<<<<< HEAD
 
   // State: Vaccination Campaigns assigned to nurse
   const [assignedCampaigns, setAssignedCampaigns] = useState<AssignedCampaign[]>([]);
@@ -2108,28 +1362,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   // State: Attendance
   const [attendance, setAttendance] = useState<{ [studentId: number]: "present" | "absent" | undefined }>({});
   const [savingAttendance, setSavingAttendance] = useState(false);
-=======
-  
-  const handleNavigateToHome = useCallback(() => {
-    navigate(ROUTES.HOME);
-  }, [navigate]);
-
-  const handleNavigateToNews = useCallback(() => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  }, [navigate]);
-
-  const handleNavigateToContact = useCallback(() => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  }, [navigate]);
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
 
   // Trạng thái hoàn thành tiêm chủng
   const [completingIds, setCompletingIds] = useState<{ [studentId: number]: boolean }>({});
@@ -2374,7 +1606,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
                   justifyContent: "space-between",
                 }}
               >
-<<<<<<< HEAD
                 <Box>
                   <Typography variant="h6">Tổng Quan Vật Tư Y Tế</Typography>
                   <Typography variant="h4" color="primary">
@@ -2437,58 +1668,6 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
               </Table>
             </TableContainer>
           </>
-=======
-                Thêm Vật Tư Mới
-              </Button>
-            </Paper>
-          </Box>
-        )}
-
-        {tabValue === 0 && (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tên Vật Tư</TableCell>
-                  <TableCell>Số Lượng</TableCell>
-                  <TableCell>Hạn Sử Dụng</TableCell>
-                  <TableCell>Thao Tác</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Băng Gạc</TableCell>
-                  <TableCell>50</TableCell>
-                  <TableCell>2025-12-31</TableCell>
-                  <TableCell>
-                    <Button variant="contained" color="primary">
-                      Sửa
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Thuốc Sát Trùng</TableCell>
-                  <TableCell>30</TableCell>
-                  <TableCell>2025-11-15</TableCell>
-                  <TableCell>
-                    <Button variant="contained" color="primary">
-                      Sửa
-                    </Button>
-                  </TableCell>                </TableRow>
-                <TableRow>
-                  <TableCell>Khẩu Trang</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>2026-01-01</TableCell>
-                  <TableCell>
-                    <Button variant="contained" color="primary">
-                      Sửa
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         )}
 
         {/* Tab 1: Vaccination Schedule */}
@@ -2664,10 +1843,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
           </Box>
         )}
 
-<<<<<<< HEAD
         {/* Tab 3: Medical Incident Management */}
-=======
->>>>>>> 1ea54a1325b7dda4469047d68f497fca416a24d9
         {tabValue === 3 && <MedicalIncidentManager />}
 
         {/* Dialog Thêm Vật Tư */}
