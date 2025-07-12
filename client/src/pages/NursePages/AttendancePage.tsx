@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Button, Checkbox, message, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
+import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
 interface Student {
   studentId: number;
@@ -121,15 +122,14 @@ const AttendancePage: React.FC = () => {
       dataIndex: "present",
       key: "present",
       width: 120,
-      render: (_: any, record: Student) => (
-        <Checkbox
-          checked={attendance[record.studentId] ?? false}
-          onChange={(e) =>
-            handleAttendanceChange(record.studentId, e.target.checked)
-          }
-        >
-          Có
-        </Checkbox>
+      render: (_: any, record: Student) => (        <Checkbox
+        checked={attendance[record.studentId] ?? false}
+        onChange={(e: CheckboxChangeEvent) =>
+          handleAttendanceChange(record.studentId, e.target.checked)
+        }
+      >
+        Có
+      </Checkbox>
       ),
     },
   ];

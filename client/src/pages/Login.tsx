@@ -36,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     password: string;
     remember: boolean;
   }>({
-    role: "parent" as UserRole,
+    role: "parent",
     username: "",
     password: "",
     remember: false,

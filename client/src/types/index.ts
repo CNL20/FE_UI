@@ -13,10 +13,10 @@ export interface User {
 
 // Student and Parent related types
 export interface Student {
-  id?: number; // Keep for backward compatibility
-  studentId?: number; // New field from backend
-  student_code?: string; // Keep for backward compatibility  
-  studentCode?: string; // New field from backend
+  id?: number; // Backward compatibility
+  studentId?: number;
+  student_code?: string;
+  studentCode?: string;
   name: string;
   dob: string;
   gender: 'male' | 'female';

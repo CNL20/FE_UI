@@ -199,10 +199,45 @@ export const submitHealthProfile = async (formData: FormData) => {
 };
 
 // ================== STUDENT SERVICES ==================
+// Helper to map snake_case student to camelCase with parent info
+const mapStudent = (s: any) => ({
+  id: s.student_id ?? s.id,
+  studentId: s.student_id ?? s.id,
+  student_code: s.student_code,
+  studentCode: s.student_code,
+  name: s.name,
+  dob: s.dob,
+  gender: s.gender,
+  class: s.class,
+  school: s.school,
+  address: s.address,
+  parent_cccd: s.parent_cccd,
+  blood_type: s.blood_type,
+  height: s.height,
+  weight: s.weight,
+  status: s.status,
+  parent: s.parent ? {
+    id: s.parent.id,
+    account_id: s.parent.account_id,
+    name: s.parent.name,
+    phone: s.parent.phone,
+    cccd: s.parent.cccd,
+    relationship: s.parent.relationship,
+    emergencyContact: s.parent.emergency_contact,
+  } : undefined,
+  parent_name: s.parent_name,
+  parent_phone: s.parent_phone,
+});
+
 export const getAllStudents = async () => {
   try {
     const response = await apiClient.get(API_ENDPOINTS.STUDENT.BASE);
-    return response.data;
+    if (Array.isArray(response.data)) {
+      return response.data.map(mapStudent);
+    } else if (response.data) {
+      return [mapStudent(response.data)];
+    }
+    return [];
   } catch (error) {
     console.error('Failed to get all students:', error);
     throw error;
@@ -212,7 +247,12 @@ export const getAllStudents = async () => {
 export const searchStudents = async (query: string) => {
   try {
     const response = await apiClient.get(`/student/search-by-name?name=${encodeURIComponent(query)}`);
-    return response;
+    if (Array.isArray(response.data)) {
+      return { data: response.data.map(mapStudent) };
+    } else if (response.data) {
+      return { data: [mapStudent(response.data)] };
+    }
+    return { data: [] };
   } catch (error: any) {
     console.error('Failed to search students:', error.response?.data || error.message);
     throw error;
@@ -222,7 +262,7 @@ export const searchStudents = async (query: string) => {
 export const getStudentById = async (studentId: string) => {
   try {
     const response = await apiClient.get(API_ENDPOINTS.STUDENT.BY_ID(studentId));
-    return response.data;
+    return mapStudent(response.data);
   } catch (error) {
     console.error('Failed to get student:', error);
     throw error;
@@ -247,20 +287,20 @@ export const createMedicalIncident = async (data: any) => {
     if (!data.incidentType) throw new Error('Incident type is required');
     if (!data.description || !data.description.trim()) throw new Error('Description is required');
     if (!data.location || !data.location.trim()) throw new Error('Location is required');
-    // Map frontend to backend fields
+    // Map frontend to backend fields (PascalCase)
     const formattedData = {
-      studentId: Number(data.studentId),
-      eventType: data.incidentType,
-      severity: data.severity || 'low',
-      location: data.location.trim(),
-      description: data.description.trim(),
-      symptoms: Array.isArray(data.symptoms) ? data.symptoms.join(', ') : (data.symptoms || ''),
-      outcome: data.treatmentGiven || '',
-      notes: data.additionalNotes || '',
-      usedSupplies: Array.isArray(data.medicationsUsed) ? data.medicationsUsed.join(', ') : (data.medicationsUsed || ''),
-      parentNotified: Boolean(data.parentNotified),
-      dateTime: new Date().toISOString(),
-      status: 'active'
+      StudentId: Number(data.studentId),
+      EventType: data.incidentType,
+      Severity: data.severity || 'low',
+      Location: data.location.trim(),
+      Description: data.description.trim(),
+      Symptoms: Array.isArray(data.symptoms) ? data.symptoms.join(', ') : (data.symptoms || ''),
+      Outcome: data.treatmentGiven || '',
+      Notes: data.additionalNotes || '',
+      UsedSupplies: Array.isArray(data.medicationsUsed) ? data.medicationsUsed.join(', ') : (data.medicationsUsed || ''),
+      ParentNotified: Boolean(data.parentNotified),
+      DateTime: new Date().toISOString(),
+      Status: 'active'
     };
     const response = await apiClient.post('/medical-event', formattedData);
     return response.data;
@@ -274,10 +314,34 @@ export const createMedicalIncident = async (data: any) => {
   }
 };
 
+// Optionally, map snake_case response to camelCase for frontend usage
+const mapMedicalIncident = (item: any) => ({
+  id: item.id,
+  studentId: item.student_id,
+  studentName: item.student_name,
+  className: item.class_name,
+  incidentType: item.event_type,
+  description: item.description,
+  symptoms: item.symptoms ? item.symptoms.split(',').map((s: string) => s.trim()) : [],
+  severity: item.severity,
+  location: item.location,
+  dateTime: item.date_time,
+  treatmentGiven: item.outcome,
+  medicationsUsed: item.used_supplies ? item.used_supplies.split(',').map((s: string) => s.trim()) : [],
+  additionalNotes: item.notes,
+  parentNotified: item.parent_notified,
+  parentNotificationTime: item.parent_notification_time,
+  nurseId: item.nurse_id,
+  nurseName: item.nurse_name,
+  status: item.status,
+  createdAt: item.created_at,
+  updatedAt: item.updated_at,
+});
+
 export const getMedicalIncidentById = async (id: string) => {
   try {
     const response = await apiClient.get(`/medical-event/${id}`);
-    return response.data;
+    return mapMedicalIncident(response.data);
   } catch (error: any) {
     console.error('Failed to get medical incident:', error.response?.data || error.message);
     throw error;
@@ -295,7 +359,13 @@ export const getMedicalIncidents = async (filters?: Record<string, string>) => {
       endpoint += `?${params.toString()}`;
     }
     const response = await apiClient.get(endpoint);
-    return response.data;
+    // Map all items to camelCase
+    if (Array.isArray(response.data)) {
+      return response.data.map(mapMedicalIncident);
+    } else if (response.data) {
+      return [mapMedicalIncident(response.data)];
+    }
+    return [];
   } catch (error: any) {
     console.error('Failed to get medical incidents:', error.response?.data || error.message);
     throw error;

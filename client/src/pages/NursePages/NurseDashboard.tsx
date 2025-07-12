@@ -156,6 +156,7 @@ const MedicalIncidentManager: React.FC = () => {
     additionalNotes: "",
     parentNotified: false,
   });
+
   const [statistics, setStatistics] = useState({
     totalIncidents: 0,
     todayIncidents: 0,
@@ -227,46 +228,19 @@ const MedicalIncidentManager: React.FC = () => {
     setLoading(true);
     try {
       const response = await searchStudents(query);
-      let studentData = [];
-      if (response?.data) {
-        studentData = Array.isArray(response.data)
-          ? response.data
-          : [response.data];
-      } else if (Array.isArray(response)) {
-        studentData = response;
-      } else {
-        studentData = [];
-      }
-      const filteredStudents = studentData.filter((student: any) => {
-        const studentName = (
-          student.name ||
-          student.fullName ||
-          ""
-        ).toLowerCase();
-        const searchTerm = query.toLowerCase();
-        return studentName.includes(searchTerm);
+      const studentData: Student[] = response.data || [];
+      const filteredStudents = studentData.filter((student) => {
+        const studentName = (student.name || "").toLowerCase();
+        return studentName.includes(query.toLowerCase());
       });
-      const normalizedStudents = filteredStudents.map((student: any) => ({
-        ...student,
-        fullName: student.name || student.fullName,
-        id:
-          student.studentId ||
-          student.id ||
-          student.student_code ||
-          student.studentCode,
-        student_code:
-          student.studentCode || student.student_code,
-      }));
-
-      setStudents(normalizedStudents);
-
-      if (normalizedStudents.length === 0) {
+      setStudents(filteredStudents);
+      if (filteredStudents.length === 0) {
         setNotificationMessage(`Không tìm thấy học sinh nào có tên "${query}"`);
         setNotificationSeverity("info");
         setShowNotification(true);
       } else {
         setNotificationMessage(
-          `Tìm thấy ${normalizedStudents.length} học sinh có tên "${query}"`
+          `Tìm thấy ${filteredStudents.length} học sinh có tên "${query}"`
         );
         setNotificationSeverity("success");
         setShowNotification(true);
@@ -322,18 +296,21 @@ const MedicalIncidentManager: React.FC = () => {
       setShowNotification(true);
       return;
     }
+
     if (!incidentForm.description.trim()) {
       setNotificationMessage("Lỗi: Vui lòng nhập mô tả sự cố!");
       setNotificationSeverity("error");
       setShowNotification(true);
       return;
     }
+
     if (!incidentForm.location.trim()) {
       setNotificationMessage("Lỗi: Vui lòng nhập vị trí xảy ra sự cố!");
       setNotificationSeverity("error");
       setShowNotification(true);
       return;
     }
+
     setLoading(true);
     try {
       await createMedicalIncident(incidentForm);
@@ -389,18 +366,7 @@ const MedicalIncidentManager: React.FC = () => {
         page: (page + 1).toString(),
         limit: rowsPerPage.toString(),
       });
-
-      let incidentData = [];
-      if (response?.data) {
-        incidentData = Array.isArray(response.data)
-          ? response.data
-          : [response.data];
-      } else if (Array.isArray(response)) {
-        incidentData = response;
-      } else {
-        incidentData = [];
-      }
-
+      const incidentData: MedicalIncident[] = Array.isArray(response) ? response : [];
       setIncidents(incidentData);
       calculateStatistics(incidentData);
     } catch (error: any) {
@@ -416,26 +382,26 @@ const MedicalIncidentManager: React.FC = () => {
   };
 
   const handleNotifyParent = async (incidentId: string | number | undefined) => {
-  if (!incidentId || incidentId === "undefined") {
-    setNotificationMessage("Không tìm thấy ID sự cố để gửi thông báo!");
-    setNotificationSeverity("error");
-    setShowNotification(true);
-    return;
-  }
-  try {
-    await notifyParent(String(incidentId), {
-      message: "Thông báo về sự cố y tế của con em bạn",
-    });
-    setNotificationMessage("Đã thông báo cho phụ huynh!");
-    setNotificationSeverity("success");
-    setShowNotification(true);
-    loadIncidents();
-  } catch (error) {
-    setNotificationMessage("Có lỗi khi thông báo cho phụ huynh!");
-    setNotificationSeverity("error");
-    setShowNotification(true);
-  }
-};
+    if (!incidentId || incidentId === "undefined") {
+      setNotificationMessage("Không tìm thấy ID sự cố để gửi thông báo!");
+      setNotificationSeverity("error");
+      setShowNotification(true);
+      return;
+    }
+    try {
+      await notifyParent(String(incidentId), {
+        message: "Thông báo về sự cố y tế của con em bạn",
+      });
+      setNotificationMessage("Đã thông báo cho phụ huynh!");
+      setNotificationSeverity("success");
+      setShowNotification(true);
+      loadIncidents();
+    } catch (error) {
+      setNotificationMessage("Có lỗi khi thông báo cho phụ huynh!");
+      setNotificationSeverity("error");
+      setShowNotification(true);
+    }
+  };
 
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters((prev) => ({ ...prev, [filterName]: value }));
@@ -695,6 +661,7 @@ const MedicalIncidentManager: React.FC = () => {
         handleSearchStudents(searchQuery);
       }
     }, 300);
+
     return () => clearTimeout(delayedSearch);
   }, [searchQuery]);
 
@@ -832,6 +799,12 @@ const MedicalIncidentManager: React.FC = () => {
                             </Typography>
                             <Typography color="text.secondary">
                               <strong>Lớp:</strong> {student.class || "N/A"}
+                            </Typography>
+                            <Typography color="text.secondary">
+                              <strong>Phụ huynh:</strong> {student.parent?.name || "N/A"}
+                            </Typography>
+                            <Typography color="text.secondary">
+                              <strong>SĐT phụ huynh:</strong> {student.parent?.phone || "N/A"}
                             </Typography>
                             <Typography color="text.secondary">
                               <strong>Trường:</strong> {student.school || "N/A"}

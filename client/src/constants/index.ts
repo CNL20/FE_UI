@@ -77,6 +77,7 @@ export const API_ENDPOINTS = {
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
+  REGISTER: '/register',
   ADMIN: {
     DASHBOARD: '/admin',
     MANAGE_ACCOUNTS: '/admin/manage-accounts',
