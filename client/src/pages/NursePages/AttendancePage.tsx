@@ -4,7 +4,6 @@ import { Table, Button, Checkbox, message, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useParams } from "react-router-dom";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
 interface Student {
   studentId: number;

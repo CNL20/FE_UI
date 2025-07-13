@@ -43,6 +43,30 @@ export const API_ENDPOINTS = {
     CAMPAIGN_CONFIRMATIONS: (id: string) => `/vaccination/campaigns/${id}/confirmations`,
     CONFIRMATIONS: '/vaccination/confirmations',
   },
+  HEALTH_CAMPAIGN: {
+    BASE: '/HealthCampaign',
+    BY_ID: (id: number | string) => `/HealthCampaign/${id}`,
+    STUDENTS: (id: number | string) => `/HealthCampaign/${id}/students`,
+    NOTIFICATIONS: (id: number | string) => `/notification/HealthCampaign/${id}/parents`,
+    RESULTS_NOTIFICATION: (id: number | string) => `/notification/HealthCampaign/${id}/results`,
+  },
+  HEALTH_CHECK_SCHEDULE: {
+    BASE: '/health-check-schedule',
+    BY_CAMPAIGN: (campaignId: number | string) => `/health-check-schedule/campaign/${campaignId}`,
+  },
+  HEALTH_CHECK_RESULT: {
+    BASE: '/health-check-result',
+    BY_STUDENT_CAMPAIGN: (studentId: number | string, campaignId: number | string) => 
+      `/health-check-result/student/${studentId}/campaign/${campaignId}`,
+    INCOMPLETE: (campaignId: number | string) => `/health-check-result/campaign/${campaignId}/incomplete`,
+  },
+  NURSE_ASSIGNMENT: {
+    BASE: '/nurse-assignment',
+    BY_CAMPAIGN: (campaignId: number | string) => `/nurse-assignment/campaign/${campaignId}`,
+  },
+  ATTENDANCE: {
+    BASE: '/attendance',
+  },
   PARENT: {
     BY_ID: (id: string) => `/parent/${id}`,
   },

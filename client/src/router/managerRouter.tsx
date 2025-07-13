@@ -6,7 +6,10 @@ import EventAndAppointmentManagement from "../pages/ManagerPages/EventAndAppoint
 import HealthRecords from "../pages/ManagerPages/HealthRecords";
 import MedicalStaffManagement from "../pages/ManagerPages/MedicalStaffManagement";
 import VaccinationCampaigns from "../pages/ManagerPages/VaccinationCampaigns";
-import CampaignConsents from "../pages/ManagerPages/CampaignConsents"; // <-- Thêm dòng này
+import CampaignConsents from "../pages/ManagerPages/CampaignConsents";
+import HealthCampaignsPage from "../pages/ManagerPages/HealthCampaignsPage";
+import HealthCampaignDetailPage from "../pages/ManagerPages/HealthCampaignDetailPage";
+import AssignNursesPage from "../pages/ManagerPages/AssignNursesPage";
 
 const ManagerRouter: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const safeLogout = onLogout || (() => {});
@@ -18,7 +21,10 @@ const ManagerRouter: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
       <Route path="health-records" element={<HealthRecords onLogout={safeLogout} />} />
       <Route path="medical-staff-management" element={<MedicalStaffManagement onLogout={safeLogout} />} />
       <Route path="vaccination-campaigns" element={<VaccinationCampaigns />} />
-      <Route path="vaccination-campaigns/:campaignId/consents" element={<CampaignConsents />} /> {/* Route chi tiết xác nhận chiến dịch */}
+      <Route path="vaccination-campaigns/:campaignId/consents" element={<CampaignConsents />} />
+      <Route path="health-campaigns" element={<HealthCampaignsPage />} />
+      <Route path="health-campaigns/:campaignId/details" element={<HealthCampaignDetailPage />} />
+      <Route path="health-campaigns/:campaignId/assign-nurses" element={<AssignNursesPage />} />
       <Route index element={<Navigate to="dashboard" replace />} />
     </Routes>
   );

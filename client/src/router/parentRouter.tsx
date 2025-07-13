@@ -11,7 +11,9 @@ import VaccinationRegistrationForm from "../pages/ParentPages/VaccinationRegistr
 import VaccinationSchedule from "../pages/ParentPages/VaccinationSchedule";
 import VaccinationNews from "../pages/ParentPages/VaccinationNews";
 import HealthCheckSchedule from "../pages/ParentPages/HealthCheckSchedule";
-import ParentNotification from "../pages/ParentPages/ParentNotification"; // <-- Thêm dòng này
+import ParentNotification from "../pages/ParentPages/ParentNotification";
+import ParentHealthCheckNotifications from "../pages/ParentPages/ParentHealthCheckNotifications";
+import HealthCheckResultsDetail from "../pages/ParentPages/HealthCheckResultsDetail";
 
 const ParentRouter: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const safeLogout = onLogout || (() => {});
@@ -41,9 +43,11 @@ const ParentRouter: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
       <Route path="vaccination-schedule" element={<VaccinationSchedule />} />
       <Route path="vaccination-news" element={<VaccinationNews />} />
 
-      {/* THÊM ROUTE THÔNG BÁO */}
+      {/* Thông báo */}
       <Route path="notification" element={<ParentNotification />} />
-
+      <Route path="health-check-notifications" element={<ParentHealthCheckNotifications />} />
+      <Route path="health-check/results/:studentId/:campaignId" element={<HealthCheckResultsDetail />} />
+      
       <Route index element={<Navigate to="dashboard" replace />} />
     </Routes>
   );

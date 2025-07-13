@@ -1,10 +1,10 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { UserRole, RegisterPayload } from '../types';
-import { STORAGE_KEYS, API_ENDPOINTS } from '../constants';
+import { STORAGE_KEYS, API_ENDPOINTS, API_BASE_URL } from '../constants';
 
 // Create Axios instance
 const apiClient = axios.create({
-  baseURL: process.env['REACT_APP_API_BASE_URL'] || 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });

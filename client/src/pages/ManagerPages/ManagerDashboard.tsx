@@ -12,8 +12,9 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Button,
 } from "@mui/material";
-import { Search, Assignment, Menu as MenuIcon } from "@mui/icons-material";
+import { Search, Assignment, Menu as MenuIcon, HealthAndSafety } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ROUTES } from "../../constants";
@@ -65,6 +66,10 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
   const handleNavigateToVaccinationCampaigns = () => {
     navigate("/manager/vaccination-campaigns");
   };
+  
+  const handleNavigateToHealthCampaigns = () => {
+    navigate("/manager/health-campaigns");
+  };
 
   const handleLogout = () => {
     if (onLogout) onLogout();
@@ -90,6 +95,10 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
     {
       text: "Quản lý chiến dịch tiêm chủng",
       onClick: handleNavigateToVaccinationCampaigns,
+    },
+    {
+      text: "Quản lý chiến dịch khám sức khỏe",
+      onClick: handleNavigateToHealthCampaigns,
     },
   ];
 
@@ -286,6 +295,51 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
               </CardContent>
             </Card>
           </Grid>
+
+          {/* Health Campaign Card */}
+          <Grid item xs={12} md={3}>
+            <Card
+              sx={{
+                height: "150px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "12px",
+                backgroundColor: "#E1F5FE", // Light blue background
+                color: "#000", // Black text for contrast
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                transition: "transform 0.2s",
+                cursor: "pointer",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  backgroundColor: "#B3E5FC",
+                },
+              }}
+              onClick={handleNavigateToHealthCampaigns}
+            >
+              <CardContent>
+                <Box display="flex" alignItems="center" justifyContent="center" mb={1}>
+                  <HealthAndSafety color="primary" fontSize="large" />
+                </Box>
+                <Typography variant="h6" align="center">
+                  Quản lý chiến dịch khám sức khỏe
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  sx={{ mt: 2 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNavigateToHealthCampaigns();
+                  }}
+                >
+                  Tạo chiến dịch mới
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
 
         <Grid container spacing={3} mt={3}>
@@ -367,6 +421,78 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
                 <Typography variant="body2">
                   (Placeholder for a report on vaccination/health check rates)
                 </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          {/* Health Campaign Feature Section */}
+          <Grid item xs={12} mt={3}>
+            <Typography variant="h5" gutterBottom>
+              Chiến dịch khám sức khỏe
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Card
+              sx={{
+                borderRadius: "12px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                padding: 2,
+              }}
+            >
+              <CardContent>
+                <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+                  <Box display="flex" alignItems="center">
+                    <HealthAndSafety color="primary" fontSize="large" sx={{ mr: 2 }} />
+                    <Typography variant="h6">
+                      Quản lý chiến dịch khám sức khỏe định kỳ
+                    </Typography>
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<HealthAndSafety />}
+                    onClick={handleNavigateToHealthCampaigns}
+                  >
+                    Tạo chiến dịch mới
+                  </Button>
+                </Box>
+                
+                <Typography variant="body1" paragraph>
+                  Tạo và quản lý chiến dịch khám sức khỏe định kỳ cho học sinh. Các chức năng bao gồm:
+                </Typography>
+                
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={4}>
+                    <Card sx={{ backgroundColor: '#f0f7ff', height: '100%' }}>
+                      <CardContent>
+                        <Typography variant="subtitle1" fontWeight="bold">Tạo chiến dịch mới</Typography>
+                        <Typography variant="body2">
+                          Thiết lập thông tin chiến dịch khám sức khỏe, thời gian bắt đầu và kết thúc.
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Card sx={{ backgroundColor: '#f0f7ff', height: '100%' }}>
+                      <CardContent>
+                        <Typography variant="subtitle1" fontWeight="bold">Bổ nhiệm y tá</Typography>
+                        <Typography variant="body2">
+                          Chỉ định y tá tham gia chiến dịch khám sức khỏe.
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Card sx={{ backgroundColor: '#f0f7ff', height: '100%' }}>
+                      <CardContent>
+                        <Typography variant="subtitle1" fontWeight="bold">Gửi kết quả khám</Typography>
+                        <Typography variant="body2">
+                          Thông báo kết quả khám sức khỏe đến phụ huynh.
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
               </CardContent>
             </Card>
           </Grid>
