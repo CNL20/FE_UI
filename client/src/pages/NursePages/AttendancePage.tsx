@@ -4,19 +4,20 @@ import { Table, Button, Checkbox, message, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useParams } from "react-router-dom";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
 interface Student {
   studentId: number;
   name: string;
   class: string;
   parentName?: string;
+  attendanceId?: number; // Thêm attendanceId để gửi lên BE
 }
 
 interface AttendanceItem {
+  attendanceId: number;
   studentId: number;
   nurseId: number;
-  present: boolean;
+  isPresent: boolean;
 }
 
 const AttendancePage: React.FC = () => {
@@ -31,27 +32,29 @@ const AttendancePage: React.FC = () => {
     const fetchStudents = async () => {
       setLoading(true);
       try {
-        // Lấy thông tin y tá từ token hoặc API (ở đây giả định BE trả về nurseId khi login)
-        // Bạn có thể sửa lại lấy từ localStorage hoặc context nếu dùng Auth
+        // Lấy thông tin y tá từ localStorage hoặc API
         const nurseIdStored = localStorage.getItem("nurseId");
         if (nurseIdStored) {
           setNurseId(Number(nurseIdStored));
         } else {
-          // Thử lấy từ API
           const nurseRes = await axios.get("/api/account/me");
           setNurseId(nurseRes.data.nurseId);
         }
 
         // Lấy danh sách học sinh đã đồng ý tiêm chủng của campaign này
+        // Đảm bảo API này trả về attendanceId cho mỗi học sinh!
         const response = await axios.get(
           `/api/vaccination/campaigns/${campaignId}/agreed-students`
         );
         setStudents(response.data || []);
 
-        // Khởi tạo state điểm danh: mặc định tất cả là có mặt
+        // Khởi tạo state điểm danh: mặc định tất cả là có mặt (hoặc theo dữ liệu hiện có)
         const initialAttendance: Record<number, boolean> = {};
         (response.data || []).forEach((s: Student) => {
-          initialAttendance[s.studentId] = true;
+          // Nếu có trường isPresent thì lấy theo dữ liệu gốc, không thì mặc định true
+          initialAttendance[s.studentId] =
+            // @ts-ignore
+            s.isPresent !== undefined ? s.isPresent : true;
         });
         setAttendance(initialAttendance);
       } catch (error) {
@@ -79,16 +82,24 @@ const AttendancePage: React.FC = () => {
     }
     setLoading(true);
     try {
+      // Gửi attendanceId và isPresent (đúng tên trường như backend)
       const data: AttendanceItem[] = students.map((s) => ({
+        attendanceId: s.attendanceId!, // Đảm bảo attendanceId có giá trị
         studentId: s.studentId,
         nurseId,
-        present: attendance[s.studentId] ?? false,
+        isPresent: attendance[s.studentId] ?? false,
       }));
 
-      await axios.post(
-        `/api/vaccination/campaigns/${campaignId}/attendance`,
-        data
-      );
+      // Nếu backend hỗ trợ batch update (PUT/PATCH nhiều bản ghi)
+      await axios.post(`/api/Attendance/bulk-update`, data);
+
+      // Nếu backend chỉ hỗ trợ update từng bản ghi thì dùng Promise.all:
+      // await Promise.all(
+      //   data.map((item) =>
+      //     axios.put(`/api/Attendance/${item.attendanceId}`, item)
+      //   )
+      // );
+
       message.success("Điểm danh thành công!");
     } catch (error: any) {
       message.error(
@@ -123,14 +134,15 @@ const AttendancePage: React.FC = () => {
       dataIndex: "present",
       key: "present",
       width: 120,
-      render: (_: any, record: Student) => (        <Checkbox
-        checked={attendance[record.studentId] ?? false}
-        onChange={(e: CheckboxChangeEvent) =>
-          handleAttendanceChange(record.studentId, e.target.checked)
-        }
-      >
-        Có
-      </Checkbox>
+      render: (_: any, record: Student) => (
+        <Checkbox
+          checked={attendance[record.studentId] ?? false}
+          onChange={(e: CheckboxChangeEvent) =>
+            handleAttendanceChange(record.studentId, e.target.checked)
+          }
+        >
+          Có
+        </Checkbox>
       ),
     },
   ];

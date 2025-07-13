@@ -98,6 +98,7 @@ type VaccinationSchedule = {
   nextDate: string;
   status: string;
   present?: boolean; // Added for attendance status
+  vaccinationId?: number | null; 
 };
 
 type MedicineRequest = {
@@ -1476,38 +1477,43 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   };
 
   const handleSaveAttendance = async () => {
-    setSavingAttendance(true);
+  setSavingAttendance(true);
 
-    const nurseId = Number(localStorage.getItem("nurse_id"));
-    if (!nurseId) {
-      alert("Không tìm thấy thông tin y tá! Vui lòng đăng nhập lại.");
-      setSavingAttendance(false);
-      return;
-    }
+  const nurseId = Number(localStorage.getItem("nurse_id"));
+  if (!nurseId) {
+    alert("Không tìm thấy thông tin y tá! Vui lòng đăng nhập lại.");
+    setSavingAttendance(false);
+    return;
+  }
 
-    try {
-      const attendanceList = Object.entries(attendance)
-        .filter(([, status]) => status !== undefined)
-        .map(([studentId, status]) => ({
+  try {
+    const attendanceList = Object.entries(attendance)
+      .filter(([, status]) => status !== undefined)
+      .map(([studentId, status]) => {
+        // Tìm student trong schedule để lấy vaccinationId
+        const studentSchedule = schedule.find((s) => s.studentId === Number(studentId));
+        return {
           studentId: Number(studentId),
           nurseId,
           present: status === "present",
-        }));
-      if (attendanceList.length === 0) {
-        alert("Vui lòng chọn trạng thái điểm danh cho ít nhất một học sinh.");
-        setSavingAttendance(false);
-        return;
-      }
-      await apiClient.post(
-        `/vaccination/campaigns/${selectedCampaignId}/attendance`,
-        attendanceList
-      );
-      alert("Lưu điểm danh thành công!");
-    } catch {
-      alert("Lưu điểm danh thất bại!");
+          vaccinationId: studentSchedule?.vaccinationId ?? null, // Thêm dòng này!
+        };
+      });
+    if (attendanceList.length === 0) {
+      alert("Vui lòng chọn trạng thái điểm danh cho ít nhất một học sinh.");
+      setSavingAttendance(false);
+      return;
     }
-    setSavingAttendance(false);
-  };
+    await apiClient.post(
+      `/vaccination/campaigns/${selectedCampaignId}/attendance`,
+      attendanceList
+    );
+    alert("Lưu điểm danh thành công!");
+  } catch {
+    alert("Lưu điểm danh thất bại!");
+  }
+  setSavingAttendance(false);
+};
 
   const handleCompleteVaccination = async (studentId: number) => {
     setCompletingIds((prev) => ({ ...prev, [studentId]: true }));
@@ -1527,13 +1533,14 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
 
     try {
       await apiClient.post(`/vaccination/record`, {
-        studentId: student.studentId,
-        campaignId: selectedCampaignId,
-        vaccineName: student.vaccineName,
-        status: "Done",
-        dateOfVaccination: new Date().toISOString(),
-        administeredBy: nurseId,
-      });
+      vaccinationId: student.vaccinationId,
+      studentId: student.studentId,
+      campaignId: selectedCampaignId,
+      vaccineName: student.vaccineName,
+      status: "Done",
+      dateOfVaccination: new Date().toISOString(),
+      administeredBy: nurseId,
+    });
       alert(`Đã lưu hoàn thành tiêm chủng cho học sinh ${student.studentName}`);
       setLoadingSchedule(true);
       apiClient
