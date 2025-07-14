@@ -153,6 +153,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem onClick={() => { navigate("/manager/medical-staff-management"); handleClose(); }}>Quản lý nhân sự y tế trường</MenuItem>
                     <MenuItem onClick={() => { navigate("/manager/alerts-and-notifications"); handleClose(); }}>Cảnh báo & Thông báo</MenuItem>
                     <MenuItem onClick={() => { navigate("/manager/event-and-appointment-management"); handleClose(); }}>Quản lý sự kiện & lịch hẹn</MenuItem>
+                    <MenuItem onClick={() => { navigate("/manager/health-check-campaigns"); handleClose(); }}>Quản lý chiến dịch khám sức khỏe</MenuItem>
                     <MenuItem onClick={() => { navigate("/manager/vaccination-campaigns"); handleClose(); }}>Quản lý chiến dịch tiêm chủng</MenuItem>
                   </>
                 )}
