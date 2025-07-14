@@ -72,6 +72,7 @@ import apiClient, {
   notifyParent,
 } from "../../services/apiClient";
 import { getAssignedCampaignsForNurse } from "../../services/vaccinationService";
+import NurseHealthCheckCampaignList from "./NurseHealthCheckCampaignList";
 
 // Types
 type MedicalSupply = {
@@ -1426,8 +1427,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
         })
         .finally(() => setLoadingSchedule(false));
     }
-  }, [tabValue, selectedCampaignId]);
-  // Load Medicine Requests
+  }, [tabValue, selectedCampaignId]);  // Load Medicine Requests
   useEffect(() => {
     if (tabValue === 2) {
       setLoadingRequests(true);
@@ -1595,11 +1595,11 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
               fontWeight: "medium",
               minHeight: 48,
             },
-          }}
-        >
+          }}        >
           <Tab icon={<HospitalIcon />} label="Vật Tư Y Tế" iconPosition="start" />
           <Tab icon={<VaccineIcon />} label="Lịch Tiêm Chủng" iconPosition="start" />
           <Tab icon={<AddIcon />} label="Đơn Yêu Cầu Thuốc" iconPosition="start" />
+          <Tab icon={<HospitalIcon />} label="Khám Sức Khỏe" iconPosition="start" />
           <Tab icon={<IncidentIcon />} label="Sự Cố Y Tế" iconPosition="start" />
         </Tabs>
 
@@ -1850,10 +1850,15 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
               </Table>
             </TableContainer>
           </Box>
+        )}        {/* Tab 3: Health Check Campaigns */}
+        {tabValue === 3 && (
+          <Box>
+            <NurseHealthCheckCampaignList />
+          </Box>
         )}
 
-        {/* Tab 3: Medical Incident Management */}
-        {tabValue === 3 && <MedicalIncidentManager />}
+        {/* Tab 4: Medical Incident Management */}
+        {tabValue === 4 && <MedicalIncidentManager />}
 
         {/* Dialog Thêm Vật Tư */}
         <Dialog open={openDialog} onClose={handleDialogClose} disableEscapeKeyDown>
