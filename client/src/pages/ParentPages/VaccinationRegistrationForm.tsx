@@ -93,37 +93,16 @@ const VaccinationRegistrationForm: React.FC<{ onLogout?: () => void }> = ({
     setConfirmation("");
     setNotes("");
   };
-
   const selectedForm =
     consentForms.find((f) => f.consentId === selectedFormId) || null;
-
-  const handleNavigateToHome = () => navigate("/");
-  const handleNavigateToNews = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-  const handleNavigateToContact = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
 
   if (loading) return <div>Đang tải...</div>;
   if (!consentForms.length)
     return <div>Bạn không có phiếu xác nhận tiêm chủng nào.</div>;
 
   return (
-    <>
-      <Navbar
+    <>      <Navbar
         {...(onLogout ? { onLogout } : {})}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <div
         style={{
