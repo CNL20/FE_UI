@@ -24,34 +24,13 @@ const VaccinationEventDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogo
   const handleNavigateToVaccinationSchedule = () => {
     navigate("schedule"); // relative path
   };
-
   const handleNavigateToVaccinationNews = () => {
     navigate("news"); // relative path
   };
-
-  const handleNavigateToHome = () => navigate(ROUTES.HOME);
-  const handleNavigateToNews = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-  const handleNavigateToContact = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   return (
     <>
       <Navbar
         onLogout={onLogout ?? (() => {})}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <Box sx={{ height: 68 }} />
       <Box
