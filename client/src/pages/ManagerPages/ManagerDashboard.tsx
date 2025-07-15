@@ -5,7 +5,6 @@ import {
   Card,
   CardContent,
   Typography,
-  TextField,
   Drawer,
   List,
   ListItem,
@@ -13,7 +12,7 @@ import {
   ListItemText,
   IconButton,
 } from "@mui/material";
-import { Search, Assignment, Menu as MenuIcon } from "@mui/icons-material";
+import { Assignment, Menu as MenuIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import { ROUTES } from "../../constants";
@@ -49,19 +48,6 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
   const handleNavigateToHealthRecords = () => {
     navigate("/manager/health-records");
   };
-
-  const handleNavigateToMedicalStaffManagement = () => {
-    navigate("/manager/medical-staff-management");
-  };
-
-  const handleNavigateToAlertsAndNotifications = () => {
-    navigate("/manager/alerts-and-notifications");
-  };
-
-  const handleNavigateToEventAndAppointmentManagement = () => {
-    navigate("/manager/event-and-appointment-management");
-  };
-
   const handleNavigateToVaccinationCampaigns = () => {
     navigate("/manager/vaccination-campaigns");
   };
@@ -76,18 +62,6 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
       onClick: handleNavigateToHealthRecords,
     },
     {
-      text: "Quản lý nhân sự y tế trường",
-      onClick: handleNavigateToMedicalStaffManagement,
-    },
-    {
-      text: "Cảnh báo & Thông báo",
-      onClick: handleNavigateToAlertsAndNotifications,
-    },
-    {
-      text: "Quản lý sự kiện & lịch hẹn",
-      onClick: handleNavigateToEventAndAppointmentManagement,
-    },
-    {
       text: "Quản lý chiến dịch tiêm chủng",
       onClick: handleNavigateToVaccinationCampaigns,
     },
@@ -100,46 +74,33 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
         onNavigateToHome={handleNavigateToHome}
         onNavigateToNews={handleNavigateToNews}
         onNavigateToContact={handleNavigateToContact}
-      />
-      <Box
+      />      <Box
         sx={{
           p: 3,
-          backgroundColor: "#007BFF", // Blue background for the dashboard
-          color: "#fff", // White text for contrast
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          color: "#fff",
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-        }}
-      >
-        {/* Menu Button next to Search Bar */}
-        <Box mb={3} display="flex" alignItems="center">
+        }}      >        {/* Menu Button */}
+        <Box mb={3} display="flex" justifyContent="flex-start">
           <IconButton
             edge="start"
-            sx={{ mr: 2, color: "#007BFF", background: "#fff" }}
+            sx={{ 
+              color: "#fff", 
+              background: "rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.3)",
+              "&:hover": {
+                background: "rgba(255, 255, 255, 0.3)",
+                transform: "scale(1.05)",
+              },
+              transition: "all 0.3s ease",
+            }}
             onClick={toggleDrawer(true)}
           >
             <MenuIcon />
           </IconButton>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Tìm kiếm ..."
-            InputProps={{
-              startAdornment: (
-                <Search
-                  sx={{
-                    mr: 1,
-                    color: "#0a3d62",
-                  }}
-                />
-              ),
-            }}
-            sx={{
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-            }}
-          />
         </Box>
 
         <Drawer
@@ -148,8 +109,10 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
           onClose={toggleDrawer(false)}
           sx={{
             "& .MuiDrawer-paper": {
-              backgroundColor: "#007BFF", // Blue background for the drawer
-              color: "#fff", // White text for contrast
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "#fff",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
             },
           }}
         >
@@ -158,14 +121,34 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
-          >
-            <List>
+          >            <List>
               {menuItems.map((item, index) => (
-                <ListItem button key={index} onClick={item.onClick}>
+                <ListItem 
+                  button 
+                  key={index} 
+                  onClick={item.onClick}
+                  sx={{
+                    borderRadius: "12px",
+                    mb: 1,
+                    mx: 1,
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.1)",
+                      transform: "translateX(8px)",
+                    },
+                    transition: "all 0.3s ease",
+                  }}
+                >
                   <ListItemIcon sx={{ color: "#fff" }}>
                     <Assignment />
                   </ListItemIcon>
-                  <ListItemText primary={item.text} />
+                  <ListItemText 
+                    primary={item.text}
+                    sx={{
+                      "& .MuiListItemText-primary": {
+                        fontWeight: 500,
+                      }
+                    }}
+                  />
                 </ListItem>
               ))}
             </List>
@@ -174,113 +157,181 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
 
         {/* Overview Section */}
         <Grid container spacing={3}>
-          <Grid item xs={12} md={3}>
-            <Card
+          <Grid item xs={12} md={3}>            <Card
               sx={{
                 height: "150px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: "12px",
-                backgroundColor: "#FFD1DC", // Light pink background
-                color: "#000", // Black text for contrast
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                transition: "transform 0.2s",
+                borderRadius: "20px",
+                background: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+                color: "#333",
+                boxShadow: "0 10px 30px rgba(255, 154, 158, 0.3)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s ease",
                 "&:hover": {
-                  transform: "scale(1.05)",
+                  transform: "translateY(-8px) scale(1.02)",
+                  boxShadow: "0 20px 40px rgba(255, 154, 158, 0.4)",
                 },
               }}
-            >
-              <CardContent>
-                <Typography variant="h6" align="center">
+            >              <CardContent sx={{ textAlign: "center" }}>
+                <Typography 
+                  variant="h6" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 600, 
+                    mb: 1,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                  }}
+                >
                   Học sinh hiện tại
                 </Typography>
-                <Typography variant="h3" color="primary" align="center">
+                <Typography 
+                  variant="h3" 
+                  color="primary" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 700,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                  }}
+                >
                   500
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card
+          <Grid item xs={12} md={3}>            <Card
               sx={{
                 height: "150px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: "12px",
-                backgroundColor: "#E6E6FA", // Light purple background
-                color: "#000", // Black text for contrast
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                transition: "transform 0.2s",
+                borderRadius: "20px",
+                background: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+                color: "#333",
+                boxShadow: "0 10px 30px rgba(168, 237, 234, 0.3)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s ease",
                 "&:hover": {
-                  transform: "scale(1.05)",
+                  transform: "translateY(-8px) scale(1.02)",
+                  boxShadow: "0 20px 40px rgba(168, 237, 234, 0.4)",
                 },
               }}
-            >
-              <CardContent>
-                <Typography variant="h6" align="center">
+            >              <CardContent sx={{ textAlign: "center" }}>
+                <Typography 
+                  variant="h6" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 600, 
+                    mb: 1,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                  }}
+                >
                   Yêu cầu gần đây
                 </Typography>
-                <Typography variant="h3" color="secondary" align="center">
+                <Typography 
+                  variant="h3" 
+                  color="secondary" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 700,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                  }}
+                >
                   12
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card
+          <Grid item xs={12} md={3}>            <Card
               sx={{
                 height: "150px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: "12px",
-                backgroundColor: "#FFE4B5", // Light orange background
-                color: "#000", // Black text for contrast
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                transition: "transform 0.2s",
+                borderRadius: "20px",
+                background: "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+                color: "#333",
+                boxShadow: "0 10px 30px rgba(252, 182, 159, 0.3)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s ease",
                 "&:hover": {
-                  transform: "scale(1.05)",
+                  transform: "translateY(-8px) scale(1.02)",
+                  boxShadow: "0 20px 40px rgba(252, 182, 159, 0.4)",
                 },
               }}
-            >
-              <CardContent>
-                <Typography variant="h6" align="center">
+            >              <CardContent sx={{ textAlign: "center" }}>
+                <Typography 
+                  variant="h6" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 600, 
+                    mb: 1,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                  }}
+                >
                   Khám sức khỏe đã thực hiện
                 </Typography>
-                <Typography variant="h3" color="info" align="center">
+                <Typography 
+                  variant="h3" 
+                  color="info" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 700,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                  }}
+                >
                   130
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>
-            <Card
+          <Grid item xs={12} md={3}>            <Card
               sx={{
                 height: "150px",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                borderRadius: "12px",
-                backgroundColor: "#FFFFFF", // White background
-                color: "#000", // Black text for contrast
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                transition: "transform 0.2s",
+                borderRadius: "20px",
+                background: "linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%)",
+                color: "#fff",
+                boxShadow: "0 10px 30px rgba(255, 107, 107, 0.3)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s ease",
                 "&:hover": {
-                  transform: "scale(1.05)",
+                  transform: "translateY(-8px) scale(1.02)",
+                  boxShadow: "0 20px 40px rgba(255, 107, 107, 0.4)",
                 },
               }}
-            >
-              <CardContent>
-                <Typography variant="h6" align="center">
+            >              <CardContent sx={{ textAlign: "center" }}>
+                <Typography 
+                  variant="h6" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 600, 
+                    mb: 1,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                  }}
+                >
                   Cảnh báo cần xử lý gấp
                 </Typography>
-                <Typography variant="h3" color="error" align="center">
+                <Typography 
+                  variant="h3" 
+                  color="error" 
+                  align="center"
+                  sx={{ 
+                    fontWeight: 700,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                  }}
+                >
                   5
                 </Typography>
               </CardContent>
@@ -288,26 +339,58 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} mt={3}>
-          {/* Báo cáo & Thống kê */}
+        <Grid container spacing={3} mt={3}>          {/* Báo cáo & Thống kê */}
           <Grid item xs={12}>
-            <Typography variant="h5" gutterBottom>
+            <Typography 
+              variant="h5" 
+              gutterBottom
+              sx={{
+                fontWeight: 700,
+                textAlign: "center",
+                background: "linear-gradient(45deg, #fff, #f0f0f0)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                mb: 3,
+              }}
+            >
               Báo cáo & Thống kê
             </Typography>
-          </Grid>
-          <Grid item xs={12} md={6} lg={6}>
+          </Grid>          <Grid item xs={12} md={6} lg={6}>
             <Card
               sx={{
                 height: "300px",
-                borderRadius: "12px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                borderRadius: "20px",
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
+                },
               }}
             >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
+              <CardContent sx={{ p: 3 }}>
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                    color: "#333",
+                    mb: 2,
+                  }}
+                >
                   Biểu đồ số ca bệnh theo thời gian
                 </Typography>
-                <Typography variant="body2">
+                <Typography 
+                  variant="body2"
+                  sx={{
+                    color: "#666",
+                    fontStyle: "italic",
+                  }}
+                >
                   (Placeholder for a chart displaying cases over
                   days/months/quarters)
                 </Typography>
@@ -318,15 +401,37 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
             <Card
               sx={{
                 height: "300px",
-                borderRadius: "12px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                borderRadius: "20px",
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
+                },
               }}
             >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
+              <CardContent sx={{ p: 3 }}>
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                    color: "#333",
+                    mb: 2,
+                  }}
+                >
                   Phân loại các loại bệnh phổ biến
                 </Typography>
-                <Typography variant="body2">
+                <Typography 
+                  variant="body2"
+                  sx={{
+                    color: "#666",
+                    fontStyle: "italic",
+                  }}
+                >
                   (Placeholder for a chart showing common illnesses in the
                   school)
                 </Typography>
@@ -337,15 +442,37 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
             <Card
               sx={{
                 height: "300px",
-                borderRadius: "12px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                borderRadius: "20px",
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
+                },
               }}
             >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
+              <CardContent sx={{ p: 3 }}>
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                    color: "#333",
+                    mb: 2,
+                  }}
+                >
                   Báo cáo tỷ lệ hoàn thành khám sức khỏe định kỳ
                 </Typography>
-                <Typography variant="body2">
+                <Typography 
+                  variant="body2"
+                  sx={{
+                    color: "#666",
+                    fontStyle: "italic",
+                  }}
+                >
                   (Placeholder for a report on health check completion rates by
                   class/grade)
                 </Typography>
@@ -356,15 +483,37 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
             <Card
               sx={{
                 height: "300px",
-                borderRadius: "12px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                borderRadius: "20px",
+                background: "rgba(255, 255, 255, 0.95)",
+                backdropFilter: "blur(20px)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
+                },
               }}
             >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
+              <CardContent sx={{ p: 3 }}>
+                <Typography 
+                  variant="h6" 
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                    color: "#333",
+                    mb: 2,
+                  }}
+                >
                   Báo cáo tỷ lệ học sinh tiêm chủng/khám sức khỏe định kỳ
                 </Typography>
-                <Typography variant="body2">
+                <Typography 
+                  variant="body2"
+                  sx={{
+                    color: "#666",
+                    fontStyle: "italic",
+                  }}
+                >
                   (Placeholder for a report on vaccination/health check rates)
                 </Typography>
               </CardContent>
