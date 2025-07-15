@@ -15,31 +15,10 @@ import {
 import { Assignment, Menu as MenuIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
-import { ROUTES } from "../../constants";
 
 const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const handleNavigateToHome = () => {
-    navigate(ROUTES.HOME);
-  };
-
-  const handleNavigateToNews = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-  const handleNavigateToContact = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
@@ -68,13 +47,9 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
   ];
 
   return (
-    <>
-      <Navbar
+    <>      <Navbar
         {...(onLogout ? { onLogout: handleLogout } : {})}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
-      />      <Box
+      /><Box
         sx={{
           p: 3,
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
