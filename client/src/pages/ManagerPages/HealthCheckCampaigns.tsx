@@ -17,7 +17,11 @@ import {
   Snackbar,
   Select,
   MenuItem,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { ArrowBack, Search, Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import {
   getHealthCheckCampaigns,
   createHealthCheckCampaign,
@@ -52,13 +56,19 @@ type Staff = {
 };
 
 const HealthCheckCampaigns: React.FC = () => {
+  const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState<HealthCheckCampaign[]>([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState<HealthCheckCampaign[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [form, setForm] = useState({
     name: "",
     startDate: "",
     targetClass: "",
   });
   const [loading, setLoading] = useState(false);
+
+  // Modal tạo chiến dịch
+  const [createModal, setCreateModal] = useState(false);
 
   // Modal bổ nhiệm staff
   const [assignModal, setAssignModal] = useState(false);
@@ -83,24 +93,33 @@ const HealthCheckCampaigns: React.FC = () => {
   useEffect(() => {
     fetchCampaigns();
   }, []);
-
   // Map các trường backend trả về thành đúng field FE cần
   const fetchCampaigns = async () => {
     setLoading(true);
     try {
       const data = await getHealthCheckCampaigns();
-      setCampaigns(
-        data.map((c: any) => ({
-          ...c,
-          staffName: c.nurseName || "-", // Map nurseName từ backend sang staffName cho frontend
-          targetClass: c.targetClass || c.target_class || "-", // Nếu có, nếu không thì "-"
-        }))
-      );
+      const mappedData = data.map((c: any) => ({
+        ...c,
+        staffName: c.nurseName || "-", // Map nurseName từ backend sang staffName cho frontend
+        targetClass: c.targetClass || c.target_class || "-", // Nếu có, nếu không thì "-"
+      }));
+      setCampaigns(mappedData);
+      setFilteredCampaigns(mappedData);
     } catch {
       setSnackbar("Không tải được danh sách chiến dịch!");
     }
     setLoading(false);
   };
+
+  // Xử lý tìm kiếm
+  useEffect(() => {
+    const filtered = campaigns.filter(campaign =>
+      campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      campaign.targetClass.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (campaign.staffName && campaign.staffName.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    setFilteredCampaigns(filtered);
+  }, [searchTerm, campaigns]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,6 +128,7 @@ const HealthCheckCampaigns: React.FC = () => {
       setSnackbar("Tạo chiến dịch thành công!");
       fetchCampaigns();
       setForm({ name: "", startDate: "", targetClass: "" });
+      setCreateModal(false);
     } catch {
       setSnackbar("Tạo chiến dịch thất bại!");
     }
@@ -186,36 +206,55 @@ const HealthCheckCampaigns: React.FC = () => {
       return "-";
     }
     return new Date(startDate).toLocaleDateString("vi-VN");
-  };
-
-  return (
+  };  return (
     <Box p={3}>
-      <Typography variant="h4" gutterBottom>
-        Quản lý chiến dịch khám sức khỏe
-      </Typography>
+      {/* Nút Quay lại */}
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <IconButton 
+          onClick={() => navigate("/manager")}
+          sx={{ 
+            mr: 2,
+            color: "#1976d2",
+            "&:hover": {
+              backgroundColor: "rgba(25, 118, 210, 0.04)",
+            }
+          }}
+        >
+          <ArrowBack />
+        </IconButton>
+        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          Quản lý chiến dịch khám sức khỏe
+        </Typography>
+      </Box>
 
-      <form style={{ display: "flex", gap: 8, marginBottom: 24 }} onSubmit={handleSubmit}>
+      {/* Thanh tìm kiếm và nút tạo chiến dịch */}
+      <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
         <TextField
-          label="Tên chiến dịch"
-          value={form.name}
-          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+          placeholder="Tìm kiếm theo tên chiến dịch, lớp, nhân viên..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ flexGrow: 1 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search sx={{ color: "#666" }} />
+              </InputAdornment>
+            ),
+          }}
         />
-        <TextField
-          type="date"
-          label="Ngày khám"
-          InputLabelProps={{ shrink: true }}
-          value={form.startDate}
-          onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))}
-        />
-        <TextField
-          label="Lớp mục tiêu"
-          value={form.targetClass}
-          onChange={(e) => setForm((f) => ({ ...f, targetClass: e.target.value }))}
-        />
-        <Button variant="contained" type="submit">
+        <Button 
+          variant="contained" 
+          startIcon={<Add />}
+          onClick={() => setCreateModal(true)}
+          sx={{
+            bgcolor: "#1976d2",
+            "&:hover": { bgcolor: "#1565c0" },
+            px: 3
+          }}
+        >
           Tạo chiến dịch
         </Button>
-      </form>
+      </Box>
 
       <Table>
         <TableHead>
@@ -228,22 +267,21 @@ const HealthCheckCampaigns: React.FC = () => {
             <TableCell>Kết quả</TableCell>
             <TableCell>Gửi thông báo</TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
+        </TableHead>        <TableBody>
           {loading ? (
             <TableRow>
               <TableCell colSpan={7} align="center">
                 <CircularProgress size={28} />
               </TableCell>
             </TableRow>
-          ) : campaigns.length === 0 ? (
+          ) : filteredCampaigns.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} align="center">
-                Không có chiến dịch nào!
+                {campaigns.length === 0 ? "Không có chiến dịch nào!" : "Không tìm thấy kết quả phù hợp!"}
               </TableCell>
             </TableRow>
           ) : (
-            campaigns.map((c) => (
+            filteredCampaigns.map((c) => (
               <TableRow key={c.campaignId}>
                 <TableCell>{c.name || "-"}</TableCell>
                 <TableCell>
@@ -378,7 +416,60 @@ const HealthCheckCampaigns: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setResultModal(false)}>Đóng</Button>
-        </DialogActions>
+        </DialogActions>      </Dialog>
+
+      {/* Modal tạo chiến dịch */}
+      <Dialog open={createModal} onClose={() => setCreateModal(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Tạo chiến dịch khám sức khỏe mới</DialogTitle>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 1 }}>
+              <TextField
+                label="Tên chiến dịch"
+                value={form.name}
+                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                required
+                fullWidth
+                placeholder="Ví dụ: Khám sức khỏe định kỳ học kỳ 1"
+              />
+              <TextField
+                type="date"
+                label="Ngày khám"
+                InputLabelProps={{ shrink: true }}
+                value={form.startDate}
+                onChange={(e) => setForm((f) => ({ ...f, startDate: e.target.value }))}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Lớp mục tiêu"
+                value={form.targetClass}
+                onChange={(e) => setForm((f) => ({ ...f, targetClass: e.target.value }))}
+                required
+                fullWidth
+                placeholder="Ví dụ: 12A1, 11A1, hoặc Tất cả"
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button 
+              onClick={() => setCreateModal(false)}
+              sx={{ mr: 1 }}
+            >
+              Hủy
+            </Button>
+            <Button 
+              type="submit" 
+              variant="contained"
+              sx={{
+                bgcolor: "#1976d2",
+                "&:hover": { bgcolor: "#1565c0" }
+              }}
+            >
+              Tạo chiến dịch
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
 
       {/* Snackbar & Notify */}
