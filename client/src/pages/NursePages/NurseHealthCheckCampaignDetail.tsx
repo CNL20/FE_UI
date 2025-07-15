@@ -12,7 +12,7 @@ interface Student {
 }
 
 const NurseHealthCheckCampaignDetail: React.FC = () => {
-  const { campaignId } = useParams();
+  const { id } = useParams(); // sửa ở đây
   const [students, setStudents] = useState<Student[]>([]);
   const [attendance, setAttendance] = useState<Record<number, boolean>>({});
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ const NurseHealthCheckCampaignDetail: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`/api/health-check/campaigns/${campaignId}/students`)
+    axios.get(`/api/health-check/campaigns/${id}/students`) // sửa ở đây
       .then(res => {
         setStudents(res.data || []);
         const initial: Record<number, boolean> = {};
@@ -28,7 +28,7 @@ const NurseHealthCheckCampaignDetail: React.FC = () => {
         setAttendance(initial);
       })
       .finally(() => setLoading(false));
-  }, [campaignId]);
+  }, [id]); // sửa ở đây
 
   const handleAttendanceChange = (studentId: number, checked: boolean) => {
     setAttendance(prev => ({ ...prev, [studentId]: checked }));
@@ -41,7 +41,7 @@ const NurseHealthCheckCampaignDetail: React.FC = () => {
         studentId: s.id,
         present: attendance[s.id],
       }));
-      await axios.post(`/api/health-check/campaigns/${campaignId}/attendance`, data);
+      await axios.post(`/api/health-check/campaigns/${id}/attendance`, data); // sửa ở đây
       message.success("Lưu điểm danh thành công!");
     } catch {
       message.error("Lưu điểm danh thất bại!");
@@ -76,7 +76,7 @@ const NurseHealthCheckCampaignDetail: React.FC = () => {
         <Button
           type="link"
           disabled={!attendance[record.id]}
-          onClick={() => navigate(`/nurse/health-check-campaigns/${campaignId}/student/${record.id}`)}
+          onClick={() => navigate(`/nurse/health-check-campaigns/${id}/student/${record.id}`)} // sửa ở đây
         >
           Nhập kết quả
         </Button>

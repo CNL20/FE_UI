@@ -6,7 +6,7 @@ import apiClient from "../../services/apiClient";
 interface Campaign {
   id: number;
   name: string;
-  startDate: string;           // Đổi tên trường này
+  startDate: string;
   targetClass: string;
   status: string;
 }
@@ -21,7 +21,14 @@ const NurseHealthCheckCampaignList: React.FC = () => {
     const nurseId = localStorage.getItem("nurse_id");
     apiClient
       .get(`/health-check/nurse/campaigns?nurseId=${nurseId}`)
-      .then((res: { data: Campaign[] }) => setCampaigns(res.data || []))
+      .then((res: { data: any[] }) => {
+        // Chuẩn hóa id từ campaign_id hoặc campaignId về id
+        const data = (res.data || []).map((c) => ({
+          ...c,
+          id: c.id || c.campaign_id || c.campaignId,
+        }));
+        setCampaigns(data);
+      })
       .catch(() => setCampaigns([]))
       .finally(() => setLoading(false));
   }, []);
@@ -32,7 +39,8 @@ const NurseHealthCheckCampaignList: React.FC = () => {
       title: "Ngày khám",
       dataIndex: "startDate",
       key: "startDate",
-      render: (date: string) => new Date(date).toLocaleDateString('vi-VN'), // Định dạng ngày
+      render: (date: string) =>
+        date ? new Date(date).toLocaleDateString('vi-VN') : "",
     },
     { title: "Lớp", dataIndex: "targetClass", key: "targetClass" },
     { title: "Trạng thái", dataIndex: "status", key: "status" },
@@ -51,7 +59,10 @@ const NurseHealthCheckCampaignList: React.FC = () => {
     <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
       <h2>Chiến dịch khám sức khỏe được phân công</h2>
       <Spin spinning={loading}>
-        <Table dataSource={campaigns.map((c) => ({ ...c, key: c.id }))} columns={columns} />
+        <Table
+          dataSource={campaigns.map((c) => ({ ...c, key: c.id }))}
+          columns={columns}
+        />
       </Spin>
     </div>
   );

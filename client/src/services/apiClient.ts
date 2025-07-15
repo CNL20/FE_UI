@@ -2,9 +2,9 @@ import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'ax
 import { UserRole, RegisterPayload } from '../types';
 import { STORAGE_KEYS, API_ENDPOINTS } from '../constants';
 
-// KHÔNG DÙNG ENV, GHI BASE URL TRỰC TIẾP
+// SỬ DỤNG ENV ĐỂ LẤY BASE URL, KHÔNG GHI CỨNG
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: process.env['REACT_APP_API_BASE_URL'],
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
