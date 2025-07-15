@@ -46,7 +46,6 @@ const Navbar: React.FC<NavbarProps> = ({
   const handleClose = () => {
     setAnchorEl(null);
   };
-
   const handleLogout = () => {
     handleClose();
     if (onLogout) {
@@ -56,11 +55,6 @@ const Navbar: React.FC<NavbarProps> = ({
       localStorage.removeItem("userRole");
       navigate(ROUTES.HOME);
     }
-  };
-
-  const handleProfile = () => {
-    navigate("/profile");
-    handleClose();
   };
 
   const handleNavigateToHome = () => {
@@ -146,13 +140,9 @@ const Navbar: React.FC<NavbarProps> = ({
               <IconButton onClick={handleMenu} color="inherit">
                 <AccountCircleIcon />
               </IconButton>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                {isManager && (
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>                {isManager && (
                   <>
                     <MenuItem onClick={() => { navigate("/manager/health-records"); handleClose(); }}>Quản lý hồ sơ y tế</MenuItem>
-                    <MenuItem onClick={() => { navigate("/manager/medical-staff-management"); handleClose(); }}>Quản lý nhân sự y tế trường</MenuItem>
-                    <MenuItem onClick={() => { navigate("/manager/alerts-and-notifications"); handleClose(); }}>Cảnh báo & Thông báo</MenuItem>
-                    <MenuItem onClick={() => { navigate("/manager/event-and-appointment-management"); handleClose(); }}>Quản lý sự kiện & lịch hẹn</MenuItem>
                     <MenuItem onClick={() => { navigate("/manager/health-check-campaigns"); handleClose(); }}>Quản lý chiến dịch khám sức khỏe</MenuItem>
                     <MenuItem onClick={() => { navigate("/manager/vaccination-campaigns"); handleClose(); }}>Quản lý chiến dịch tiêm chủng</MenuItem>
                   </>
@@ -170,11 +160,7 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem onClick={() => { navigate("/parent-pages/health-check-dashboard"); handleClose(); }}>Khám sức khỏe</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent-pages/vaccination-event-dashboard"); handleClose(); }}>Sự kiện tiêm chủng</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent/notification"); handleClose(); }}>Thông báo</MenuItem>
-                  </>
-                )}
-                {!isNurse && (
-                  <MenuItem onClick={handleProfile}>Thông tin tài khoản</MenuItem>
-                )}
+                  </>                )}
                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
               </Menu>
             </>
