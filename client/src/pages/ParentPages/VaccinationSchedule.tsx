@@ -5,24 +5,6 @@ import { useNavigate } from "react-router-dom";
 const VaccinationSchedule: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleNavigateToHome = () => {
-    navigate("/");
-  };
-  const handleNavigateToNews = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-  const handleNavigateToContact = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   const mockSchedule = [
     {
       date: "2025-06-15",
@@ -46,13 +28,9 @@ const VaccinationSchedule: React.FC<{ onLogout?: () => void }> = ({ onLogout }) 
       preparation: "Mang theo sổ khám sức khỏe."
     }
   ];
-
   return (
     <>
       <Navbar {...(onLogout ? { onLogout } : {})}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <div
         style={{
