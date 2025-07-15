@@ -1,14 +1,35 @@
 import React from "react";
-import { Box, Card, CardContent, Typography, Button } from "@mui/material";
+import { Box, Card, CardContent, Typography, Button, Container, Grid, Paper } from "@mui/material";
+import { keyframes } from "@mui/system";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 
 interface HomeProps {
-  onLogin?: (role: string) => void;
   isAuthenticated?: boolean;
 }
 
-const Home: React.FC<HomeProps> = ({ onLogin }) => {
+// Keyframes cho animations
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const float = keyframes`
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
+const Home: React.FC<HomeProps> = () => {
   const navigate = useNavigate();
 
   const handleDiseasePreventionClick = () => {
@@ -22,328 +43,413 @@ const Home: React.FC<HomeProps> = ({ onLogin }) => {
   const handleMentalHealthCareClick = () => {
     navigate("/mental-health-care");
   };
-
   return (
     <>
       <Navbar />
+      
+      {/* Hero Section */}
       <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="center"
-        minHeight="100vh"
-        bgcolor="background.default"
-        p={4}
         sx={{
-          backgroundImage: "url('https://i.pinimg.com/736x/10/c3/85/10c385aa71ae13c44beb7d59137811b2.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <Box textAlign="center" mb={6} maxWidth="850px" sx={{ color: "rgb(0, 0, 0)" }}>
-          <Typography variant="h4" gutterBottom>
-            Về Chúng Tôi
-          </Typography>
-          <Typography variant="body1" paragraph>
-            Hệ thống Y tế Học đường của chúng tôi cam kết cung cấp dịch vụ chăm
-            sóc sức khỏe chất lượng cao cho toàn bộ học sinh và nhân viên. Chúng
-            tôi tập trung vào việc phòng ngừa, phát hiện sớm và can thiệp kịp
-            thời các vấn đề sức khỏe, tạo ra một môi trường học đường an toàn và
-            lành mạnh.
-          </Typography>
-          <Typography variant="body1" paragraph>
-            Với đội ngũ y tá chuyên nghiệp và hệ thống quản lý hiện đại, chúng
-            tôi đảm bảo mỗi học sinh đều nhận được sự quan tâm và chăm sóc y tế
-            tốt nhất, giúp các em phát triển toàn diện cả về thể chất và tinh
-            thần.
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => onLogin && onLogin("nurse")}
-            sx={{ mt: 2 }}
-          >
-            Tìm Hiểu Thêm
-          </Button>
-        </Box>
-
-        <Box textAlign="center" mt={8}>
-          <Typography variant="h4" gutterBottom>
-            Tính Năng Chính
-          </Typography>
-          <Box
-            display="flex"
-            justifyContent="center"
-            flexWrap="wrap"
-            gap={4}
-            mt={4}
-          >
-            <Card sx={{ width: 250, textAlign: "center" }}>
-              <CardContent>
-                <Typography variant="h6">Quản lý sức khỏe</Typography>
-                <Typography variant="body2">
-                  Theo dõi và quản lý sức khỏe học sinh toàn diện
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ width: 250, textAlign: "center" }}>
-              <CardContent>
-                <Typography variant="h6">Lịch tiêm chủng</Typography>
-                <Typography variant="body2">
-                  Lên lịch và theo dõi tiêm chủng cho học sinh
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ width: 250, textAlign: "center" }}>
-              <CardContent>
-                <Typography variant="h6">Thông báo y tế</Typography>
-                <Typography variant="body2">
-                  Nhận thông báo về các vấn đề sức khỏe quan trọng
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card sx={{ width: 250, textAlign: "center" }}>
-              <CardContent>
-                <Typography variant="h6">Tư vấn y tế</Typography>
-                <Typography variant="body2">
-                  Nhận tư vấn từ đội ngũ y tế học đường
-                </Typography>
-              </CardContent>
-            </Card>
-          </Box>
-        </Box>
-      </Box>
-      {/* Section: Tin tức về sức khỏe học đường */}
-      <Box id="school-health-news" textAlign="center" mt={12} mb={8}>
-        <Typography
-          variant="h4"
-          gutterBottom
-          color="primary"
-          sx={{ fontWeight: 700, mb: 4 }}
-        >
-          Tin tức về sức khỏe học đường
-        </Typography>
-        <Box display="flex" justifyContent="center" gap={4} flexWrap="wrap">
-          {/* Card tin tức 1 */}
-          <Card
-            sx={{
-              width: 320,
-              p: 2,
-              borderRadius: 4,
-              boxShadow: 6,
-              transition: "transform 0.3s, box-shadow 0.3s",
-              "&:hover": {
-                transform: "translateY(-8px) scale(1.03)",
-                boxShadow: 12,
-              },
-              background: "linear-gradient(135deg, #e3f2fd 60%, #bbdefb 100%)",
-              animation: "fadeInUp 1s",
-            }}
-            onClick={handleDiseasePreventionClick}
-            style={{ cursor: "pointer" }}
-          >
-            <CardContent>
-              <Box display="flex" justifyContent="center" mb={2}>
-                <img
-                  src="https://img.icons8.com/color/48/000000/health-book.png"
-                  alt="icon"
-                />
-              </Box>
-              <Typography variant="h6" fontWeight={600} color="primary.main">
-                Phòng chống dịch bệnh học đường
-              </Typography>
-              <Typography variant="body2" mt={1} color="text.secondary">
-                Cập nhật các biện pháp phòng ngừa dịch bệnh, bảo vệ sức khỏe cho
-                học sinh trong mùa dịch.
-              </Typography>
-            </CardContent>
-          </Card>
-          {/* Card tin tức 2 */}
-          <Card
-            sx={{
-              width: 320,
-              p: 2,
-              borderRadius: 4,
-              boxShadow: 6,
-              transition: "transform 0.3s, box-shadow 0.3s",
-              "&:hover": {
-                transform: "translateY(-8px) scale(1.03)",
-                boxShadow: 12,
-              },
-              background: "linear-gradient(135deg, #f1f8e9 60%, #c8e6c9 100%)",
-              animation: "fadeInUp 1.2s",
-            }}
-            onClick={handleNutritionGuideClick}
-            style={{ cursor: "pointer" }}
-          >
-            <CardContent>
-              <Box display="flex" justifyContent="center" mb={2}>
-                <img
-                  src="https://img.icons8.com/color/48/000000/vegetarian-food-symbol.png"
-                  alt="icon"
-                />
-              </Box>
-              <Typography variant="h6" fontWeight={600} color="success.main">
-                Dinh dưỡng hợp lý cho học sinh
-              </Typography>
-              <Typography variant="body2" mt={1} color="text.secondary">
-                Lời khuyên về chế độ ăn uống, thực đơn lành mạnh giúp học sinh
-                phát triển toàn diện.
-              </Typography>
-            </CardContent>
-          </Card>
-          {/* Card tin tức 3 */}
-          <Card
-            sx={{
-              width: 320,
-              p: 2,
-              borderRadius: 4,
-              boxShadow: 6,
-              transition: "transform 0.3s, box-shadow 0.3s",
-              "&:hover": {
-                transform: "translateY(-8px) scale(1.03)",
-                boxShadow: 12,
-              },
-              background: "linear-gradient(135deg, #fff3e0 60%, #ffe0b2 100%)",
-              animation: "fadeInUp 1.4s",
-            }}
-            onClick={handleMentalHealthCareClick}
-            style={{ cursor: "pointer" }}
-          >
-            <CardContent>
-              <Box display="flex" justifyContent="center" mb={2}>
-                <img
-                  src="https://img.icons8.com/color/48/000000/mental-health.png"
-                  alt="icon"
-                />
-              </Box>
-              <Typography variant="h6" fontWeight={600} color="#ff9800">
-                Chăm sóc sức khỏe tinh thần
-              </Typography>
-              <Typography variant="body2" mt={1} color="text.secondary">
-                Hướng dẫn nhận biết, phòng tránh và hỗ trợ tâm lý cho học sinh
-                trong môi trường học đường.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      </Box>
-      {/* Section: Liên hệ */}
-      <Box
-        id="contact"
-        width="100%"
-        minHeight="150px"
-        py={3}
-        px={1}
-        sx={{
-          background: "linear-gradient(135deg, #e3f2fd 60%, #fce4ec 100%)",
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+          position: "relative",
+          overflow: "hidden",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          animation: "fadeInUp 1.6s",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><radialGradient id=\"a\" cx=\".5\" cy=\".5\" r=\".5\"><stop offset=\"0\" stop-color=\"%23fff\" stop-opacity=\".1\"/><stop offset=\"1\" stop-color=\"%23fff\" stop-opacity=\"0\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"25\" fill=\"url(%23a)\"/></svg>') 0 0/50px 50px",
+            opacity: 0.3,
+          }
         }}
       >
-        <Box maxWidth={340} width="100%" textAlign="center">
-          <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-            <img
-              src="https://img.icons8.com/color/40/000000/phone-disconnected.png"
-              alt="contact-icon"
-              style={{ marginBottom: 6 }}
-            />
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <Box
+                sx={{
+                  animation: `${fadeInUp} 1s ease-out`,
+                  color: "white",
+                }}
+              >
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: { xs: "2.5rem", md: "3.5rem" },
+                    background: "linear-gradient(45deg, #fff 30%, #e1f5fe 90%)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    mb: 3,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.3)"
+                  }}
+                >
+                  Hệ Thống Y Tế Học Đường
+                </Typography>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 300,
+                    mb: 4,
+                    opacity: 0.95,
+                    lineHeight: 1.6,
+                    fontSize: { xs: "1.2rem", md: "1.5rem" }
+                  }}
+                >
+                  Chăm sóc sức khỏe toàn diện cho học sinh với công nghệ hiện đại
+                </Typography>                <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => navigate("/explore")}
+                    sx={{
+                      background: "linear-gradient(45deg, #ff6b6b 30%, #ee5a24 90%)",
+                      color: "white",
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 3,
+                      fontWeight: 600,
+                      fontSize: "1.1rem",
+                      boxShadow: "0 8px 32px rgba(255, 107, 107, 0.3)",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        transform: "translateY(-2px)",
+                        boxShadow: "0 12px 40px rgba(255, 107, 107, 0.4)",
+                        background: "linear-gradient(45deg, #ee5a24 30%, #ff6b6b 90%)",
+                      }
+                    }}
+                  >
+                    Khám Phá Ngay
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    onClick={() => navigate("/learn-more")}
+                    sx={{
+                      color: "white",
+                      borderColor: "white",
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 3,
+                      fontWeight: 600,
+                      fontSize: "1.1rem",
+                      borderWidth: 2,
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        borderColor: "white",
+                        transform: "translateY(-2px)",
+                      }
+                    }}
+                  >
+                    Tìm Hiểu Thêm
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  animation: `${float} 3s ease-in-out infinite`,
+                }}
+              >
+                <Box
+                  component="img"
+                  src="https://img.icons8.com/color/300/health-checkup.png"
+                  alt="Health Care"
+                  sx={{
+                    maxWidth: "100%",
+                    height: "auto",
+                    filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.2))",
+                  }}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </Container>      </Box>
+
+      {/* Health News Section */}
+      <Box
+        sx={{
+          py: 10,
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          position: "relative",
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box textAlign="center" mb={8}>
             <Typography
-              variant="h5"
-              gutterBottom
-              color="primary"
-              fontWeight={700}
+              variant="h3"
+              sx={{
+                fontWeight: 700,
+                color: "white",
+                mb: 3,
+                animation: `${fadeInUp} 1s ease-out 0.2s both`,
+              }}
             >
-              Liên hệ
+              Tin Tức Sức Khỏe Học Đường
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "rgba(255,255,255,0.9)",
+                fontWeight: 400,
+                maxWidth: 600,
+                mx: "auto",
+                animation: `${fadeInUp} 1s ease-out 0.4s both`,
+              }}
+            >
+              Cập nhật những thông tin mới nhất về sức khỏe học đường
             </Typography>
           </Box>
-          <Typography
-            variant="body2"
-            paragraph
-            color="text.secondary"
-            fontSize={15}
-          >
-            Nếu bạn có bất kỳ câu hỏi hoặc cần hỗ trợ, vui lòng liên hệ với
-            chúng tôi qua các thông tin sau:
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            gap={0.5}
-            mb={2}
-            mx="auto"
-            maxWidth={320}
-          >
-            <Box display="flex" alignItems="center" gap={1}>
-              <img
-                src="https://img.icons8.com/color/18/000000/new-post.png"
-                alt="email"
-              />
-              <Typography variant="body2" fontSize={14}>
-                Email:{" "}
-                <a
-                  href="mailto:support@schoolhealth.vn"
-                  style={{ color: "#1976d2", textDecoration: "underline" }}
+
+          <Grid container spacing={4}>
+            {[
+              {
+                title: "Phòng chống dịch bệnh học đường",
+                description: "Cập nhật các biện pháp phòng ngừa dịch bệnh, bảo vệ sức khỏe cho học sinh trong mùa dịch.",
+                icon: "https://img.icons8.com/color/60/health-book.png",
+                color: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
+                onClick: handleDiseasePreventionClick,
+                delay: "0.6s"
+              },
+              {
+                title: "Dinh dưỡng hợp lý cho học sinh",
+                description: "Lời khuyên về chế độ ăn uống, thực đơn lành mạnh giúp học sinh phát triển toàn diện.",
+                icon: "https://img.icons8.com/color/60/vegetarian-food-symbol.png",
+                color: "linear-gradient(135deg, #f1f8e9 0%, #c8e6c9 100%)",
+                onClick: handleNutritionGuideClick,
+                delay: "0.8s"
+              },
+              {
+                title: "Chăm sóc sức khỏe tinh thần",
+                description: "Hướng dẫn nhận biết, phòng tránh và hỗ trợ tâm lý cho học sinh trong môi trường học đường.",
+                icon: "https://img.icons8.com/color/60/mental-health.png",
+                color: "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
+                onClick: handleMentalHealthCareClick,
+                delay: "1s"
+              }
+            ].map((news, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Card
+                  onClick={news.onClick}
+                  sx={{
+                    height: "100%",
+                    p: 3,
+                    borderRadius: 4,
+                    background: news.color,
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+                    transition: "all 0.3s ease",
+                    animation: `${fadeInUp} 1s ease-out ${news.delay} both`,
+                    cursor: "pointer",
+                    "&:hover": {
+                      transform: "translateY(-10px) scale(1.02)",
+                      boxShadow: "0 20px 40px rgba(0,0,0,0.2)",
+                    }
+                  }}
                 >
-                  support@schoolhealth.vn
-                </a>
-              </Typography>
-            </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <img
-                src="https://img.icons8.com/color/18/000000/phone.png"
-                alt="phone"
+                  <CardContent sx={{ textAlign: "center", p: 0 }}>
+                    <Box
+                      component="img"
+                      src={news.icon}
+                      alt={news.title}
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        mb: 2,
+                        transition: "all 0.3s ease",
+                      }}
+                    />
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 600,
+                        color: "#2c3e50",
+                        mb: 2,
+                      }}
+                    >
+                      {news.title}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "#6c757d",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      {news.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Contact Section */}
+      <Box
+        sx={{
+          py: 8,
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+          color: "white",
+        }}
+      >
+        <Container maxWidth="md">
+          <Box textAlign="center">
+            <Box
+              sx={{
+                animation: `${fadeInUp} 1s ease-out 0.2s both`,
+                mb: 4,
+              }}
+            >
+              <Box
+                component="img"
+                src="https://img.icons8.com/color/60/phone.png"
+                alt="contact"
+                sx={{
+                  mb: 2,
+                  filter: "brightness(1.2)",
+                }}
               />
-              <Typography variant="body2" fontSize={14}>
-                Điện thoại: 0123 456 789
+              <Typography
+                variant="h3"
+                sx={{
+                  fontWeight: 700,
+                  mb: 3,
+                }}
+              >
+                Liên Hệ Với Chúng Tôi
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 400,
+                  opacity: 0.9,
+                  mb: 4,
+                }}
+              >
+                Nếu bạn có bất kỳ câu hỏi hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi
               </Typography>
             </Box>
-            <Box display="flex" alignItems="center" gap={1}>
-              <img
-                src="https://img.icons8.com/color/18/000000/address.png"
-                alt="address"
-              />
-              <Typography variant="body2" fontSize={14}>
-                Địa chỉ: Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Thành phố Hồ Chí Minh
-              </Typography>
-            </Box>
-          </Box>
-          <Box display="flex" justifyContent="center">
+
+            <Grid container spacing={4} sx={{ mb: 4 }}>
+              <Grid item xs={12} md={4}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    background: "rgba(255,255,255,0.1)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    textAlign: "center",
+                    animation: `${fadeInUp} 1s ease-out 0.4s both`,
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src="https://img.icons8.com/color/40/new-post.png"
+                    alt="email"
+                    sx={{ mb: 2 }}
+                  />
+                  <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                    Email
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    support@schoolhealth.vn
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    background: "rgba(255,255,255,0.1)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    textAlign: "center",
+                    animation: `${fadeInUp} 1s ease-out 0.6s both`,
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src="https://img.icons8.com/color/40/phone.png"
+                    alt="phone"
+                    sx={{ mb: 2 }}
+                  />
+                  <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                    Điện thoại
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    0123 456 789
+                  </Typography>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    background: "rgba(255,255,255,0.1)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
+                    textAlign: "center",
+                    animation: `${fadeInUp} 1s ease-out 0.8s both`,
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src="https://img.icons8.com/color/40/address.png"
+                    alt="address"
+                    sx={{ mb: 2 }}
+                  />
+                  <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                    Địa chỉ
+                  </Typography>
+                  <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                    Lô E2a-7, Đường D1, Long Thạnh Mỹ, TP. Thủ Đức, TP.HCM
+                  </Typography>
+                </Paper>
+              </Grid>
+            </Grid>
+
             <Button
               variant="contained"
-              color="primary"
+              size="large"
               href="mailto:support@schoolhealth.vn"
               sx={{
+                background: "linear-gradient(45deg, #ff6b6b 30%, #ee5a24 90%)",
+                color: "white",
+                px: 6,
+                py: 2,
                 borderRadius: 3,
-                px: 4,
-                py: 1,
                 fontWeight: 600,
-                fontSize: 15,
-                boxShadow: 3,
-                transition: "background 0.3s, transform 0.2s",
-                background: "linear-gradient(90deg, #1976d2 60%, #64b5f6 100%)",
+                fontSize: "1.1rem",
+                boxShadow: "0 8px 32px rgba(255, 107, 107, 0.3)",
+                transition: "all 0.3s ease",
+                animation: `${fadeInUp} 1s ease-out 1s both`,
                 "&:hover": {
-                  background:
-                    "linear-gradient(90deg, #1565c0 60%, #1976d2 100%)",
-                  transform: "scale(1.05)",
-                },
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 12px 40px rgba(255, 107, 107, 0.4)",
+                  background: "linear-gradient(45deg, #ee5a24 30%, #ff6b6b 90%)",
+                }
               }}
-              startIcon={
-                <img
-                  src="https://img.icons8.com/ios-filled/18/ffffff/new-post.png"
-                  alt="send"
-                />
-              }
             >
-              Gửi Email
+              Gửi Email Ngay
             </Button>
           </Box>
-        </Box>
+        </Container>
       </Box>
     </>
   );
