@@ -61,9 +61,7 @@ import {
   TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
-import { useNavigate } from "react-router-dom";
 import { NurseDashboardProps, Student, MedicalIncident } from "../../types";
-import { ROUTES } from "../../constants";
 import apiClient, {
   searchStudents,
   getStudentMedicalInfo,
@@ -1337,7 +1335,6 @@ const MedicalIncidentManager: React.FC = () => {
 
 const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   const theme = useTheme();
-  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
 
   // State: Medical Supplies
@@ -1554,12 +1551,8 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   };
 
   return (
-    <>
-      <Navbar
+    <>      <Navbar
         onLogout={onLogout}
-        onNavigateToHome={() => navigate(ROUTES.HOME)}
-        onNavigateToNews={() => navigate(ROUTES.HOME)}
-        onNavigateToContact={() => navigate(ROUTES.HOME)}
       />
       <Box
         sx={{
