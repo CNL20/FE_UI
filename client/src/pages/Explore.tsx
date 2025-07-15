@@ -27,12 +27,10 @@ const pulse = keyframes`
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
-
-  const features = [
-    {
+  const features = [    {
       title: "Quản lý Hồ sơ Sức khỏe",
       description: "Lưu trữ và quản lý thông tin sức khỏe học sinh một cách toàn diện và an toàn",
-      icon: "https://img.icons8.com/color/80/medical-folder.png",
+      icon: "https://img.icons8.com/color/80/health-book.png",
       color: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
       details: ["Hồ sơ điện tử", "Lịch sử bệnh án", "Thông tin tiêm chủng", "Dữ liệu biometric"]
     },
@@ -53,14 +51,14 @@ const Explore: React.FC = () => {
     {
       title: "Hệ thống Thông báo",
       description: "Gửi thông báo kịp thời về tình hình sức khỏe và các sự kiện y tế",
-      icon: "https://img.icons8.com/color/80/notification.png",
+      icon: "https://img.icons8.com/color/80/bell.png",
       color: "linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)",
       details: ["Thông báo tức thì", "Email tự động", "SMS nhắc nhở", "Cảnh báo khẩn cấp"]
     },
     {
       title: "Báo cáo và Thống kê",
       description: "Tạo báo cáo chi tiết và thống kê về tình hình sức khỏe học đường",
-      icon: "https://img.icons8.com/color/80/combo-chart.png",
+      icon: "https://img.icons8.com/color/80/bar-chart.png",
       color: "linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%)",
       details: ["Dashboard tổng quan", "Báo cáo chi tiết", "Biểu đồ thống kê", "Xuất dữ liệu"]
     },
