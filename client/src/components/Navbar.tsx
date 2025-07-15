@@ -15,16 +15,10 @@ import { ROUTES } from "../constants";
 
 export interface NavbarProps {
   onLogout?: () => void;
-  onNavigateToHome?: () => void;
-  onNavigateToNews?: () => void;
-  onNavigateToContact?: () => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({
   onLogout,
-  onNavigateToHome,
-  onNavigateToNews,
-  onNavigateToContact,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,8 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-  const handleLogout = () => {
+  };  const handleLogout = () => {
     handleClose();
     if (onLogout) {
       onLogout();
@@ -54,46 +47,6 @@ const Navbar: React.FC<NavbarProps> = ({
       localStorage.removeItem("token");
       localStorage.removeItem("userRole");
       navigate(ROUTES.HOME);
-    }
-  };
-
-  const handleNavigateToHome = () => {
-    if (onNavigateToHome) {
-      onNavigateToHome();
-    } else if (isAdmin) {
-      navigate(ROUTES.ADMIN.DASHBOARD);
-    } else if (isManager) {
-      navigate(ROUTES.MANAGER.DASHBOARD);
-    } else if (isNurse) {
-      navigate(ROUTES.NURSE.DASHBOARD);
-    } else if (isParent) {
-      navigate(ROUTES.PARENT.DASHBOARD);
-    } else {
-      navigate(ROUTES.HOME);
-    }
-  };
-
-  const handleNavigateToNews = () => {
-    if (onNavigateToNews) {
-      onNavigateToNews();
-    } else {
-      navigate(ROUTES.HOME);
-      setTimeout(() => {
-        const el = document.getElementById("school-health-news");
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    }
-  };
-
-  const handleNavigateToContact = () => {
-    if (onNavigateToContact) {
-      onNavigateToContact();
-    } else {
-      navigate(ROUTES.HOME);
-      setTimeout(() => {
-        const el = document.getElementById("contact");
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 100);
     }
   };
 
@@ -124,19 +77,9 @@ const Navbar: React.FC<NavbarProps> = ({
           }}
         >
           Hệ Thống Y Tế Học Đường
-        </Typography>
-        <Box>
+        </Typography>        <Box>
           {isManager || isAdmin || isNurse || isParent ? (
             <>
-              <Button color="inherit" onClick={handleNavigateToHome} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
-                Trang chủ
-              </Button>
-              <Button color="inherit" onClick={handleNavigateToNews} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
-                Tin tức
-              </Button>
-              <Button color="inherit" onClick={handleNavigateToContact} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
-                Liên hệ
-              </Button>
               <IconButton onClick={handleMenu} color="inherit">
                 <AccountCircleIcon />
               </IconButton>
@@ -163,18 +106,8 @@ const Navbar: React.FC<NavbarProps> = ({
                   </>                )}
                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
               </Menu>
-            </>
-          ) : (
+            </>          ) : (
             <>
-              <Button color="inherit" onClick={() => navigate("/")} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
-                Trang chủ
-              </Button>
-              <Button color="inherit" onClick={handleNavigateToNews} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
-                Tin tức
-              </Button>
-              <Button color="inherit" onClick={handleNavigateToContact} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
-                Liên hệ
-              </Button>
               {isHomePage && (
                 <Button color="inherit" onClick={() => navigate("/login")} sx={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, mx: 1, borderRadius: 2, px: 2, py: 1, transition: "background 0.2s, color 0.2s", "&:hover": { background: "rgba(255,255,255,0.12)", color: "#1976d2", textDecoration: "underline" } }}>
                   Đăng nhập
