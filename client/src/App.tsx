@@ -11,6 +11,8 @@ import Login from "./pages/Login";
 import DiseasePrevention from "./pages/DiseasePrevention";
 import NutritionGuide from "./pages/NutritionGuide";
 import MentalHealthCare from "./pages/MentalHealthCare";
+import Explore from "./pages/Explore";
+import LearnMore from "./pages/LearnMore";
 
 function App() {
   const [authState, setAuthState] = useState(() => {
@@ -74,12 +76,12 @@ function App() {
       <Route path={ROUTES.LOGIN} element={authState.isAuthenticated ? <Navigate to={`/${authState.userRole}`} replace /> : <Login onLogin={handleLogin} />} />
 
       {/* Admin Routes */}
-      <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />
-
-      {/* Public Routes for Health Information */}
+      <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />      {/* Public Routes for Health Information */}
       <Route path="/disease-prevention" element={<DiseasePrevention />} />
       <Route path="/nutrition-guide" element={<NutritionGuide />} />
       <Route path="/mental-health-care" element={<MentalHealthCare />} />
+      <Route path="/explore" element={<Explore />} />
+      <Route path="/learn-more" element={<LearnMore />} />
 
       {/* Manager Routes */}
       <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="manager"><ManagerRouter onLogout={handleLogout} /></ProtectedRoute>} />
