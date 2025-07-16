@@ -17,6 +17,9 @@ import MentalHealthCare from "./pages/MentalHealthCare";
 import Explore from "./pages/Explore";
 import LearnMore from "./pages/LearnMore";
 
+// ĐÚNG ĐƯỜNG DẪN IMPORT COMPONENT NHẬP KẾT QUẢ KHÁM SỨC KHỎE!
+import NurseHealthCheckResultForm from "./pages/NursePages/NurseHealthCheckResultForm";
+
 function App() {
   const [authState, setAuthState] = useState(() => {
     const savedAuth = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -30,7 +33,6 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Chỉ cập nhật localStorage khi authState thực sự thay đổi
   useEffect(() => {
     if (authState.isAuthenticated) {
       localStorage.setItem(STORAGE_KEYS.USER_ROLE, authState.userRole);
@@ -71,6 +73,7 @@ function App() {
 
     return <>{children}</>;
   }, [authState.isAuthenticated, authState.userRole, location]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -80,7 +83,9 @@ function App() {
         <Route path={ROUTES.LOGIN} element={authState.isAuthenticated ? <Navigate to={`/${authState.userRole}`} replace /> : <Login onLogin={handleLogin} />} />
 
         {/* Admin Routes */}
-        <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />      {/* Public Routes for Health Information */}
+        <Route path={ROUTES.ADMIN.DASHBOARD + '/*'} element={<ProtectedRoute requiredRole="admin"><AdminRouter onLogout={handleLogout} /></ProtectedRoute>} />
+
+        {/* Public Routes for Health Information */}
         <Route path="/disease-prevention" element={<DiseasePrevention />} />
         <Route path="/nutrition-guide" element={<NutritionGuide />} />
         <Route path="/mental-health-care" element={<MentalHealthCare />} />
@@ -90,12 +95,21 @@ function App() {
         {/* Manager Routes */}
         <Route path={`${ROUTES.MANAGER.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="manager"><ManagerRouter onLogout={handleLogout} /></ProtectedRoute>} />
         
-
         {/* Nurse Routes */}
         <Route path={`${ROUTES.NURSE.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="nurse"><NurseRouter onLogout={handleLogout} /></ProtectedRoute>} />
 
         {/* Parent Routes */}
         <Route path={`${ROUTES.PARENT.DASHBOARD}/*`} element={<ProtectedRoute requiredRole="parent"><ParentRouter onLogout={handleLogout} /></ProtectedRoute>} />
+
+        {/* ROUTE NHẬP KẾT QUẢ KHÁM SỨC KHỎE */}
+        <Route
+          path="/nurse/health-check-campaigns/:campaignId/student/:studentId"
+          element={
+            <ProtectedRoute requiredRole="nurse">
+              <NurseHealthCheckResultForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Fallback Route */}
         <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
