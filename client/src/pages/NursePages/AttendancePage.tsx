@@ -10,14 +10,14 @@ interface Student {
   name: string;
   class: string;
   parentName?: string;
-  attendanceId?: number; // Thêm attendanceId để gửi lên BE
+  attendanceId?: number;
 }
 
 interface AttendanceItem {
-  attendanceId: number;
+  attendanceId?: number;
   studentId: number;
   nurseId: number;
-  isPresent: boolean;
+  present: boolean;
 }
 
 const AttendancePage: React.FC = () => {
@@ -27,31 +27,35 @@ const AttendancePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [nurseId, setNurseId] = useState<number | null>(null);
 
-  // Lấy danh sách học sinh thuộc chiến dịch
   useEffect(() => {
     const fetchStudents = async () => {
       setLoading(true);
       try {
         // Lấy thông tin y tá từ localStorage hoặc API
-        const nurseIdStored = localStorage.getItem("nurseId");
-        if (nurseIdStored) {
+        let nurseIdStored = localStorage.getItem("nurseId");
+        if (!nurseIdStored) {
+          nurseIdStored = localStorage.getItem("nurse_id") || localStorage.getItem("nurse");
+        }
+        if (nurseIdStored && Number(nurseIdStored) > 0) {
           setNurseId(Number(nurseIdStored));
         } else {
           const nurseRes = await axios.get("/api/account/me");
-          setNurseId(nurseRes.data.nurseId);
+          const backendNurseId = nurseRes.data.nurseId || nurseRes.data.nurse_id;
+          if (backendNurseId && Number(backendNurseId) > 0) {
+            setNurseId(Number(backendNurseId));
+            localStorage.setItem("nurseId", String(backendNurseId));
+          } else {
+            setNurseId(null);
+          }
         }
 
-        // Lấy danh sách học sinh đã đồng ý tiêm chủng của campaign này
-        // Đảm bảo API này trả về attendanceId cho mỗi học sinh!
         const response = await axios.get(
           `/api/vaccination/campaigns/${campaignId}/agreed-students`
         );
         setStudents(response.data || []);
 
-        // Khởi tạo state điểm danh: mặc định tất cả là có mặt (hoặc theo dữ liệu hiện có)
         const initialAttendance: Record<number, boolean> = {};
         (response.data || []).forEach((s: Student) => {
-          // Nếu có trường isPresent thì lấy theo dữ liệu gốc, không thì mặc định true
           initialAttendance[s.studentId] =
             // @ts-ignore
             s.isPresent !== undefined ? s.isPresent : true;
@@ -66,7 +70,6 @@ const AttendancePage: React.FC = () => {
     if (campaignId) fetchStudents();
   }, [campaignId]);
 
-  // Xử lý khi tick checkbox điểm danh
   const handleAttendanceChange = (studentId: number, checked: boolean) => {
     setAttendance((prev) => ({
       ...prev,
@@ -74,31 +77,26 @@ const AttendancePage: React.FC = () => {
     }));
   };
 
-  // Gửi điểm danh lên server
+  // SỬA ĐÚNG ĐÂY: BỔ SUNG nurseId vào dữ liệu gửi đi
   const handleSubmit = async () => {
-    if (!nurseId) {
-      message.error("Không xác định được y tá!");
+    if (!nurseId || nurseId <= 0) {
+      message.error("Không xác định được y tá hợp lệ!");
       return;
     }
     setLoading(true);
     try {
-      // Gửi attendanceId và isPresent (đúng tên trường như backend)
+      // Bổ sung nurseId vào từng phần tử
       const data: AttendanceItem[] = students.map((s) => ({
-        attendanceId: s.attendanceId!, // Đảm bảo attendanceId có giá trị
+        attendanceId: s.attendanceId,
         studentId: s.studentId,
-        nurseId,
-        isPresent: attendance[s.studentId] ?? false,
+        nurseId: nurseId, // Đúng key và giá trị
+        present: attendance[s.studentId] ?? false,
       }));
 
-      // Nếu backend hỗ trợ batch update (PUT/PATCH nhiều bản ghi)
-      await axios.post(`/api/Attendance/bulk-update`, data);
+      // Kiểm tra dữ liệu trước khi gửi
+      console.log("Attendance payload gửi lên BE:", data);
 
-      // Nếu backend chỉ hỗ trợ update từng bản ghi thì dùng Promise.all:
-      // await Promise.all(
-      //   data.map((item) =>
-      //     axios.put(`/api/Attendance/${item.attendanceId}`, item)
-      //   )
-      // );
+      await axios.post(`/api/Attendance/bulk-update`, data);
 
       message.success("Điểm danh thành công!");
     } catch (error: any) {
@@ -110,7 +108,6 @@ const AttendancePage: React.FC = () => {
     setLoading(false);
   };
 
-  // Table columns
   const columns: ColumnsType<Student & { present: boolean }> = [
     {
       title: "Mã HS",
