@@ -29,6 +29,8 @@ import {
   assignStaffToCampaign,
   notifyParentsHealthCheck,
   getHealthCheckStaff,
+  // Giả định bạn sẽ thêm API này
+  notifyCriticalForStudent,
 } from "../../services/healthCheckService";
 
 type HealthCheckCampaign = {
@@ -42,11 +44,14 @@ type HealthCheckCampaign = {
 type HealthCheckResult = {
   studentId: number;
   studentName: string;
-  class: string;
-  result: string;
+  studentClass: string;
+  height: number;
+  weight: number;
+  vision: string;
+  bloodPressure: string;
   notes?: string;
-  date: string;
-  status: "Normal" | "NeedFollowUp" | "Critical";
+  checkupDate: string;
+  campaignId: number;
 };
 
 type Staff = {
@@ -89,6 +94,9 @@ const HealthCheckCampaigns: React.FC = () => {
 
   // Snackbar tạo thành công/thất bại
   const [snackbar, setSnackbar] = useState<string | null>(null);
+
+  // Trạng thái gửi thông báo nguy cấp
+  const [sendingCritical, setSendingCritical] = useState(false);
 
   useEffect(() => {
     fetchCampaigns();
@@ -195,6 +203,27 @@ const HealthCheckCampaigns: React.FC = () => {
     setNotifyLoading(null);
   };
 
+  // Gửi thông báo riêng cho các trường hợp nguy cấp
+  const handleNotifyCritical = async () => {
+    setSendingCritical(true);
+    try {
+      const criticalStudents = results.filter(r => getStatus(r) === "Nguy cấp");
+      if (criticalStudents.length === 0) {
+        setSnackbar("Không có học sinh nào nguy cấp!");
+        setSendingCritical(false);
+        return;
+      }
+      for (const stu of criticalStudents) {
+        // Gọi API gửi thông báo nguy cấp cho từng học sinh (bạn cần triển khai notifyCriticalForStudent ở BE)
+        await notifyCriticalForStudent(stu.studentId);
+      }
+      setSnackbar("Đã gửi thông báo cho phụ huynh học sinh nguy cấp!");
+    } catch {
+      setSnackbar("Có lỗi khi gửi thông báo nguy cấp!");
+    }
+    setSendingCritical(false);
+  };
+
   // Xử lý giá trị ngày mặc định SQL '0001-01-01'
   const renderStartDate = (startDate: string) => {
     if (
@@ -206,7 +235,17 @@ const HealthCheckCampaigns: React.FC = () => {
       return "-";
     }
     return new Date(startDate).toLocaleDateString("vi-VN");
-  };  return (
+  };
+
+  // Hàm lấy trạng thái dựa trên huyết áp và thị lực (demo đơn giản)
+  const getStatus = (row: HealthCheckResult) => {
+    if (parseInt(row.bloodPressure) > 140 || parseFloat(row.vision) < 5) {
+      return "Nguy cấp";
+    }
+    return "Bình thường";
+  };
+
+  return (
     <Box p={3}>
       {/* Nút Quay lại */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -267,7 +306,8 @@ const HealthCheckCampaigns: React.FC = () => {
             <TableCell>Kết quả</TableCell>
             <TableCell>Gửi thông báo</TableCell>
           </TableRow>
-        </TableHead>        <TableBody>
+        </TableHead>
+        <TableBody>
           {loading ? (
             <TableRow>
               <TableCell colSpan={7} align="center">
@@ -372,7 +412,10 @@ const HealthCheckCampaigns: React.FC = () => {
                 <TableRow>
                   <TableCell>Học sinh</TableCell>
                   <TableCell>Lớp</TableCell>
-                  <TableCell>Kết quả</TableCell>
+                  <TableCell>Chiều cao (cm)</TableCell>
+                  <TableCell>Cân nặng (kg)</TableCell>
+                  <TableCell>Thị lực</TableCell>
+                  <TableCell>Huyết áp</TableCell>
                   <TableCell>Ghi chú</TableCell>
                   <TableCell>Ngày khám</TableCell>
                   <TableCell>Trạng thái</TableCell>
@@ -381,31 +424,32 @@ const HealthCheckCampaigns: React.FC = () => {
               <TableBody>
                 {results.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center">Không có dữ liệu!</TableCell>
+                    <TableCell colSpan={9} align="center">Không có dữ liệu!</TableCell>
                   </TableRow>
                 ) : (
                   results.map((row) => (
                     <TableRow key={row.studentId}>
                       <TableCell>{row.studentName}</TableCell>
-                      <TableCell>{row.class}</TableCell>
-                      <TableCell>{row.result}</TableCell>
+                      <TableCell>{row.studentClass}</TableCell>
+                      <TableCell>{row.height ?? "-"}</TableCell>
+                      <TableCell>{row.weight ?? "-"}</TableCell>
+                      <TableCell>{row.vision ?? "-"}</TableCell>
+                      <TableCell>{row.bloodPressure ?? "-"}</TableCell>
                       <TableCell>{row.notes || ""}</TableCell>
-                      <TableCell>{row.date ? new Date(row.date).toLocaleDateString() : ""}</TableCell>
+                      <TableCell>
+                        {row.checkupDate
+                          ? new Date(row.checkupDate).toLocaleDateString("vi-VN")
+                          : ""}
+                      </TableCell>
                       <TableCell
                         sx={{
                           color:
-                            row.status === "Normal"
+                            getStatus(row) === "Bình thường"
                               ? "green"
-                              : row.status === "NeedFollowUp"
-                              ? "orange"
-                              : "red",
+                              : "red"
                         }}
                       >
-                        {row.status === "Normal"
-                          ? "Bình thường"
-                          : row.status === "NeedFollowUp"
-                          ? "Cần theo dõi"
-                          : "Nguy cấp"}
+                        {getStatus(row)}
                       </TableCell>
                     </TableRow>
                   ))
@@ -415,8 +459,20 @@ const HealthCheckCampaigns: React.FC = () => {
           )}
         </DialogContent>
         <DialogActions>
+          {/* Nút gửi thông báo nguy cấp nếu có ít nhất 1 học sinh nguy cấp */}
+          {results.some(r => getStatus(r) === "Nguy cấp") && (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleNotifyCritical}
+              disabled={sendingCritical}
+            >
+              {sendingCritical ? <CircularProgress size={18} /> : "Gửi thông báo Nguy cấp"}
+            </Button>
+          )}
           <Button onClick={() => setResultModal(false)}>Đóng</Button>
-        </DialogActions>      </Dialog>
+        </DialogActions>
+      </Dialog>
 
       {/* Modal tạo chiến dịch */}
       <Dialog open={createModal} onClose={() => setCreateModal(false)} maxWidth="sm" fullWidth>
