@@ -8,29 +8,9 @@ import MedicationIcon from "@mui/icons-material/Medication";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
 import { ParentDashboardProps } from "../../types";
-import { ROUTES } from "../../constants";
 
 const ParentDashboard: React.FC<ParentDashboardProps> = ({ onLogout }) => {
   const navigate = useNavigate();
-
-  // Navigation handlers
-  const handleNavigateToHome = () => {
-    navigate(ROUTES.HOME);
-  };
-  const handleNavigateToNews = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-  const handleNavigateToContact = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
 
   const handleMedicationFormNavigation = () => {
     navigate("/parent/medication-form");
@@ -82,14 +62,10 @@ const ParentDashboard: React.FC<ParentDashboardProps> = ({ onLogout }) => {
       handler: handleVaccinationEventNavigation, // Đã sửa: chỉ vào dashboard sự kiện tiêm chủng
     },
   ];
-
   return (
     <>
       <Navbar
         onLogout={onLogout}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <Box sx={{ height: 68 }} />
       <Box

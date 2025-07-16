@@ -4,16 +4,17 @@ import { Table, Button, Checkbox, message, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useParams } from "react-router-dom";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
 
 interface Student {
   studentId: number;
   name: string;
   class: string;
   parentName?: string;
+  attendanceId?: number;
 }
 
 interface AttendanceItem {
+  attendanceId?: number;
   studentId: number;
   nurseId: number;
   present: boolean;
@@ -26,32 +27,38 @@ const AttendancePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [nurseId, setNurseId] = useState<number | null>(null);
 
-  // Lấy danh sách học sinh thuộc chiến dịch
   useEffect(() => {
     const fetchStudents = async () => {
       setLoading(true);
       try {
-        // Lấy thông tin y tá từ token hoặc API (ở đây giả định BE trả về nurseId khi login)
-        // Bạn có thể sửa lại lấy từ localStorage hoặc context nếu dùng Auth
-        const nurseIdStored = localStorage.getItem("nurseId");
-        if (nurseIdStored) {
+        // Lấy thông tin y tá từ localStorage hoặc API
+        let nurseIdStored = localStorage.getItem("nurseId");
+        if (!nurseIdStored) {
+          nurseIdStored = localStorage.getItem("nurse_id") || localStorage.getItem("nurse");
+        }
+        if (nurseIdStored && Number(nurseIdStored) > 0) {
           setNurseId(Number(nurseIdStored));
         } else {
-          // Thử lấy từ API
           const nurseRes = await axios.get("/api/account/me");
-          setNurseId(nurseRes.data.nurseId);
+          const backendNurseId = nurseRes.data.nurseId || nurseRes.data.nurse_id;
+          if (backendNurseId && Number(backendNurseId) > 0) {
+            setNurseId(Number(backendNurseId));
+            localStorage.setItem("nurseId", String(backendNurseId));
+          } else {
+            setNurseId(null);
+          }
         }
 
-        // Lấy danh sách học sinh đã đồng ý tiêm chủng của campaign này
         const response = await axios.get(
           `/api/vaccination/campaigns/${campaignId}/agreed-students`
         );
         setStudents(response.data || []);
 
-        // Khởi tạo state điểm danh: mặc định tất cả là có mặt
         const initialAttendance: Record<number, boolean> = {};
         (response.data || []).forEach((s: Student) => {
-          initialAttendance[s.studentId] = true;
+          initialAttendance[s.studentId] =
+            // @ts-ignore
+            s.isPresent !== undefined ? s.isPresent : true;
         });
         setAttendance(initialAttendance);
       } catch (error) {
@@ -63,7 +70,6 @@ const AttendancePage: React.FC = () => {
     if (campaignId) fetchStudents();
   }, [campaignId]);
 
-  // Xử lý khi tick checkbox điểm danh
   const handleAttendanceChange = (studentId: number, checked: boolean) => {
     setAttendance((prev) => ({
       ...prev,
@@ -71,24 +77,27 @@ const AttendancePage: React.FC = () => {
     }));
   };
 
-  // Gửi điểm danh lên server
+  // SỬA ĐÚNG ĐÂY: BỔ SUNG nurseId vào dữ liệu gửi đi
   const handleSubmit = async () => {
-    if (!nurseId) {
-      message.error("Không xác định được y tá!");
+    if (!nurseId || nurseId <= 0) {
+      message.error("Không xác định được y tá hợp lệ!");
       return;
     }
     setLoading(true);
     try {
+      // Bổ sung nurseId vào từng phần tử
       const data: AttendanceItem[] = students.map((s) => ({
+        attendanceId: s.attendanceId,
         studentId: s.studentId,
-        nurseId,
+        nurseId: nurseId, // Đúng key và giá trị
         present: attendance[s.studentId] ?? false,
       }));
 
-      await axios.post(
-        `/api/vaccination/campaigns/${campaignId}/attendance`,
-        data
-      );
+      // Kiểm tra dữ liệu trước khi gửi
+      console.log("Attendance payload gửi lên BE:", data);
+
+      await axios.post(`/api/Attendance/bulk-update`, data);
+
       message.success("Điểm danh thành công!");
     } catch (error: any) {
       message.error(
@@ -99,7 +108,6 @@ const AttendancePage: React.FC = () => {
     setLoading(false);
   };
 
-  // Table columns
   const columns: ColumnsType<Student & { present: boolean }> = [
     {
       title: "Mã HS",
@@ -123,14 +131,15 @@ const AttendancePage: React.FC = () => {
       dataIndex: "present",
       key: "present",
       width: 120,
-      render: (_: any, record: Student) => (        <Checkbox
-        checked={attendance[record.studentId] ?? false}
-        onChange={(e: CheckboxChangeEvent) =>
-          handleAttendanceChange(record.studentId, e.target.checked)
-        }
-      >
-        Có
-      </Checkbox>
+      render: (_: any, record: Student) => (
+        <Checkbox
+          checked={attendance[record.studentId] ?? false}
+          onChange={(e: CheckboxChangeEvent) =>
+            handleAttendanceChange(record.studentId, e.target.checked)
+          }
+        >
+          Có
+        </Checkbox>
       ),
     },
   ];

@@ -61,9 +61,7 @@ import {
   TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
-import { useNavigate } from "react-router-dom";
 import { NurseDashboardProps, Student, MedicalIncident } from "../../types";
-import { ROUTES } from "../../constants";
 import apiClient, {
   searchStudents,
   getStudentMedicalInfo,
@@ -72,6 +70,7 @@ import apiClient, {
   notifyParent,
 } from "../../services/apiClient";
 import { getAssignedCampaignsForNurse } from "../../services/vaccinationService";
+import NurseHealthCheckCampaignList from "./NurseHealthCheckCampaignList";
 
 // Types
 type MedicalSupply = {
@@ -98,6 +97,7 @@ type VaccinationSchedule = {
   nextDate: string;
   status: string;
   present?: boolean; // Added for attendance status
+  vaccinationId?: number | null; 
 };
 
 type MedicineRequest = {
@@ -1335,7 +1335,6 @@ const MedicalIncidentManager: React.FC = () => {
 
 const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   const theme = useTheme();
-  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
 
   // State: Medical Supplies
@@ -1425,8 +1424,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
         })
         .finally(() => setLoadingSchedule(false));
     }
-  }, [tabValue, selectedCampaignId]);
-  // Load Medicine Requests
+  }, [tabValue, selectedCampaignId]);  // Load Medicine Requests
   useEffect(() => {
     if (tabValue === 2) {
       setLoadingRequests(true);
@@ -1476,38 +1474,43 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   };
 
   const handleSaveAttendance = async () => {
-    setSavingAttendance(true);
+  setSavingAttendance(true);
 
-    const nurseId = Number(localStorage.getItem("nurse_id"));
-    if (!nurseId) {
-      alert("Không tìm thấy thông tin y tá! Vui lòng đăng nhập lại.");
-      setSavingAttendance(false);
-      return;
-    }
+  const nurseId = Number(localStorage.getItem("nurse_id"));
+  if (!nurseId) {
+    alert("Không tìm thấy thông tin y tá! Vui lòng đăng nhập lại.");
+    setSavingAttendance(false);
+    return;
+  }
 
-    try {
-      const attendanceList = Object.entries(attendance)
-        .filter(([, status]) => status !== undefined)
-        .map(([studentId, status]) => ({
+  try {
+    const attendanceList = Object.entries(attendance)
+      .filter(([, status]) => status !== undefined)
+      .map(([studentId, status]) => {
+        // Tìm student trong schedule để lấy vaccinationId
+        const studentSchedule = schedule.find((s) => s.studentId === Number(studentId));
+        return {
           studentId: Number(studentId),
           nurseId,
           present: status === "present",
-        }));
-      if (attendanceList.length === 0) {
-        alert("Vui lòng chọn trạng thái điểm danh cho ít nhất một học sinh.");
-        setSavingAttendance(false);
-        return;
-      }
-      await apiClient.post(
-        `/vaccination/campaigns/${selectedCampaignId}/attendance`,
-        attendanceList
-      );
-      alert("Lưu điểm danh thành công!");
-    } catch {
-      alert("Lưu điểm danh thất bại!");
+          vaccinationId: studentSchedule?.vaccinationId ?? null, // Thêm dòng này!
+        };
+      });
+    if (attendanceList.length === 0) {
+      alert("Vui lòng chọn trạng thái điểm danh cho ít nhất một học sinh.");
+      setSavingAttendance(false);
+      return;
     }
-    setSavingAttendance(false);
-  };
+    await apiClient.post(
+      `/vaccination/campaigns/${selectedCampaignId}/attendance`,
+      attendanceList
+    );
+    alert("Lưu điểm danh thành công!");
+  } catch {
+    alert("Lưu điểm danh thất bại!");
+  }
+  setSavingAttendance(false);
+};
 
   const handleCompleteVaccination = async (studentId: number) => {
     setCompletingIds((prev) => ({ ...prev, [studentId]: true }));
@@ -1527,13 +1530,14 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
 
     try {
       await apiClient.post(`/vaccination/record`, {
-        studentId: student.studentId,
-        campaignId: selectedCampaignId,
-        vaccineName: student.vaccineName,
-        status: "Done",
-        dateOfVaccination: new Date().toISOString(),
-        administeredBy: nurseId,
-      });
+      vaccinationId: student.vaccinationId,
+      studentId: student.studentId,
+      campaignId: selectedCampaignId,
+      vaccineName: student.vaccineName,
+      status: "Done",
+      dateOfVaccination: new Date().toISOString(),
+      administeredBy: nurseId,
+    });
       alert(`Đã lưu hoàn thành tiêm chủng cho học sinh ${student.studentName}`);
       setLoadingSchedule(true);
       apiClient
@@ -1547,12 +1551,8 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   };
 
   return (
-    <>
-      <Navbar
+    <>      <Navbar
         onLogout={onLogout}
-        onNavigateToHome={() => navigate(ROUTES.HOME)}
-        onNavigateToNews={() => navigate(ROUTES.HOME)}
-        onNavigateToContact={() => navigate(ROUTES.HOME)}
       />
       <Box
         sx={{
@@ -1588,11 +1588,11 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
               fontWeight: "medium",
               minHeight: 48,
             },
-          }}
-        >
+          }}        >
           <Tab icon={<HospitalIcon />} label="Vật Tư Y Tế" iconPosition="start" />
           <Tab icon={<VaccineIcon />} label="Lịch Tiêm Chủng" iconPosition="start" />
           <Tab icon={<AddIcon />} label="Đơn Yêu Cầu Thuốc" iconPosition="start" />
+          <Tab icon={<HospitalIcon />} label="Khám Sức Khỏe" iconPosition="start" />
           <Tab icon={<IncidentIcon />} label="Sự Cố Y Tế" iconPosition="start" />
         </Tabs>
 
@@ -1843,10 +1843,15 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
               </Table>
             </TableContainer>
           </Box>
+        )}        {/* Tab 3: Health Check Campaigns */}
+        {tabValue === 3 && (
+          <Box>
+            <NurseHealthCheckCampaignList />
+          </Box>
         )}
 
-        {/* Tab 3: Medical Incident Management */}
-        {tabValue === 3 && <MedicalIncidentManager />}
+        {/* Tab 4: Medical Incident Management */}
+        {tabValue === 4 && <MedicalIncidentManager />}
 
         {/* Dialog Thêm Vật Tư */}
         <Dialog open={openDialog} onClose={handleDialogClose} disableEscapeKeyDown>

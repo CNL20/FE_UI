@@ -2,9 +2,9 @@ import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'ax
 import { UserRole, RegisterPayload } from '../types';
 import { STORAGE_KEYS, API_ENDPOINTS } from '../constants';
 
-// Create Axios instance
+// SỬ DỤNG ENV ĐỂ LẤY BASE URL, KHÔNG GHI CỨNG
 const apiClient = axios.create({
-  baseURL: process.env['REACT_APP_API_BASE_URL'] || 'http://localhost:5000/api',
+  baseURL: process.env['REACT_APP_API_BASE_URL'],
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
 });
@@ -12,7 +12,6 @@ const apiClient = axios.create({
 // Request interceptor: attach token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Try both TOKEN and AUTH_TOKEN for compatibility
     const token = localStorage.getItem(STORAGE_KEYS.TOKEN) || localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -38,7 +37,7 @@ apiClient.interceptors.response.use(
         );
         const { token } = response.data;
         localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
-        localStorage.setItem(STORAGE_KEYS.TOKEN, token); // Sync both keys
+        localStorage.setItem(STORAGE_KEYS.TOKEN, token);
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${token}`;
         }
@@ -67,7 +66,6 @@ export const login = async (
   try {
     const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, { username, password, role });
     const { token, refreshToken, user, role: userRole, access_token } = response.data;
-    // Support both token & access_token naming
     const jwtToken = token || access_token;
     if (jwtToken) {
       localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, jwtToken);
@@ -76,7 +74,6 @@ export const login = async (
     if (refreshToken) localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
     localStorage.setItem(STORAGE_KEYS.USER_ROLE, userRole || role);
     if (user) localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
-    // Special nurse logic for nurse_id
     if ((userRole || role) === 'nurse' && user && user.nurse_id) {
       localStorage.setItem('nurse_id', user.nurse_id);
     } else {
@@ -105,7 +102,6 @@ export const logout = async () => {
   } catch (error) {
     console.error('Logout failed:', error);
   } finally {
-    // Remove all tokens and user info
     localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
@@ -121,6 +117,17 @@ export const register = async (data: RegisterPayload) => {
     return response.data;
   } catch (error) {
     console.error('Registration failed:', error);
+    throw error;
+  }
+};
+
+// ================== HEALTH CHECK CAMPAIGNS (FOR NURSE) ==================
+export const getNurseHealthCheckCampaigns = async (nurseId: string | number) => {
+  try {
+    const response = await apiClient.get(`/health-check/nurse/campaigns?nurseId=${nurseId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to get nurse health check campaigns:', error);
     throw error;
   }
 };
@@ -199,7 +206,6 @@ export const submitHealthProfile = async (formData: FormData) => {
 };
 
 // ================== STUDENT SERVICES ==================
-// Helper to map snake_case student to camelCase with parent info
 const mapStudent = (s: any) => ({
   id: s.student_id ?? s.id,
   studentId: s.student_id ?? s.id,
@@ -282,12 +288,10 @@ export const getStudentMedicalInfo = async (studentId: string) => {
 
 export const createMedicalIncident = async (data: any) => {
   try {
-    // Validate required fields
     if (!data.studentId || data.studentId === 0) throw new Error('Student ID is required');
     if (!data.incidentType) throw new Error('Incident type is required');
     if (!data.description || !data.description.trim()) throw new Error('Description is required');
     if (!data.location || !data.location.trim()) throw new Error('Location is required');
-    // Map frontend to backend fields (PascalCase)
     const formattedData = {
       StudentId: Number(data.studentId),
       EventType: data.incidentType,
@@ -314,7 +318,6 @@ export const createMedicalIncident = async (data: any) => {
   }
 };
 
-// Chuẩn hóa mapMedicalIncident để fallback giá trị nếu trường bị thiếu
 const mapMedicalIncident = (item: any) => ({
   id: item.id || item.eventId || '',
   studentId: item.student_id || item.studentId || '',
@@ -359,7 +362,6 @@ export const getMedicalIncidents = async (filters?: Record<string, string>) => {
       endpoint += `?${params.toString()}`;
     }
     const response = await apiClient.get(endpoint);
-    // Map all items to camelCase, fallback nếu thiếu trường
     if (Array.isArray(response.data)) {
       return response.data.map(mapMedicalIncident);
     } else if (response.data) {

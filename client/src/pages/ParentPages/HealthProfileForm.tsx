@@ -67,36 +67,11 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
       navigate(ROUTES.PARENT.DASHBOARD);
     } catch (err: any) {
       alert(err.response?.data?.message || "Gửi hồ sơ thất bại, vui lòng thử lại!");
-    }
-  };
-
-  const handleNavigateToHome = () => {
-    navigate(ROUTES.HOME);
-  };
-
-  const handleNavigateToNews = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-  const handleNavigateToContact = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
+    }  };
   return (
     <>
       <Navbar
         onLogout={onLogout}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <Box sx={{ height: 68 }} />
       <div

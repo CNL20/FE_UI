@@ -5,24 +5,6 @@ import { useNavigate } from "react-router-dom";
 const VaccinationNews: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleNavigateToHome = () => {
-    navigate("/");
-  };
-  const handleNavigateToNews = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-  const handleNavigateToContact = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   const vaccineNews = [
     {
       vaccineName: "COVID-19",
@@ -50,13 +32,9 @@ const VaccinationNews: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
       benefits: "Bảo vệ trẻ em khỏi bệnh thủy đậu, giảm nguy cơ biến chứng.",
     },
   ];
-
   return (
     <>
       <Navbar {...(onLogout ? { onLogout } : {})}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <div
         style={{

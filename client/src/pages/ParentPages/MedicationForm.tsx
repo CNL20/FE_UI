@@ -3,30 +3,9 @@ import Navbar from "../../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { MedicationFormProps } from "../../types";
-import { ROUTES } from "../../constants";
 
 const MedicationForm: React.FC<MedicationFormProps> = ({ onLogout }) => {
   const navigate = useNavigate();
-
-  const handleNavigateToHome = () => {
-    navigate(ROUTES.HOME);
-  };
-
-  const handleNavigateToNews = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-  const handleNavigateToContact = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
 
   const [formData, setFormData] = useState({
     ngayThangNam: "",
@@ -52,14 +31,10 @@ const MedicationForm: React.FC<MedicationFormProps> = ({ onLogout }) => {
     e.preventDefault();
     alert("Thông tin đã được gửi thành công!");
   };
-
   return (
     <>
       <Navbar
         onLogout={onLogout}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <Box sx={{ height: 68 }} />
       <div

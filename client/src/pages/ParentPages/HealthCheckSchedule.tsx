@@ -24,37 +24,12 @@ const HealthCheckSchedule: React.FC = () => {
       date: "2025-06-17",
       time: "9:00 AM",
       studentName: "Lê Văn C",
-      content: "Khám tim mạch",
-    },
+      content: "Khám tim mạch",    },
   ];
-
-  const handleNavigateToHome = () => {
-    navigate(ROUTES.HOME);
-  };
-
-  const handleNavigateToNews = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-  const handleNavigateToContact = () => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   return (
     <>
       <Navbar
         onLogout={() => navigate(ROUTES.LOGIN)}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <Box sx={{ p: 3 }}>
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>

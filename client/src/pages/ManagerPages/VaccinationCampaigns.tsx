@@ -22,7 +22,11 @@ import {
   MenuItem,
   CircularProgress,
   Snackbar,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { ArrowBack, Search, Add } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Đường dẫn API backend (sửa lại nếu backend chạy cổng/địa chỉ khác)
@@ -49,7 +53,10 @@ type VaccinationResult = {
 };
 
 const VaccinationCampaigns: React.FC = () => {
+  const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState<VaccinationCampaign[]>([]);
+  const [filteredCampaigns, setFilteredCampaigns] = useState<VaccinationCampaign[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [consentSummaries, setConsentSummaries] = useState<ConsentSummary[]>([]);
   const [form, setForm] = useState({
     vaccineName: "",
@@ -57,6 +64,9 @@ const VaccinationCampaigns: React.FC = () => {
     targetClass: "",
   });
   const [view, setView] = useState<"consent" | "assignNurse" | "result" | "all">("all");
+
+  // Modal tạo chiến dịch
+  const [createModal, setCreateModal] = useState(false);
 
   // State cho modal bổ nhiệm y tá
   const [assignNurseModal, setAssignNurseModal] = useState(false);
@@ -77,11 +87,21 @@ const VaccinationCampaigns: React.FC = () => {
   // State cho gửi thông báo kết quả tiêm
   const [notifyLoading, setNotifyLoading] = useState<number | null>(null);
   const [notifyMessage, setNotifyMessage] = useState<string | null>(null);
-
   const fetchCampaigns = async () => {
     const campaigns = await getVaccinationCampaigns();
     setCampaigns(campaigns);
+    setFilteredCampaigns(campaigns);
   };
+
+  // Xử lý tìm kiếm
+  useEffect(() => {
+    const filtered = campaigns.filter(campaign =>
+      campaign.vaccineName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      campaign.targetClass.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      campaign.scheduleDate.includes(searchTerm)
+    );
+    setFilteredCampaigns(filtered);
+  }, [searchTerm, campaigns]);
 
   const fetchConsentSummaries = async () => {
     const token = localStorage.getItem("token");
@@ -98,13 +118,13 @@ const VaccinationCampaigns: React.FC = () => {
     fetchCampaigns();
     fetchConsentSummaries();
   }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await createVaccinationCampaign(form);
     await fetchCampaigns();
     await fetchConsentSummaries();
     setForm({ vaccineName: "", scheduleDate: "", targetClass: "" });
+    setCreateModal(false);
   };
 
   const getConsentStatus = (campaignId: number) => {
@@ -217,35 +237,55 @@ const VaccinationCampaigns: React.FC = () => {
       setNotifyMessage("Có lỗi khi gửi thông báo!");
     }
     setNotifyLoading(null);
-  };
-
-  return (
+  };  return (
     <Box p={3}>
-      <Typography variant="h4" gutterBottom>
-        Quản lý chiến dịch tiêm chủng
-      </Typography>
-      <form style={{ display: "flex", gap: 8, marginBottom: 24 }} onSubmit={handleSubmit}>
+      {/* Nút Quay lại */}
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <IconButton 
+          onClick={() => navigate("/manager")}
+          sx={{ 
+            mr: 2,
+            color: "#1976d2",
+            "&:hover": {
+              backgroundColor: "rgba(25, 118, 210, 0.04)",
+            }
+          }}
+        >
+          <ArrowBack />
+        </IconButton>
+        <Typography variant="h4" sx={{ fontWeight: 600 }}>
+          Quản lý chiến dịch tiêm chủng
+        </Typography>
+      </Box>
+
+      {/* Thanh tìm kiếm và nút tạo chiến dịch */}
+      <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
         <TextField
-          label="Tên vaccin"
-          value={form.vaccineName}
-          onChange={(e) => setForm((f) => ({ ...f, vaccineName: e.target.value }))}
+          placeholder="Tìm kiếm theo tên vaccine, lớp, ngày tiêm..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ flexGrow: 1 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search sx={{ color: "#666" }} />
+              </InputAdornment>
+            ),
+          }}
         />
-        <TextField
-          type="date"
-          label="Ngày tiêm"
-          InputLabelProps={{ shrink: true }}
-          value={form.scheduleDate}
-          onChange={(e) => setForm((f) => ({ ...f, scheduleDate: e.target.value }))}
-        />
-        <TextField
-          label="Lớp mục tiêu"
-          value={form.targetClass}
-          onChange={(e) => setForm((f) => ({ ...f, targetClass: e.target.value }))}
-        />
-        <Button variant="contained" type="submit">
+        <Button 
+          variant="contained" 
+          startIcon={<Add />}
+          onClick={() => setCreateModal(true)}
+          sx={{
+            bgcolor: "#1976d2",
+            "&:hover": { bgcolor: "#1565c0" },
+            px: 3
+          }}
+        >
           Tạo chiến dịch
         </Button>
-      </form>
+      </Box>
 
       {/* Các button chuyển view */}
       <Box mb={2} display="flex" gap={2}>
@@ -275,9 +315,8 @@ const VaccinationCampaigns: React.FC = () => {
             {(view === "all" || view === "result") && <TableCell>Kết quả tiêm</TableCell>}
             {(view === "all" || view === "result") && <TableCell>Gửi thông báo</TableCell>}
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {campaigns.map((c) => (
+        </TableHead>        <TableBody>
+          {filteredCampaigns.map((c) => (
             <TableRow key={c.campaignId}>
               <TableCell>{c.vaccineName}</TableCell>
               <TableCell>{c.scheduleDate}</TableCell>
@@ -423,7 +462,60 @@ const VaccinationCampaigns: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseResultModal}>Đóng</Button>
-        </DialogActions>
+        </DialogActions>      </Dialog>
+
+      {/* Modal tạo chiến dịch */}
+      <Dialog open={createModal} onClose={() => setCreateModal(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Tạo chiến dịch tiêm chủng mới</DialogTitle>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3, mt: 1 }}>
+              <TextField
+                label="Tên vaccin"
+                value={form.vaccineName}
+                onChange={(e) => setForm((f) => ({ ...f, vaccineName: e.target.value }))}
+                required
+                fullWidth
+                placeholder="Ví dụ: Vaccine phòng cúm, COVID-19..."
+              />
+              <TextField
+                type="date"
+                label="Ngày tiêm"
+                InputLabelProps={{ shrink: true }}
+                value={form.scheduleDate}
+                onChange={(e) => setForm((f) => ({ ...f, scheduleDate: e.target.value }))}
+                required
+                fullWidth
+              />
+              <TextField
+                label="Lớp mục tiêu"
+                value={form.targetClass}
+                onChange={(e) => setForm((f) => ({ ...f, targetClass: e.target.value }))}
+                required
+                fullWidth
+                placeholder="Ví dụ: 12A1, 11A1, hoặc Tất cả"
+              />
+            </Box>
+          </DialogContent>
+          <DialogActions sx={{ p: 3 }}>
+            <Button 
+              onClick={() => setCreateModal(false)}
+              sx={{ mr: 1 }}
+            >
+              Hủy
+            </Button>
+            <Button 
+              type="submit" 
+              variant="contained"
+              sx={{
+                bgcolor: "#1976d2",
+                "&:hover": { bgcolor: "#1565c0" }
+              }}
+            >
+              Tạo chiến dịch
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
 
       {/* Thông báo gửi kết quả */}

@@ -5,24 +5,6 @@ import { useNavigate } from "react-router-dom";
 const HealthCheckResults: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleNavigateToHome = () => {
-    navigate("/");
-  };
-  const handleNavigateToNews = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("school-health-news");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-  const handleNavigateToContact = () => {
-    navigate("/");
-    setTimeout(() => {
-      const el = document.getElementById("contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
   const mockResults = [
     {
       studentName: "Nguyen Van A",
@@ -43,13 +25,9 @@ const HealthCheckResults: React.FC<{ onLogout?: () => void }> = ({ onLogout }) =
       bloodQuality: "Bình thường",
     },
   ];
-
   return (
     <>
       <Navbar {...(onLogout ? { onLogout } : {})}
-        onNavigateToHome={handleNavigateToHome}
-        onNavigateToNews={handleNavigateToNews}
-        onNavigateToContact={handleNavigateToContact}
       />
       <div
         style={{

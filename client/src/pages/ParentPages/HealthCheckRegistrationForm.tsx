@@ -36,12 +36,8 @@ const HealthCheckRegistrationForm: React.FC = () => {
   };
 
   return (
-    <>
-      <Navbar
+    <>      <Navbar
         onLogout={() => navigate(ROUTES.LOGIN)}
-        onNavigateToHome={() => navigate(ROUTES.HOME)}
-        onNavigateToNews={() => navigate(ROUTES.HOME)}
-        onNavigateToContact={() => navigate(ROUTES.HOME)}
       />
       <Box sx={{ p: 3 }}>
         <Typography variant="h4" sx={{ mb: 3, fontWeight: "bold" }}>
