@@ -1,8 +1,5 @@
 import { API_BASE_URL } from "../constants";
 
-// KHÔNG dùng biến môi trường, dùng URL trực tiếp như bạn yêu cầu
-// const API_URL = "http://localhost:5000";
-
 // Lấy danh sách chiến dịch khám sức khỏe
 export const getHealthCheckCampaigns = async () => {
   const token = localStorage.getItem("token");
@@ -41,14 +38,13 @@ export const assignStaffToCampaign = async (campaignId: number, nurseId: number)
   const res = await fetch(`${API_BASE_URL}/health-check/campaigns/${campaignId}/assign-staff`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-    body: JSON.stringify({ nurseId }), // Đúng trường nurseId
+    body: JSON.stringify({ nurseId }),
   });
   if (!res.ok) throw new Error("Bổ nhiệm nhân viên thất bại!");
-  // Nếu backend trả về rỗng, chỉ return true
   return true;
 };
 
-// Gửi thông báo kết quả khám cho phụ huynh
+// Gửi thông báo kết quả khám cho phụ huynh (gửi cho tất cả học sinh trong campaign)
 export const notifyParentsHealthCheck = async (campaignId: number) => {
   const token = localStorage.getItem("token");
   const res = await fetch(`${API_BASE_URL}/health-check/campaigns/${campaignId}/notify-parents`, {
@@ -57,6 +53,23 @@ export const notifyParentsHealthCheck = async (campaignId: number) => {
   });
   if (!res.ok) throw new Error("Gửi thông báo thất bại!");
   return await res.json();
+};
+
+// Gửi thông báo nguy cấp cho phụ huynh của 1 học sinh
+export const notifyCriticalForStudent = async (studentId: number) => {
+  const token = localStorage.getItem("token");
+  // SỬA route đúng theo backend: notification/critical-notify thay vì health-check/critical-notify
+  const res = await fetch(`${API_BASE_URL}/notification/critical-notify/${studentId}`, {
+    method: "POST",
+    headers: { "Authorization": `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error("Gửi thông báo nguy cấp thất bại!");
+  // Nếu backend trả về rỗng, chỉ return true
+  try {
+    return await res.json();
+  } catch {
+    return true;
+  }
 };
 
 // Lấy danh sách nhân viên y tế (dùng cho modal bổ nhiệm)
