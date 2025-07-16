@@ -72,11 +72,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       const data = await loginApi(form.username, form.password, form.role);
       if (data && data.access_token) {
         localStorage.setItem("token", data.access_token);
-        // Nếu là nurse, lưu thêm nurse_id
+        // Nếu là nurse, lưu thêm nurse_id (CHÚ Ý ĐÚNG KEY VÀ GIÁ TRỊ)
         if (form.role === "nurse" && data.user && data.user.nurse_id) {
-          localStorage.setItem("nurse_id", data.user.nurse_id);
+          localStorage.setItem("nurseId", String(data.user.nurse_id)); // Sửa lại thành "nurseId" cho đúng với AttendancePage FE
         } else {
-          localStorage.removeItem("nurse_id");
+          localStorage.removeItem("nurseId");
         }
         onLogin(form.role);
       } else {
