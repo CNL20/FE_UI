@@ -11,16 +11,26 @@ interface Student {
   completed: boolean;
 }
 
+const API_URL = process.env['REACT_APP_API_URL'] || "http://localhost:5000";
+
 const NurseHealthCheckCampaignDetail: React.FC = () => {
-  const { id } = useParams(); // sửa ở đây
+  const { id } = useParams();
   const [students, setStudents] = useState<Student[]>([]);
   const [attendance, setAttendance] = useState<Record<number, boolean>>({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Lấy nurseId từ localStorage cho mỗi lần điểm danh
+  const nurseId = Number(localStorage.getItem("nurseId"));
+
   useEffect(() => {
     setLoading(true);
-    axios.get(`/api/health-check/campaigns/${id}/students`) // sửa ở đây
+    const token = localStorage.getItem('auth_token');
+    axios.get(`${API_URL}/api/health-check/campaigns/${id}/students`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => {
         setStudents(res.data || []);
         const initial: Record<number, boolean> = {};
@@ -28,20 +38,32 @@ const NurseHealthCheckCampaignDetail: React.FC = () => {
         setAttendance(initial);
       })
       .finally(() => setLoading(false));
-  }, [id]); // sửa ở đây
+  }, [id]);
 
   const handleAttendanceChange = (studentId: number, checked: boolean) => {
     setAttendance(prev => ({ ...prev, [studentId]: checked }));
   };
 
   const handleSaveAttendance = async () => {
+    // Kiểm tra nurseId trước khi gửi
+    if (!nurseId || nurseId <= 0 || Number.isNaN(nurseId)) {
+      message.error("Không xác định được mã y tá hợp lệ!");
+      return;
+    }
     setLoading(true);
     try {
+      const token = localStorage.getItem('auth_token');
+      // Thêm nurseId vào từng bản ghi gửi lên BE
       const data = students.map(s => ({
         studentId: s.id,
         present: attendance[s.id],
+        nurseId: nurseId
       }));
-      await axios.post(`/api/health-check/campaigns/${id}/attendance`, data); // sửa ở đây
+      await axios.post(`${API_URL}/api/health-check/campaigns/${id}/attendance`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       message.success("Lưu điểm danh thành công!");
     } catch {
       message.error("Lưu điểm danh thất bại!");
@@ -76,7 +98,7 @@ const NurseHealthCheckCampaignDetail: React.FC = () => {
         <Button
           type="link"
           disabled={!attendance[record.id]}
-          onClick={() => navigate(`/nurse/health-check-campaigns/${id}/student/${record.id}`)} // sửa ở đây
+          onClick={() => navigate(`/nurse/health-check-campaigns/${id}/student/${record.id}`)}
         >
           Nhập kết quả
         </Button>
