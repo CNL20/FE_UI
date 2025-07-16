@@ -1,10 +1,12 @@
+import { API_BASE_URL } from "../constants";
+
 // KHÔNG dùng biến môi trường, dùng URL trực tiếp như bạn yêu cầu
-const API_URL = "http://localhost:5000";
+// const API_URL = "http://localhost:5000";
 
 // Lấy danh sách chiến dịch khám sức khỏe
 export const getHealthCheckCampaigns = async () => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/health-check/campaigns`, {
+  const res = await fetch(`${API_BASE_URL}/health-check/campaigns`, {
     headers: { "Authorization": `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Không lấy được danh sách chiến dịch!");
@@ -14,7 +16,7 @@ export const getHealthCheckCampaigns = async () => {
 // Tạo mới một chiến dịch khám sức khỏe
 export const createHealthCheckCampaign = async (form: { name: string; startDate: string; targetClass: string }) => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/health-check/campaigns`, {
+  const res = await fetch(`${API_BASE_URL}/health-check/campaigns`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
     body: JSON.stringify(form),
@@ -26,7 +28,7 @@ export const createHealthCheckCampaign = async (form: { name: string; startDate:
 // Lấy kết quả khám sức khỏe theo campaign
 export const getHealthCheckResults = async (campaignId: number) => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/health-check/campaigns/${campaignId}/results`, {
+  const res = await fetch(`${API_BASE_URL}/health-check/campaigns/${campaignId}/results`, {
     headers: { "Authorization": `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Không lấy được kết quả khám!");
@@ -36,7 +38,7 @@ export const getHealthCheckResults = async (campaignId: number) => {
 // Bổ nhiệm nhân viên y tế cho chiến dịch
 export const assignStaffToCampaign = async (campaignId: number, nurseId: number) => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/health-check/campaigns/${campaignId}/assign-staff`, {
+  const res = await fetch(`${API_BASE_URL}/health-check/campaigns/${campaignId}/assign-staff`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
     body: JSON.stringify({ nurseId }), // Đúng trường nurseId
@@ -49,7 +51,7 @@ export const assignStaffToCampaign = async (campaignId: number, nurseId: number)
 // Gửi thông báo kết quả khám cho phụ huynh
 export const notifyParentsHealthCheck = async (campaignId: number) => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/health-check/campaigns/${campaignId}/notify-parents`, {
+  const res = await fetch(`${API_BASE_URL}/health-check/campaigns/${campaignId}/notify-parents`, {
     method: "POST",
     headers: { "Authorization": `Bearer ${token}` },
   });
@@ -60,7 +62,7 @@ export const notifyParentsHealthCheck = async (campaignId: number) => {
 // Lấy danh sách nhân viên y tế (dùng cho modal bổ nhiệm)
 export const getHealthCheckStaff = async () => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/health-check/school-staff`, {
+  const res = await fetch(`${API_BASE_URL}/health-check/school-staff`, {
     headers: { "Authorization": `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Không lấy được danh sách nhân viên!");
