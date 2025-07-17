@@ -82,6 +82,7 @@ export interface MedicalIncident {
   studentName: string;
   className: string;
   incidentType: 'injury' | 'illness' | 'emergency' | 'allergy' | 'other';
+  eventType?: 'injury' | 'illness' | 'emergency' | 'allergy' | 'other'; // Thêm field này cho dữ liệu backend
   description: string;
   symptoms: string[];
   severity: 'low' | 'medium' | 'high' | 'critical';

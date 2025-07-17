@@ -95,13 +95,8 @@ const Navbar: React.FC<NavbarProps> = ({
                     <MenuItem onClick={() => { navigate("/admin/manage-accounts"); handleClose(); }}>Quản lý tài khoản</MenuItem>
                     <MenuItem onClick={() => { navigate("/admin/activity-logs"); handleClose(); }}>Nhật ký hoạt động</MenuItem>
                   </>
-                )}
-                {isParent && (
+                )}                {isParent && (
                   <>
-                    <MenuItem onClick={() => { navigate("/parent-pages/health-profile-form"); handleClose(); }}>Khai báo hồ sơ sức khỏe</MenuItem>
-                    <MenuItem onClick={() => { navigate("/parent-pages/medication-form"); handleClose(); }}>Sử dụng thuốc</MenuItem>
-                    <MenuItem onClick={() => { navigate("/parent-pages/health-check-dashboard"); handleClose(); }}>Khám sức khỏe</MenuItem>
-                    <MenuItem onClick={() => { navigate("/parent-pages/vaccination-event-dashboard"); handleClose(); }}>Sự kiện tiêm chủng</MenuItem>
                     <MenuItem onClick={() => { navigate("/parent/notification"); handleClose(); }}>Thông báo</MenuItem>
                   </>                )}
                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
