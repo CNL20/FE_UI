@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../styles.css";
 import Navbar from "../../components/Navbar";
 import { Box } from "@mui/material";
@@ -7,29 +7,24 @@ import { HealthProfileFormProps } from "../../types";
 import { ROUTES } from "../../constants";
 import { submitHealthProfile } from "../../services/apiClient";
 
+// Các trường đúng với backend
 interface HealthProfileFormData {
-  studentName: string;
-  class: string;
-  gender: string;
-  height: string;
-  weight: string;
-  eyeCondition: string;
+  allergies: string;
   chronicDiseases: string;
-  underlyingConditions: string;
+  visionStatus: string;
+  medicalHistory: string;
   medicalRecord: File | null;
 }
 
 const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
   const navigate = useNavigate();
+  const { studentId } = useParams<{ studentId: string }>();
+
   const [formData, setFormData] = useState<HealthProfileFormData>({
-    studentName: "",
-    class: "",
-    gender: "",
-    height: "",
-    weight: "",
-    eyeCondition: "",
+    allergies: "",
     chronicDiseases: "",
-    underlyingConditions: "",
+    visionStatus: "",
+    medicalHistory: "",
     medicalRecord: null,
   });
 
@@ -51,41 +46,49 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      if (!studentId) {
+        alert("Thiếu mã học sinh!");
+        return;
+      }
+      const studentIdNum = Number(studentId);
+      if (isNaN(studentIdNum) || studentIdNum <= 0) {
+        alert("Mã học sinh không hợp lệ!");
+        return;
+      }
+
       const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          if (value instanceof File) {
-            formDataToSend.append(key, value);
-          } else {
-            formDataToSend.append(key, String(value));
-          }
-        }
-      });
+      formDataToSend.append("studentId", studentId); // đúng tên property backend
+      formDataToSend.append("allergies", formData.allergies);
+      formDataToSend.append("chronicDiseases", formData.chronicDiseases); // sửa tên
+      formDataToSend.append("visionStatus", formData.visionStatus);       // sửa tên
+      formDataToSend.append("medicalHistory", formData.medicalHistory);   // sửa tên
+      if (formData.medicalRecord) {
+        formDataToSend.append("medicalRecord", formData.medicalRecord);
+      }
 
       await submitHealthProfile(formDataToSend);
       alert("Hồ sơ sức khỏe đã được gửi thành công!");
       navigate(ROUTES.PARENT.DASHBOARD);
     } catch (err: any) {
       alert(err.response?.data?.message || "Gửi hồ sơ thất bại, vui lòng thử lại!");
-    }  };
+    }
+  };
+
   return (
     <>
-      <Navbar
-        onLogout={onLogout}
-      />
+      <Navbar onLogout={onLogout} />
       <Box sx={{ height: 68 }} />
       <div
         className="health-profile-form"
         style={{
           padding: "0",
-          background:
-            "linear-gradient(to bottom,rgba(21, 187, 216, 0.5), #c2e9fb)",
+          background: "linear-gradient(to bottom,rgba(21, 187, 216, 0.5), #c2e9fb)",
           minHeight: "100vh",
         }}
       >
         <div
           style={{
-            maxWidth: "800px", // Increased width
+            maxWidth: "800px",
             margin: "0 auto",
             background: "rgba(236, 238, 238, 0.5)",
             padding: "30px",
@@ -107,12 +110,11 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
           </p>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: "15px" }}>
-              <label>Tên học sinh:</label>
+              <label>Mã học sinh (ID):</label>
               <input
                 type="text"
-                name="studentName"
-                value={formData.studentName}
-                onChange={handleChange}
+                name="studentId"
+                value={studentId || ""}
                 style={{
                   width: "100%",
                   padding: "10px",
@@ -120,14 +122,15 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
                   border: "1px solid #ccc",
                 }}
                 required
+                disabled // không cho sửa, lấy từ URL param
               />
             </div>
             <div style={{ marginBottom: "15px" }}>
-              <label>Lớp:</label>
+              <label>Dị ứng:</label>
               <input
                 type="text"
-                name="class"
-                value={formData.class}
+                name="allergies"
+                value={formData.allergies}
                 onChange={handleChange}
                 style={{
                   width: "100%",
@@ -135,74 +138,7 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
                   borderRadius: "5px",
                   border: "1px solid #ccc",
                 }}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label>Giới tính:</label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-                required
-              >
-                <option value="">Chọn giới tính</option>
-                <option value="Nam">Nam</option>
-                <option value="Nữ">Nữ</option>
-              </select>
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label>Chiều cao (cm):</label>
-              <input
-                type="number"
-                name="height"
-                value={formData.height}
-                onChange={handleChange}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label>Cân nặng (kg):</label>
-              <input
-                type="number"
-                name="weight"
-                value={formData.weight}
-                onChange={handleChange}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-                required
-              />
-            </div>
-            <div style={{ marginBottom: "15px" }}>
-              <label>Tình trạng mắt:</label>
-              <input
-                type="text"
-                name="eyeCondition"
-                value={formData.eyeCondition}
-                onChange={handleChange}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-                required
+                placeholder="Không có"
               />
             </div>
             <div style={{ marginBottom: "15px" }}>
@@ -218,14 +154,15 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
                   borderRadius: "5px",
                   border: "1px solid #ccc",
                 }}
+                placeholder="Không có"
               />
             </div>
             <div style={{ marginBottom: "15px" }}>
-              <label>Bệnh nền:</label>
+              <label>Tình trạng mắt:</label>
               <input
                 type="text"
-                name="underlyingConditions"
-                value={formData.underlyingConditions}
+                name="visionStatus"
+                value={formData.visionStatus}
                 onChange={handleChange}
                 style={{
                   width: "100%",
@@ -233,6 +170,23 @@ const HealthProfileForm: React.FC<HealthProfileFormProps> = ({ onLogout }) => {
                   borderRadius: "5px",
                   border: "1px solid #ccc",
                 }}
+                placeholder="Bình thường"
+              />
+            </div>
+            <div style={{ marginBottom: "15px" }}>
+              <label>Tiền sử y tế:</label>
+              <input
+                type="text"
+                name="medicalHistory"
+                value={formData.medicalHistory}
+                onChange={handleChange}
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  border: "1px solid #ccc",
+                }}
+                placeholder="Không có"
               />
             </div>
             <div style={{ marginBottom: "15px" }}>

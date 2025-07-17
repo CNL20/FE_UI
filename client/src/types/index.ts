@@ -286,7 +286,11 @@ export interface AdminDashboardProps extends DashboardProps {}
 export interface ManagerDashboardProps extends DashboardProps {}
 export interface NurseDashboardProps extends DashboardProps {}
 
-export interface HealthProfileFormProps extends DashboardProps {}
+// Sửa tại đây: Thêm studentId vào HealthProfileFormProps
+export interface HealthProfileFormProps extends DashboardProps {
+  studentId: string;
+}
+
 export interface MedicationFormProps extends DashboardProps {}
 export interface VaccinationEventDashboardProps extends DashboardProps {}
 export interface HealthCheckDashboardProps extends DashboardProps {}
