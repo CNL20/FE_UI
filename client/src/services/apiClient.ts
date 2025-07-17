@@ -199,11 +199,14 @@ export const registerHealthCheck = async (data: HealthCheckRegistration) => {
   return apiClient.post('/health-check/register', data);
 };
 
+// =========== SỬA ĐOẠN NÀY: Gửi hồ sơ sức khỏe đúng endpoint backend ===========
 export const submitHealthProfile = async (formData: FormData) => {
-  return apiClient.post('/health-profile/submit', formData, {
+  // Đúng endpoint backend phải là /healthrecord
+  return apiClient.post('/healthrecord', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   });
 };
+// ==============================================================================
 
 // ================== STUDENT SERVICES ==================
 const mapStudent = (s: any) => ({
