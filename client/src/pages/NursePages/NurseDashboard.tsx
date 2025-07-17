@@ -37,12 +37,8 @@ import {
   FormControlLabel,
   Switch,
   LinearProgress,
-  Badge,
-  TablePagination,
+  Badge,  TablePagination,
   Tooltip,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   CircularProgress,
 } from "@mui/material";
 import {
@@ -53,11 +49,7 @@ import {
   Search as SearchIcon,
   Save as SaveIcon,
   Close as CloseIcon,
-  Info as InfoIcon,
-  Notifications as NotificationsIcon,
-  FilterList as FilterIcon,
-  Refresh as RefreshIcon,
-  ExpandMore as ExpandMoreIcon,
+  Info as InfoIcon,  Notifications as NotificationsIcon,
   TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 import Navbar from "../../components/Navbar";
@@ -71,13 +63,14 @@ import apiClient, {
 } from "../../services/apiClient";
 import { getAssignedCampaignsForNurse } from "../../services/vaccinationService";
 import NurseHealthCheckCampaignList from "./NurseHealthCheckCampaignList";
+import { incidentTypes } from '../../constants/incidentTypes';
 
 // Types
 type MedicalSupply = {
   id: number;
   name: string;
   quantity: number;
-  expiryDate: string;
+  expirationDate: string;
   location: string;
 };
 
@@ -132,17 +125,14 @@ const MedicalIncidentManager: React.FC = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationSeverity, setNotificationSeverity] =
-    useState<"success" | "error" | "info" | "warning">("info");
-  const [page, setPage] = useState(0);
+    useState<"success" | "error" | "info" | "warning">("info");  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [filters, setFilters] = useState({
+  const [filters] = useState({
     severity: "",
     incidentType: "",
     status: "",
     dateFrom: "",
-    dateTo: "",
-  });
-  const [showFilters, setShowFilters] = useState(false);
+    dateTo: "",  });
   const [sortBy] = useState("dateTime");
   const [sortOrder] = useState<"asc" | "desc">("desc");
   const [incidentForm, setIncidentForm] = useState({
@@ -167,14 +157,6 @@ const MedicalIncidentManager: React.FC = () => {
     incidentsBySeverity: {},
     weeklyTrend: [],
   });
-
-  const incidentTypes = [
-    { value: "injury", label: "Chấn thương" },
-    { value: "illness", label: "Bệnh tật" },
-    { value: "emergency", label: "Cấp cứu" },
-    { value: "allergy", label: "Dị ứng" },
-    { value: "other", label: "Khác" },
-  ];
 
   const severityLevels = [
     { value: "low", label: "Thấp", color: "success" },
@@ -357,18 +339,24 @@ const MedicalIncidentManager: React.FC = () => {
       setLoading(false);
     }
   };  const loadIncidents = async () => {
-    try {
-      const response = await getMedicalIncidents({
-        ...filters,
-        sortBy,
-        sortOrder,
-        page: (page + 1).toString(),
-        limit: rowsPerPage.toString(),
-      });
-      const incidentData: MedicalIncident[] = Array.isArray(response) ? response : [];
-      setIncidents(incidentData);
-      calculateStatistics(incidentData);
-    } catch (error: any) {
+  try {
+    const response = await getMedicalIncidents({
+      ...filters,
+      sortBy,
+      sortOrder,
+      page: (page + 1).toString(),
+      limit: rowsPerPage.toString(),
+    });
+    // CHUẨN HÓA: Luôn có incidentType từ eventType (nếu có)
+    const incidentData: MedicalIncident[] = (Array.isArray(response) ? response : []).map((i: any) => ({
+  ...i,
+  incidentType: i.incidentType || i.eventType || 'other',
+}));
+console.log(incidentData); // <- Xem giá trị incidentType từng dòng
+setIncidents(incidentData);
+    setIncidents(incidentData);
+    calculateStatistics(incidentData);
+  } catch (error: any) {
       console.error('❌ Error loading incidents:', error);
       setIncidents([]);
       if (error.response?.status !== 404) {
@@ -403,24 +391,7 @@ const MedicalIncidentManager: React.FC = () => {
     } catch (error) {
       setNotificationMessage("Có lỗi khi thông báo cho phụ huynh!");
       setNotificationSeverity("error");
-      setShowNotification(true);
-    }
-  };
-
-  const handleFilterChange = (filterName: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [filterName]: value }));
-    setPage(0);
-  };
-
-  const handleClearFilters = () => {
-    setFilters({
-      severity: "",
-      incidentType: "",
-      status: "",
-      dateFrom: "",
-      dateTo: "",
-    });
-    setPage(0);
+      setShowNotification(true);    }
   };
 
   const handleChangePage = (_: unknown, newPage: number) => {
@@ -463,10 +434,9 @@ const MedicalIncidentManager: React.FC = () => {
 
     setStatistics(stats);
   }, []);
-
   const StatisticsDashboard = () => (
     <Grid container spacing={3} sx={{ mb: 3 }}>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={4}>
         <Card sx={{ bgcolor: "primary.main", color: "white" }}>
           <CardContent>
             <Box
@@ -487,7 +457,7 @@ const MedicalIncidentManager: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={4}>
         <Card sx={{ bgcolor: "info.main", color: "white" }}>
           <CardContent>
             <Box
@@ -508,7 +478,7 @@ const MedicalIncidentManager: React.FC = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={4}>
         <Card sx={{ bgcolor: "error.main", color: "white" }}>
           <CardContent>
             <Box
@@ -526,132 +496,8 @@ const MedicalIncidentManager: React.FC = () => {
               </Box>
               <HospitalIcon sx={{ fontSize: 40, opacity: 0.8 }} />
             </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} md={3}>
-        <Card sx={{ bgcolor: "success.main", color: "white" }}>
-          <CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                  {statistics.resolvedIncidents}
-                </Typography>
-                <Typography variant="body2">Đã giải quyết</Typography>
-              </Box>
-              <VaccineIcon sx={{ fontSize: 40, opacity: 0.8 }} />
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
-  );
-
-  const FiltersPanel = () => (
-    <Accordion
-      expanded={showFilters}
-      onChange={() => setShowFilters(!showFilters)}
-    >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <FilterIcon />
-          <Typography>Bộ lọc tìm kiếm</Typography>
-        </Box>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={3}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Loại sự cố</InputLabel>
-              <Select
-                value={filters.incidentType}
-                onChange={(e) =>
-                  handleFilterChange("incidentType", e.target.value)
-                }
-              >
-                <MenuItem value="">Tất cả</MenuItem>
-                {incidentTypes.map((type) => (
-                  <MenuItem key={type.value} value={type.value}>
-                    {type.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Mức độ</InputLabel>
-              <Select
-                value={filters.severity}
-                onChange={(e) =>
-                  handleFilterChange("severity", e.target.value)
-                }
-              >
-                <MenuItem value="">Tất cả</MenuItem>
-                {severityLevels.map((level) => (
-                  <MenuItem key={level.value} value={level.value}>
-                    {level.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              size="small"
-              type="date"
-              label="Từ ngày"
-              value={filters.dateFrom}
-              onChange={(e) =>
-                handleFilterChange("dateFrom", e.target.value)
-              }
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
-              size="small"
-              type="date"
-              label="Đến ngày"
-              value={filters.dateTo}
-              onChange={(e) =>
-                handleFilterChange("dateTo", e.target.value)
-              }
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Button
-                variant="contained"
-                onClick={loadIncidents}
-                startIcon={<SearchIcon />}
-              >
-                Áp dụng bộ lọc
-              </Button>
-              <Button variant="outlined" onClick={handleClearFilters}>
-                Xóa bộ lọc
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={loadIncidents}
-                startIcon={<RefreshIcon />}
-              >
-                Làm mới
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
-      </AccordionDetails>
-    </Accordion>
+          </CardContent>        </Card>
+      </Grid>    </Grid>
   );
 
   useEffect(() => {
@@ -706,10 +552,8 @@ const MedicalIncidentManager: React.FC = () => {
           >
             Ghi Nhận Sự Cố Mới
           </Button>
-        </Box>
-      </Box>
+        </Box>      </Box>
       <StatisticsDashboard />
-      <FiltersPanel />
 
       <Dialog
         open={activeStep >= 0}
@@ -1189,16 +1033,15 @@ const MedicalIncidentManager: React.FC = () => {
           </Typography>
         </Box>
         <TableContainer>
-          <Table>
-            <TableHead>
+          <Table>            <TableHead>
               <TableRow>
                 <TableCell>Học sinh</TableCell>
                 <TableCell>Loại sự cố</TableCell>
                 <TableCell>Mức độ</TableCell>
                 <TableCell>Thời gian</TableCell>
-                <TableCell>Trạng thái</TableCell>
                 <TableCell>Thao tác</TableCell>
-              </TableRow>            </TableHead>
+              </TableRow>            
+              </TableHead>
             <TableBody>
               {incidents
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -1213,59 +1056,51 @@ const MedicalIncidentManager: React.FC = () => {
                           {incident.className || "N/A"}
                         </Typography>
                       </Box>
-                    </TableCell>                    <TableCell>
-                      {(() => {
-                        const foundType = incidentTypes.find((t) => t.value === incident.incidentType);
-                        return foundType?.label || incident.incidentType || "N/A";
-                      })()}
-                    </TableCell>
+                    </TableCell>                    
+                    <TableCell>
+                    {
+                      incidentTypes.find(t =>
+                        t.value === incident.incidentType
+                      )?.label ||
+                      incident.incidentType ||
+                      "N/A"
+                    }
+                  </TableCell>
                     <TableCell>
                       {(() => {
-                        const foundSeverity = severityLevels.find((s) => s.value === incident.severity);
-                        const displayText = foundSeverity?.label || incident.severity || "N/A";
+                        const sev = severityLevels.find(
+                          (s) => s.value === incident.severity
+                        );
                         return (
                           <Chip
-                            label={displayText}
-                            color={getSeverityColor(incident.severity) as any}
+                            label={sev?.label || incident.severity || "N/A"}
+                            color={
+                              sev?.color === "success" ||
+                              sev?.color === "error" ||
+                              sev?.color === "info" ||
+                              sev?.color === "warning" ||
+                              sev?.color === "primary" ||
+                              sev?.color === "secondary" ||
+                              sev?.color === "default"
+                                ? sev.color
+                                : "default"
+                            }
                             size="small"
                           />
                         );
                       })()}
                     </TableCell>
+
                     <TableCell>
                       <Typography variant="body2">
                         {(() => {
-                          try {
-                            const date = new Date(incident.dateTime);
-                            return isNaN(date.getTime()) ? "N/A" : date.toLocaleDateString("vi-VN");
-                          } catch {
-                            return "N/A";
-                          }
-                        })()}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {(() => {
-                          try {
-                            const date = new Date(incident.dateTime);
-                            return isNaN(date.getTime()) ? "N/A" : date.toLocaleTimeString("vi-VN");
-                          } catch {
-                            return "N/A";
-                          }
-                        })()}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={
-                          incident.status === "active"
-                            ? "Đang xử lý"
-                            : incident.status === "resolved"
-                            ? "Đã giải quyết"
-                            : "Cần theo dõi"
-                        }
-                        color={incident.status === "resolved" ? "success" : "warning"}
-                        size="small"
-                      />
+                          let dateStr = incident.dateTime;
+                          if (!dateStr) return "N/A";
+                          const date = new Date(dateStr);
+                          return isNaN(date.getTime())
+                            ? "N/A"
+                            : date.toLocaleDateString("vi-VN");
+                        })()}                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Box sx={{ display: "flex", gap: 1 }}>
@@ -1346,7 +1181,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
   const [newSupply, setNewSupply] = useState({
     name: "",
     quantity: "",
-    expiryDate: "",
+    expirationDate: "",
     location: "",
   });
 
@@ -1447,7 +1282,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
       .post("/medical-supplies", {
         name: newSupply.name,
         quantity: Number(newSupply.quantity),
-        expiryDate: newSupply.expiryDate,
+        expirationDate: newSupply.expirationDate,
         location: newSupply.location,
       })
       .then(() => {
@@ -1455,7 +1290,7 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
         setNewSupply({
           name: "",
           quantity: "",
-          expiryDate: "",
+          expirationDate: "",
           location: "",
         });
         setTabValue(0);
@@ -1633,21 +1468,18 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
                   <TableRow>
                     <TableCell>Tên Vật Tư</TableCell>
                     <TableCell>Số Lượng</TableCell>
-                    <TableCell>Hạn Sử Dụng</TableCell>
-                    <TableCell>Vị Trí</TableCell>
-                    <TableCell>Thao Tác</TableCell>
+                    <TableCell>Hạn Sử Dụng</TableCell>                    <TableCell>Vị Trí</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {loadingSupplies ? (
+                <TableBody>                  {loadingSupplies ? (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">
+                      <TableCell colSpan={4} align="center">
                         <CircularProgress size={24} />
                       </TableCell>
                     </TableRow>
                   ) : supplies.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} align="center">
+                      <TableCell colSpan={4} align="center">
                         Không có dữ liệu vật tư y tế!
                       </TableCell>
                     </TableRow>
@@ -1656,13 +1488,11 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
                       <TableRow key={row.id}>
                         <TableCell>{row.name}</TableCell>
                         <TableCell>{row.quantity}</TableCell>
-                        <TableCell>{row.expiryDate}</TableCell>
-                        <TableCell>{row.location}</TableCell>
                         <TableCell>
-                          <Button variant="contained" color="primary" size="small">
-                            Sửa
-                          </Button>
-                        </TableCell>
+                          {row.expirationDate
+                            ? new Date(row.expirationDate).toLocaleDateString("vi-VN")
+                            : "Chưa cập nhật"}
+                        </TableCell>                        <TableCell>{row.location}</TableCell>
                       </TableRow>
                     ))
                   )}
@@ -1877,11 +1707,11 @@ const NurseDashboard: React.FC<NurseDashboardProps> = ({ onLogout }) => {
             <TextField
               margin="dense"
               label="Hạn Sử Dụng"
-              name="expiryDate"
+              name="expirationDate"
               fullWidth
               type="date"
               InputLabelProps={{ shrink: true }}
-              value={newSupply.expiryDate}
+              value={newSupply.expirationDate}
               onChange={handleInputChange}
             />
             <TextField
