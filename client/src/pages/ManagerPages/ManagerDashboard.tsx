@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Grid,
@@ -15,10 +15,105 @@ import {
 import { Assignment, Menu as MenuIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import axios from "axios";
+import {
+  LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend, BarChart, Bar, ResponsiveContainer
+} from 'recharts';
 
 const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // State for stats from BE
+  const [stats, setStats] = useState({
+    studentCount: 0,
+    healthCheckCampaignCount: 0,
+    vaccinationCampaignCount: 0,
+  });
+
+  // State for charts
+  const [casesOverTime, setCasesOverTime] = useState<any[]>([]);
+  const [illnessTypes, setIllnessTypes] = useState<any[]>([]);
+  const [healthCheckCompletion, setHealthCheckCompletion] = useState<any[]>([]);
+  const [vaccinationCompletion, setVaccinationCompletion] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Lấy token đúng key
+    const token =
+      localStorage.getItem("auth_token") ||
+      localStorage.getItem("token");
+
+    // 1. Lấy số liệu dashboard tổng quát
+    axios
+      .get(
+        `${process.env['REACT_APP_API_BASE_URL']}/manager/dashboard-statistics`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => setStats(res.data))
+      .catch(() =>
+        setStats({
+          studentCount: 0,
+          healthCheckCampaignCount: 0,
+          vaccinationCampaignCount: 0,
+        })
+      );
+
+    // 2. Lấy dữ liệu biểu đồ số ca bệnh theo thời gian
+    axios
+      .get(
+        `${process.env['REACT_APP_API_BASE_URL']}/manager/statistics/cases-over-time`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => setCasesOverTime(res.data))
+      .catch(() => setCasesOverTime([]));
+
+    // 3. Lấy dữ liệu phân loại bệnh phổ biến
+    axios
+      .get(
+        `${process.env['REACT_APP_API_BASE_URL']}/manager/statistics/common-illnesses`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => setIllnessTypes(res.data))
+      .catch(() => setIllnessTypes([]));
+
+    // 4. Lấy dữ liệu tỷ lệ hoàn thành khám sức khỏe
+    axios
+      .get(
+        `${process.env['REACT_APP_API_BASE_URL']}/manager/statistics/healthcheck-completion`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => setHealthCheckCompletion(res.data))
+      .catch(() => setHealthCheckCompletion([]));
+
+    // 5. Lấy dữ liệu tỷ lệ tiêm chủng/khám sức khỏe
+    axios
+      .get(
+        `${process.env['REACT_APP_API_BASE_URL']}/manager/statistics/vaccination-completion`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => setVaccinationCompletion(res.data))
+      .catch(() => setVaccinationCompletion([]));
+  }, []);
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
@@ -46,10 +141,12 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
     },
   ];
 
+  const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#b39ddb', '#4dd0e1', '#ffd54f'];
+
   return (
-    <>      <Navbar
-        {...(onLogout ? { onLogout: handleLogout } : {})}
-      /><Box
+    <>
+      <Navbar {...(onLogout ? { onLogout: handleLogout } : {})} />
+      <Box
         sx={{
           p: 3,
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
@@ -57,12 +154,14 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-        }}      >        {/* Menu Button */}
+        }}
+      >
+        {/* Menu Button */}
         <Box mb={3} display="flex" justifyContent="flex-start">
           <IconButton
             edge="start"
-            sx={{ 
-              color: "#fff", 
+            sx={{
+              color: "#fff",
               background: "rgba(255, 255, 255, 0.2)",
               backdropFilter: "blur(10px)",
               border: "1px solid rgba(255, 255, 255, 0.3)",
@@ -96,11 +195,12 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
-          >            <List>
+          >
+            <List>
               {menuItems.map((item, index) => (
-                <ListItem 
-                  button 
-                  key={index} 
+                <ListItem
+                  button
+                  key={index}
                   onClick={item.onClick}
                   sx={{
                     borderRadius: "12px",
@@ -116,12 +216,12 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
                   <ListItemIcon sx={{ color: "#fff" }}>
                     <Assignment />
                   </ListItemIcon>
-                  <ListItemText 
+                  <ListItemText
                     primary={item.text}
                     sx={{
                       "& .MuiListItemText-primary": {
                         fontWeight: 500,
-                      }
+                      },
                     }}
                   />
                 </ListItem>
@@ -132,7 +232,9 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
 
         {/* Overview Section */}
         <Grid container spacing={3}>
-          <Grid item xs={12} md={3}>            <Card
+          {/* Box 1: Số học sinh */}
+          <Grid item xs={12} md={4}>
+            <Card
               sx={{
                 height: "150px",
                 display: "flex",
@@ -151,78 +253,36 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
                   boxShadow: "0 20px 40px rgba(255, 154, 158, 0.4)",
                 },
               }}
-            >              <CardContent sx={{ textAlign: "center" }}>
-                <Typography 
-                  variant="h6" 
+            >
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h6"
                   align="center"
-                  sx={{ 
-                    fontWeight: 600, 
+                  sx={{
+                    fontWeight: 600,
                     mb: 1,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   }}
                 >
                   Học sinh hiện tại
                 </Typography>
-                <Typography 
-                  variant="h3" 
-                  color="primary" 
+                <Typography
+                  variant="h3"
+                  color="primary"
                   align="center"
-                  sx={{ 
+                  sx={{
                     fontWeight: 700,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)",
                   }}
                 >
-                  500
+                  {stats.studentCount}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>            <Card
-              sx={{
-                height: "150px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: "20px",
-                background: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-                color: "#333",
-                boxShadow: "0 10px 30px rgba(168, 237, 234, 0.3)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                backdropFilter: "blur(10px)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-8px) scale(1.02)",
-                  boxShadow: "0 20px 40px rgba(168, 237, 234, 0.4)",
-                },
-              }}
-            >              <CardContent sx={{ textAlign: "center" }}>
-                <Typography 
-                  variant="h6" 
-                  align="center"
-                  sx={{ 
-                    fontWeight: 600, 
-                    mb: 1,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
-                  }}
-                >
-                  Yêu cầu gần đây
-                </Typography>
-                <Typography 
-                  variant="h3" 
-                  color="secondary" 
-                  align="center"
-                  sx={{ 
-                    fontWeight: 700,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
-                  }}
-                >
-                  12
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={3}>            <Card
+          {/* Box 2: Số chiến dịch khám sức khỏe */}
+          <Grid item xs={12} md={4}>
+            <Card
               sx={{
                 height: "150px",
                 display: "flex",
@@ -241,33 +301,36 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
                   boxShadow: "0 20px 40px rgba(252, 182, 159, 0.4)",
                 },
               }}
-            >              <CardContent sx={{ textAlign: "center" }}>
-                <Typography 
-                  variant="h6" 
+            >
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h6"
                   align="center"
-                  sx={{ 
-                    fontWeight: 600, 
+                  sx={{
+                    fontWeight: 600,
                     mb: 1,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   }}
                 >
-                  Khám sức khỏe đã thực hiện
+                  Số chiến dịch khám sức khỏe
                 </Typography>
-                <Typography 
-                  variant="h3" 
-                  color="info" 
+                <Typography
+                  variant="h3"
+                  color="info"
                   align="center"
-                  sx={{ 
+                  sx={{
                     fontWeight: 700,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)",
                   }}
                 >
-                  130
+                  {stats.healthCheckCampaignCount}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={3}>            <Card
+          {/* Box 3: Số chiến dịch tiêm chủng */}
+          <Grid item xs={12} md={4}>
+            <Card
               sx={{
                 height: "150px",
                 display: "flex",
@@ -275,49 +338,51 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: "20px",
-                background: "linear-gradient(135deg, #ff6b6b 0%, #ffa8a8 100%)",
-                color: "#fff",
-                boxShadow: "0 10px 30px rgba(255, 107, 107, 0.3)",
+                background: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+                color: "#333",
+                boxShadow: "0 10px 30px rgba(168, 237, 234, 0.3)",
                 border: "1px solid rgba(255, 255, 255, 0.2)",
                 backdropFilter: "blur(10px)",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-8px) scale(1.02)",
-                  boxShadow: "0 20px 40px rgba(255, 107, 107, 0.4)",
+                  boxShadow: "0 20px 40px rgba(168, 237, 234, 0.4)",
                 },
               }}
-            >              <CardContent sx={{ textAlign: "center" }}>
-                <Typography 
-                  variant="h6" 
+            >
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography
+                  variant="h6"
                   align="center"
-                  sx={{ 
-                    fontWeight: 600, 
+                  sx={{
+                    fontWeight: 600,
                     mb: 1,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+                    textShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   }}
                 >
-                  Cảnh báo cần xử lý gấp
+                  Số chiến dịch tiêm chủng
                 </Typography>
-                <Typography 
-                  variant="h3" 
-                  color="error" 
+                <Typography
+                  variant="h3"
+                  color="secondary"
                   align="center"
-                  sx={{ 
+                  sx={{
                     fontWeight: 700,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.2)" 
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)",
                   }}
                 >
-                  5
+                  {stats.vaccinationCampaignCount}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
         </Grid>
 
-        <Grid container spacing={3} mt={3}>          {/* Báo cáo & Thống kê */}
+        {/* Báo cáo & Thống kê */}
+        <Grid container spacing={3} mt={3}>
           <Grid item xs={12}>
-            <Typography 
-              variant="h5" 
+            <Typography
+              variant="h5"
               gutterBottom
               sx={{
                 fontWeight: 700,
@@ -331,166 +396,91 @@ const ManagerDashboard: React.FC<{ onLogout?: () => void }> = ({ onLogout }) => 
             >
               Báo cáo & Thống kê
             </Typography>
-          </Grid>          <Grid item xs={12} md={6} lg={6}>
-            <Card
-              sx={{
-                height: "300px",
-                borderRadius: "20px",
-                background: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
-                },
-              }}
-            >
+          </Grid>
+
+          {/* Biểu đồ số ca bệnh theo thời gian */}
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: "350px", borderRadius: "20px" }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 600,
-                    color: "#333",
-                    mb: 2,
-                  }}
-                >
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
                   Biểu đồ số ca bệnh theo thời gian
                 </Typography>
-                <Typography 
-                  variant="body2"
-                  sx={{
-                    color: "#666",
-                    fontStyle: "italic",
-                  }}
-                >
-                  (Placeholder for a chart displaying cases over
-                  days/months/quarters)
-                </Typography>
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={casesOverTime}>
+                    <CartesianGrid stroke="#ccc" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="cases" stroke="#8884d8" strokeWidth={3} />
+                  </LineChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            <Card
-              sx={{
-                height: "300px",
-                borderRadius: "20px",
-                background: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
-                },
-              }}
-            >
+          {/* Phân loại các loại bệnh phổ biến */}
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: "350px", borderRadius: "20px" }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 600,
-                    color: "#333",
-                    mb: 2,
-                  }}
-                >
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
                   Phân loại các loại bệnh phổ biến
                 </Typography>
-                <Typography 
-                  variant="body2"
-                  sx={{
-                    color: "#666",
-                    fontStyle: "italic",
-                  }}
-                >
-                  (Placeholder for a chart showing common illnesses in the
-                  school)
-                </Typography>
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={illnessTypes}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      label
+                    >
+                      {illnessTypes.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            <Card
-              sx={{
-                height: "300px",
-                borderRadius: "20px",
-                background: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
-                },
-              }}
-            >
+          {/* Báo cáo tỷ lệ hoàn thành khám sức khỏe định kỳ */}
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: "350px", borderRadius: "20px" }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 600,
-                    color: "#333",
-                    mb: 2,
-                  }}
-                >
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
                   Báo cáo tỷ lệ hoàn thành khám sức khỏe định kỳ
                 </Typography>
-                <Typography 
-                  variant="body2"
-                  sx={{
-                    color: "#666",
-                    fontStyle: "italic",
-                  }}
-                >
-                  (Placeholder for a report on health check completion rates by
-                  class/grade)
-                </Typography>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={healthCheckCompletion}>
+                    <CartesianGrid stroke="#ccc" />
+                    <XAxis dataKey="class" />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip />
+                    <Bar dataKey="rate" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            <Card
-              sx={{
-                height: "300px",
-                borderRadius: "20px",
-                background: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                boxShadow: "0 15px 35px rgba(0, 0, 0, 0.1)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  transform: "translateY(-5px)",
-                  boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
-                },
-              }}
-            >
+          {/* Báo cáo tỷ lệ học sinh tiêm chủng/khám sức khỏe định kỳ */}
+          <Grid item xs={12} md={6}>
+            <Card sx={{ height: "350px", borderRadius: "20px" }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography 
-                  variant="h6" 
-                  gutterBottom
-                  sx={{
-                    fontWeight: 600,
-                    color: "#333",
-                    mb: 2,
-                  }}
-                >
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 700 }}>
                   Báo cáo tỷ lệ học sinh tiêm chủng/khám sức khỏe định kỳ
                 </Typography>
-                <Typography 
-                  variant="body2"
-                  sx={{
-                    color: "#666",
-                    fontStyle: "italic",
-                  }}
-                >
-                  (Placeholder for a report on vaccination/health check rates)
-                </Typography>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={vaccinationCompletion}>
+                    <CartesianGrid stroke="#ccc" />
+                    <XAxis dataKey="class" />
+                    <YAxis domain={[0, 100]} />
+                    <Tooltip />
+                    <Bar dataKey="rate" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </Grid>

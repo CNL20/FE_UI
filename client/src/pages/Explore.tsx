@@ -96,13 +96,15 @@ const Explore: React.FC = () => {
 
   return (
     <>
-      <Navbar />
-      
-      {/* Hero Section */}
+      <Navbar />      {/* Hero Section */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+          backgroundImage: "url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           py: 8,
+          mt: 8,
           color: "white",
           position: "relative",
           overflow: "hidden",
@@ -113,14 +115,13 @@ const Explore: React.FC = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><radialGradient id=\"a\" cx=\".5\" cy=\".5\" r=\".5\"><stop offset=\"0\" stop-color=\"%23fff\" stop-opacity=\".1\"/><stop offset=\"1\" stop-color=\"%23fff\" stop-opacity=\"0\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"25\" fill=\"url(%23a)\"/></svg>') 0 0/50px 50px",
-            opacity: 0.3,
+            background: "rgba(0, 0, 0, 0.5)",
+            zIndex: 0,
           }
         }}
       >
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
-          <Box textAlign="center">
-            <Typography
+          <Box textAlign="center">            <Typography
               variant="h2"
               sx={{
                 fontWeight: 800,
@@ -129,7 +130,7 @@ const Explore: React.FC = () => {
                 fontSize: { xs: "2rem", md: "3rem" }
               }}
             >
-              🚀 Khám Phá Hệ Thống Y Tế Học Đường
+              Khám Phá Hệ Thống Y Tế Học Đường
             </Typography>
             <Typography
               variant="h5"

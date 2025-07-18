@@ -17,21 +17,11 @@ const fadeInUp = keyframes`
   }
 `;
 
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-`;
-
 const LearnMore: React.FC = () => {
   const navigate = useNavigate();
-
   const serviceDetails = [
     {
-      category: "🏥 Dịch vụ Y tế Cơ bản",
+      category: "Dịch vụ Y tế Cơ bản",
       services: [
         {
           title: "Khám sức khỏe định kỳ",
@@ -49,9 +39,8 @@ const LearnMore: React.FC = () => {
           features: ["Quản lý bệnh hen suyễn", "Theo dõi tiểu đường", "Chăm sóc bệnh tim mạch", "Hỗ trợ rối loạn tâm lý"]
         }
       ]
-    },
-    {
-      category: "💉 Chương trình Tiêm chủng", 
+    },    {
+      category: "Chương trình Tiêm chủng", 
       services: [
         {
           title: "Tiêm chủng mở rộng",
@@ -64,9 +53,8 @@ const LearnMore: React.FC = () => {
           features: ["Vaccine cúm mùa", "Vaccine viêm gan B", "Vaccine HPV", "Vaccine phòng ung thư cổ tử cung"]
         }
       ]
-    },
-    {
-      category: "📊 Hệ thống Quản lý",
+    },    {
+      category: "Hệ thống Quản lý",
       services: [
         {
           title: "Quản lý hồ sơ điện tử",
@@ -81,27 +69,22 @@ const LearnMore: React.FC = () => {
       ]
     }
   ];
-
   const technologies = [
     {
       name: "Trí tuệ nhân tạo (AI)",
-      description: "Sử dụng AI để phân tích dữ liệu sức khỏe và đưa ra khuyến nghị",
-      icon: "🤖"
+      description: "Sử dụng AI để phân tích dữ liệu sức khỏe và đưa ra khuyến nghị"
     },
     {
       name: "Blockchain",
-      description: "Bảo mật thông tin y tế với công nghệ blockchain tiên tiến",
-      icon: "🔗"
+      description: "Bảo mật thông tin y tế với công nghệ blockchain tiên tiến"
     },
     {
       name: "IoT & Wearables",
-      description: "Kết nối với các thiết bị đeo theo dõi sức khỏe",
-      icon: "⌚"
+      description: "Kết nối với các thiết bị đeo theo dõi sức khỏe"
     },
     {
       name: "Cloud Computing",
-      description: "Lưu trữ đám mây an toàn, truy cập mọi lúc mọi nơi",
-      icon: "☁️"
+      description: "Lưu trữ đám mây an toàn, truy cập mọi lúc mọi nơi"
     }  ];
 
   const faqs = [
@@ -129,24 +112,37 @@ const LearnMore: React.FC = () => {
 
   return (
     <>
-      <Navbar />
-      
-      {/* Hero Section */}
+      <Navbar />        {/* Hero Section */}
       <Box
         sx={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-          py: 8,
+          backgroundImage: "url(https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          pt: 12,
+          pb: 8,
           color: "white",
           position: "relative",
           overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            zIndex: 1,
+          }
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
           <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12}>
               <Box
                 sx={{
                   animation: `${fadeInUp} 1s ease-out`,
+                  textAlign: "center"
                 }}
               >
                 <Typography
@@ -154,10 +150,11 @@ const LearnMore: React.FC = () => {
                   sx={{
                     fontWeight: 800,
                     mb: 3,
-                    fontSize: { xs: "2rem", md: "3rem" }
+                    fontSize: { xs: "2rem", md: "3rem" },
+                    textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
                   }}
                 >
-                  📚 Tìm Hiểu Chi Tiết
+                  Tìm Hiểu Chi Tiết
                 </Typography>
                 <Typography
                   variant="h5"
@@ -165,61 +162,38 @@ const LearnMore: React.FC = () => {
                     fontWeight: 300,
                     mb: 4,
                     opacity: 0.9,
-                    lineHeight: 1.6
+                    lineHeight: 1.6,
+                    textShadow: "1px 1px 2px rgba(0,0,0,0.5)"
                   }}
                 >
                   Khám phá toàn bộ dịch vụ và giải pháp y tế học đường toàn diện của chúng tôi
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  animation: `${float} 3s ease-in-out infinite`,
-                }}
-              >
-                <Box
-                  component="img"
-                  src="https://img.icons8.com/color/300/medical-doctor.png"
-                  alt="Medical Team"
-                  sx={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.2))",
-                  }}
-                />
-              </Box>
-            </Grid>
           </Grid>
         </Container>
-      </Box>
-
-      {/* Services Detail Section */}
-      <Box sx={{ py: 8, background: "linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%)" }}>
+      </Box>      {/* Services Detail Section */}
+      <Box sx={{ py: 8, background: "linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%)" }}>
         <Container maxWidth="lg">
-          <Box textAlign="center" mb={6}>
-            <Typography
+          <Box textAlign="center" mb={6}>            <Typography
               variant="h3"
               sx={{
                 fontWeight: 700,
-                color: "#2c3e50",
+                color: "#1565c0",
                 mb: 3,
                 animation: `${fadeInUp} 1s ease-out 0.2s both`,
               }}
             >
-              🎯 Dịch Vụ Chi Tiết
+              Dịch Vụ Chi Tiết
             </Typography>
           </Box>
 
           {serviceDetails.map((category, categoryIndex) => (
-            <Box key={categoryIndex} mb={6}>
-              <Typography
+            <Box key={categoryIndex} mb={6}>              <Typography
                 variant="h4"
                 sx={{
                   fontWeight: 600,
-                  color: "#495057",
+                  color: "#1976d2",
                   mb: 4,
                   textAlign: "center"
                 }}
@@ -242,21 +216,19 @@ const LearnMore: React.FC = () => {
                         }
                       }}
                     >
-                      <CardContent sx={{ p: 4 }}>
-                        <Typography
+                      <CardContent sx={{ p: 4 }}>                        <Typography
                           variant="h6"
                           sx={{
                             fontWeight: 600,
-                            color: "#2c3e50",
+                            color: "#0d47a1",
                             mb: 2,
                           }}
                         >
                           {service.title}
-                        </Typography>
-                        <Typography
+                        </Typography>                        <Typography
                           variant="body1"
                           sx={{
-                            color: "#6c757d",
+                            color: "#424242",
                             mb: 3,
                             lineHeight: 1.6
                           }}
@@ -267,9 +239,8 @@ const LearnMore: React.FC = () => {
                           {service.features.map((feature, idx) => (
                             <Typography
                               key={idx}
-                              variant="body2"
-                              sx={{
-                                color: "#495057",
+                              variant="body2"                              sx={{
+                                color: "#1976d2",
                                 mb: 1,
                                 display: "flex",
                                 alignItems: "center",
@@ -277,11 +248,10 @@ const LearnMore: React.FC = () => {
                             >
                               <Box
                                 component="span"
-                                sx={{
-                                  width: 6,
+                                sx={{                                  width: 6,
                                   height: 6,
                                   borderRadius: "50%",
-                                  backgroundColor: "#28a745",
+                                  backgroundColor: "#2196f3",
                                   mr: 2,
                                   flexShrink: 0
                                 }}
@@ -298,13 +268,10 @@ const LearnMore: React.FC = () => {
             </Box>
           ))}
         </Container>
-      </Box>
-
-      {/* Technology Section */}
-      <Box sx={{ py: 8, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
+      </Box>      {/* Technology Section */}
+      <Box sx={{ py: 8, background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)" }}>
         <Container maxWidth="lg">
-          <Box textAlign="center" mb={6}>
-            <Typography
+          <Box textAlign="center" mb={6}>            <Typography
               variant="h3"
               sx={{
                 fontWeight: 700,
@@ -313,7 +280,7 @@ const LearnMore: React.FC = () => {
                 animation: `${fadeInUp} 1s ease-out 0.2s both`,
               }}
             >
-              🚀 Công Nghệ Tiên Tiến
+              Công Nghệ Tiên Tiến
             </Typography>
           </Box>
 
@@ -336,11 +303,7 @@ const LearnMore: React.FC = () => {
                       background: "rgba(255,255,255,0.15)",
                     }
                   }}
-                >
-                  <Typography variant="h2" sx={{ mb: 2 }}>
-                    {tech.icon}
-                  </Typography>
-                  <Typography
+                >                  <Typography
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 2 }}
                   >
@@ -355,10 +318,9 @@ const LearnMore: React.FC = () => {
           </Grid>
         </Container>
       </Box>      {/* Free Service Highlight Section */}
-      <Box sx={{ py: 8, background: "linear-gradient(135deg, #28a745 0%, #20c997 100%)" }}>
+      <Box sx={{ py: 8, background: "linear-gradient(135deg, #1e88e5 0%, #1976d2 100%)" }}>
         <Container maxWidth="lg">
-          <Box textAlign="center">
-            <Typography
+          <Box textAlign="center">            <Typography
               variant="h3"
               sx={{
                 fontWeight: 700,
@@ -367,7 +329,7 @@ const LearnMore: React.FC = () => {
                 animation: `${fadeInUp} 1s ease-out 0.2s both`,
               }}
             >
-              🆓 Hoàn Toàn Miễn Phí
+              Hoàn Toàn Miễn Phí
             </Typography>
             <Typography
               variant="h5"
@@ -394,9 +356,7 @@ const LearnMore: React.FC = () => {
                     color: "white",
                     animation: `${fadeInUp} 1s ease-out 0.6s both`,
                   }}
-                >
-                  <Typography variant="h2" sx={{ mb: 2 }}>💝</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                >                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                     Không Chi Phí
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -416,9 +376,7 @@ const LearnMore: React.FC = () => {
                     color: "white",
                     animation: `${fadeInUp} 1s ease-out 0.8s both`,
                   }}
-                >
-                  <Typography variant="h2" sx={{ mb: 2 }}>🎯</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                >                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                     Đầy Đủ Tính Năng
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -438,9 +396,7 @@ const LearnMore: React.FC = () => {
                     color: "white",
                     animation: `${fadeInUp} 1s ease-out 1s both`,
                   }}
-                >
-                  <Typography variant="h2" sx={{ mb: 2 }}>🤝</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                >                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                     Hỗ Trợ 24/7
                   </Typography>
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
@@ -451,13 +407,10 @@ const LearnMore: React.FC = () => {
             </Grid>
           </Box>
         </Container>
-      </Box>
-
-      {/* FAQ Section */}
-      <Box sx={{ py: 8, background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" }}>
+      </Box>      {/* FAQ Section */}
+      <Box sx={{ py: 8, background: "linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%)" }}>
         <Container maxWidth="md">
-          <Box textAlign="center" mb={6}>
-            <Typography
+          <Box textAlign="center" mb={6}>            <Typography
               variant="h3"
               sx={{
                 fontWeight: 700,
@@ -466,7 +419,7 @@ const LearnMore: React.FC = () => {
                 animation: `${fadeInUp} 1s ease-out 0.2s both`,
               }}
             >
-              ❓ Câu Hỏi Thường Gặp
+              Câu Hỏi Thường Gặp
             </Typography>
           </Box>
 
@@ -506,13 +459,10 @@ const LearnMore: React.FC = () => {
             </Accordion>
           ))}
         </Container>
-      </Box>
-
-      {/* Call to Action Section */}
-      <Box sx={{ py: 8, background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
+      </Box>      {/* Call to Action Section */}
+      <Box sx={{ py: 8, background: "linear-gradient(135deg, #1976d2 0%, #0d47a1 100%)" }}>
         <Container maxWidth="md">
-          <Box textAlign="center" sx={{ color: "white" }}>
-            <Typography
+          <Box textAlign="center" sx={{ color: "white" }}>            <Typography
               variant="h3"
               sx={{
                 fontWeight: 700,
@@ -520,8 +470,8 @@ const LearnMore: React.FC = () => {
                 animation: `${fadeInUp} 1s ease-out 0.2s both`,
               }}
             >
-              🎯 Bắt Đầu Hành Trình
-            </Typography>            <Typography
+              Bắt Đầu Hành Trình
+            </Typography><Typography
               variant="h6"
               sx={{
                 fontWeight: 300,
@@ -544,24 +494,22 @@ const LearnMore: React.FC = () => {
               <Button
                 variant="contained"
                 size="large"
-                href="mailto:support@schoolhealth.vn"
-                sx={{
-                  background: "linear-gradient(45deg, #ff6b6b 30%, #ee5a24 90%)",
+                href="mailto:support@schoolhealth.vn"                sx={{
+                  background: "linear-gradient(45deg, #1976d2 30%, #0d47a1 90%)",
                   color: "white",
                   px: 4,
                   py: 1.5,
                   borderRadius: 3,
                   fontWeight: 600,
                   fontSize: "1.1rem",
-                  boxShadow: "0 8px 32px rgba(255, 107, 107, 0.3)",
+                  boxShadow: "0 8px 32px rgba(25, 118, 210, 0.3)",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     transform: "translateY(-2px)",
-                    boxShadow: "0 12px 40px rgba(255, 107, 107, 0.4)",
+                    boxShadow: "0 12px 40px rgba(25, 118, 210, 0.4)",
                   }
-                }}
-              >
-                📧 Liên Hệ Ngay
+                }}>
+                Liên Hệ Ngay
               </Button>
               <Button
                 variant="outlined"
@@ -581,9 +529,8 @@ const LearnMore: React.FC = () => {
                     borderColor: "white",
                     transform: "translateY(-2px)",
                   }
-                }}
-              >
-                🏠 Về Trang Chủ
+                }}              >
+                Về Trang Chủ
               </Button>
             </Box>
           </Box>
